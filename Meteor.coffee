@@ -1,9 +1,9 @@
-spawn = require("child_process").spawn
+spawn = require("child").spawn
+EventEmitter = require('events').EventEmitter
 
+class Meteor extends EventEmitter
 
-class Meteor
-
-  child_process:{}
+  child:{}
   buffer:
     stdout:""
     stderr:""
@@ -11,6 +11,7 @@ class Meteor
 
   constructor:(@rc,@log)->
     @run()
+
 
 
   run:()->
@@ -31,19 +32,19 @@ class Meteor
       cwd:@rc.app_path
     }
 
-    @child_process = spawn("meteor",args,options)
-    @child_process.stdout.setEncoding('utf8');
-    @child_process.stderr.setEncoding('utf8');
+    @child = spawn("meteor",args,options)
+    @child.stdout.setEncoding('utf8');
+    @child.stderr.setEncoding('utf8');
     
-    @child_process.stdout.on "data", (data) =>
+    @child.stdout.on "data", (data) =>
       @buffer.stdout += data
       console.info data
 
-    @child_process.stderr.on "data", (data) =>
+    @child.stderr.on "data", (data) =>
       @buffer.stderr += data
       console.error data
 
-    @child_process.on "close", (code) =>
+    @child.on "close", (code) =>
       if code is 0
         console.info "Meteor exited with code: " + code
       else

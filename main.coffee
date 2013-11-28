@@ -1,6 +1,6 @@
 appname = "mctr" # meteor console test runner
 log = require('loglevel')
-spawn = require('child_process').spawn
+spawn = require('child').spawn
 Meteor = require("./Meteor")
 
 
@@ -12,7 +12,9 @@ rc = require('rc')(appname, {
     app_path:null
     settings_path:"settings.json"
     timeout:120000 # 2 minutes
-    packages:null
+    packages:null,
+    meteor_ready_text: "=> Meteor server running on:",
+    meteor_error_text: "=> Your application has errors. Waiting for file change."
   })
 
 log.setLevel(rc.log_level)
