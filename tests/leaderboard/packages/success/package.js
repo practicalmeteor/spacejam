@@ -9,5 +9,5 @@ Package.on_use(function (api, where) {
 
 Package.on_test(function(api) {
   api.use(['coffeescript', 'tinytest', 'success'])
-  api.add_files(['success-test.coffee']);
+  api.add_files(['success-test.coffee'],['server']);
 });

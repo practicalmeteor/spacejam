@@ -1,5 +1,5 @@
 expect = require('chai').expect
-
+log = require('loglevel')
 _exec = require("child_process").exec
 _spawn = require("child_process").spawn
 
@@ -60,3 +60,34 @@ class ChildProcess
 
 
 module.exports = ChildProcess
+###
+    exec: (command,options,cb)->
+    log.debug "ChildProcess.exec() ",command
+    expect(@child).to.be.null
+    expect(command).to.be.a 'string'
+
+    if options?
+      expect(options).to.be.an 'object'
+
+    if cb?
+      expect(cb).to.be.a 'function'
+
+    @child = _exec(command,options,cb)
+
+    @child.stdout.setEncoding('utf8');
+    @child.stderr.setEncoding('utf8');
+
+    @child.stdout.on "data", (data) =>
+      log.info data
+
+    @child.stderr.on "data", (data) =>
+      log.error data
+
+    @child.on "exit", (code,signal) =>
+      if code?
+        log.info "#{command} exited with code: " + code
+      else if signal?
+        log.info "#{command} killed with signal: " + signal
+      else
+        log.error "#{command} exited: " + args
+###

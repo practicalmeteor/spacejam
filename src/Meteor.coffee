@@ -53,12 +53,14 @@ class Meteor extends EventEmitter
 
 
 
-  hasErrorText: ( buffer )->
+  hasErrorText: ( buffer )=>
+    log.debug buffer.lastIndexOf( @rc.meteor_error_text )
     if buffer.lastIndexOf( @rc.meteor_error_text ) isnt -1
       @emit "error"
 
 
-  hasReadyText: ( buffer )->
+  hasReadyText: ( buffer )=>
+    log.debug "hasReadyText"
     if buffer.lastIndexOf( @rc.meteor_ready_text ) isnt -1
       @emit "ready"
 

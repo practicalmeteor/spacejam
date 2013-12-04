@@ -8,6 +8,12 @@ class TestRunner
   meteor: null
   phantomjs: null
 
+  @ERR_CODE:
+    METEOR_ERROR: 2
+    TEST_SUCCESS: 4
+    TEST_FAILED: 5
+    TEST_TIMEOUT: 6
+
   constructor: ->
     log.debug "TestRunner.constructor()"
     @rc = require('rc')("mctr", { #defaults go here.
@@ -31,6 +37,13 @@ class TestRunner
     log.debug "TestRunner.run()"
     expect(@meteor).to.be.null
 
+    setTimeout(
+      =>
+        log.error "Tests timed out after #{@rc.timeout} milliseconds."
+        @killAllChilds( TestRunner.ERR_CODE.TEST_TIMEOUT )
+      ,@rc.timeout
+    )
+
     @meteor = new Meteor(@rc)
     @meteor.on "ready", =>
       log.info "Meteor is ready"
@@ -39,7 +52,7 @@ class TestRunner
     @meteor.on "error", =>
       log.error "Meteor has errors, exiting"
       @meteor.childProcess.child.kill()
-      process.exit 1
+      process.exit TestRunner.ERR_CODE.METEOR_ERROR
 
     @meteor.run()
 
@@ -53,11 +66,17 @@ class TestRunner
       if code?
         process.exit code
       else if signal?
-        process.exit 1
+        process.exit TestRunner.ERR_CODE.PHANTOM_ERROR
       else
-        process.exit 1
+        process.exit TestRunner.ERR_CODE.PHANTOM_ERROR
 
     @phantomjs.run()
+
+  killAllChilds: (code = 1)->
+    log.debug "TestRunner.killAllChilds()"
+    @meteor?.kill()
+    @phantomjs?.kill()
+    process.exit code
 
 
 

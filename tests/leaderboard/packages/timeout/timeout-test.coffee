@@ -1,2 +1,2 @@
-Tinytest.add "Failure - test",(test)->
+Tinytest.addAsync "Timeout - test",(test)->
   test.equal true, false
