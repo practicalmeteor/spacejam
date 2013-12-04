@@ -1,5 +1,5 @@
 // if the database is empty on server start, create some sample data.
-Meteor.startup(function () {
+Meteor..startup(function () { //FAIL APP
   if (Lists.find().count() === 0) {
     var data = [
       {name: "Meteor Principles",
