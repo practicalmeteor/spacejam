@@ -1,12 +1,10 @@
 expect = require('chai').expect
-spawn = require('child_process').spawn
+ChildProcess = require './ChildProcess'
 EventEmitter = require('events').EventEmitter
 
 class Meteor extends EventEmitter
 
-  runCalled: false
-
-  child:{}
+  childProcess: null
   buffer:
     stdout:""
     stderr:""
@@ -14,8 +12,7 @@ class Meteor extends EventEmitter
 
   constructor:(@rc)->
     expect(@rc.port).to.be.a 'number'
-    if @rc.root_url is null
-      @rc.root_url = "http://localhost:#{@rc.port}/"
+
 
     unless @rc.packages
       log.error "no packages to test have been specified"
@@ -23,8 +20,7 @@ class Meteor extends EventEmitter
 
   run: =>
     log.info("spawning meteor")
-    expect(@runCalled).to.be.false
-    @runCalled = true
+    expect(@childProcess).to.be.null
     #meteor --settings $METEOR_TEST_SETTINGS_PATH test-packages packages/lavaina-base --driver-package test-in-console -p $PORT
     args = [
       "-p"
@@ -43,28 +39,17 @@ class Meteor extends EventEmitter
       detached:false
     }
 
-    @child = spawn("meteor",args,options)
-    @child.stdout.setEncoding('utf8');
-    @child.stderr.setEncoding('utf8');
+    @childProcess = new ChildProcess()
+    @childProcess.spawn("meteor",args,options)
     
-    @child.stdout.on "data", (data) =>
+    @childProcess.child.stdout.on "data", (data) =>
       @buffer.stdout += data
-      log.info data
       @hasErrorText @buffer.stdout
+      @hasReadyText @buffer.stdout
 
-
-    @child.stderr.on "data", (data) =>
+    @childProcess.child.stderr.on "data", (data) =>
       @buffer.stderr += data
-      log.error data
       @hasErrorText @buffer.stderr
-
-    @child.on "exit", (code,signal) =>
-      if code?
-        log.info "Meteor exited with code: " + code
-      else if signal?
-        log.info "Meteor killed with signal: " + signal
-      else
-        log.error "Meteor exited: " + args
 
 
 
@@ -76,6 +61,9 @@ class Meteor extends EventEmitter
   hasReadyText: ( buffer )->
     if buffer.lastIndexOf( @rc.meteor_ready_text ) isnt -1
       @emit "ready"
+
+  kill:->
+    @childProcess?.child?.kill()
 
 
 module.exports = Meteor
