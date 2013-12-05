@@ -58,6 +58,8 @@ class ChildProcess
       else
         log.error "#{command} exited: " + args
 
+  kill: (signal)->
+    @child.kill(signal)
 
 module.exports = ChildProcess
 ###
