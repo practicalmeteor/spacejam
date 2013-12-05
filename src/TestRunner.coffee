@@ -30,13 +30,7 @@ class TestRunner
     meteor_crashing_text: "=> Your application is crashing. Waiting for file change."
     })
     log.setLevel(@rc.log_level)
-
-    if @rc.help?
-      @usageHelp()
-      process.kill()
-
-    if @rc.root_url is null
-     @rc.root_url = "http://localhost:#{@rc.port}/"
+    @handleArgs()
 
 
   run: ->
@@ -84,8 +78,16 @@ class TestRunner
     process.exit code
 
 
+  handleArgs: ->
+    if @rc.help?
+      @usageHelp()
+      process.exit 0
+
+    if @rc.root_url is null
+      @rc.root_url = "http://localhost:#{@rc.port}/"
+
+
   usageHelp : ->
-    process.stdout.setEncoding('utf8');
     process.stdout.write("Usage: mctr <command>\n\n
     --app_path [directory]     Send the Meteor app root directory.\n
     --root_url [address]       Send the root url for Meteor\n

@@ -60,12 +60,15 @@ describe "TestRunner Test", ->
       expect(code).to.equal 6 # test timed-out
       done()
 
+
   it "Test run with more than one package", (done)->
+    testRunnerChild = new ChildProcess()
     args = [
       "--app_path"
       "tests/leaderboard/"
       "--packages"
-      "packages/success*"
+      "success"
+      "success2"
       "--timeout"
       "5000"
       "--port"
@@ -92,4 +95,3 @@ describe "TestRunner Test", ->
     testRunnerChild.child.on "exit", (code) =>
       expect(code).to.equal 2 # meteor app has errors
       done()
-

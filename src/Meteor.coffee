@@ -9,13 +9,17 @@ class Meteor extends EventEmitter
     stdout:""
     stderr:""
 
-
   constructor:(@rc)->
     expect(@rc.port).to.be.a 'number'
 
+    unless @rc.app_path
+      log.error "no app have been specified"
+      process.exit 1
 
     unless @rc.packages
       log.error "no packages to test have been specified"
+      process.exit 1
+
 
 
   run: =>
