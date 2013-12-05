@@ -17,7 +17,8 @@ class TestRunner
   constructor: ->
     log.debug "TestRunner.constructor()"
     @rc = require('rc')("mctr", { #defaults go here.
-     log_level:"debug"
+    help:null
+    log_level:"debug"
     port:4096
     root_url:null
     app_path:null
@@ -29,6 +30,10 @@ class TestRunner
     meteor_crashing_text: "=> Your application is crashing. Waiting for file change."
     })
     log.setLevel(@rc.log_level)
+
+    if @rc.help?
+      @usageHelp()
+      process.kill()
 
     if @rc.root_url is null
      @rc.root_url = "http://localhost:#{@rc.port}/"
@@ -79,5 +84,13 @@ class TestRunner
     process.exit code
 
 
+  usageHelp : ->
+    process.stdout.setEncoding('utf8');
+    process.stdout.write("Usage: mctr <command>\n\n
+    --app_path [directory]     Send the Meteor app root directory.\n
+    --root_url [address]       Send the root url for Meteor\n
+    --settings_path [json]     Use this json settings file\n
+    --timeout [milliseconds]   Send a timeout for the tests\n
+    --packages [directory]     The package(s) to test\n")
 
 module.exports = new TestRunner()
