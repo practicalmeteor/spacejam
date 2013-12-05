@@ -7,23 +7,7 @@ describe "TestRunner Test", ->
   testRunnerChild = new ChildProcess()
 
   afterEach ->
-    testRunnerChild.child.kill()
-
-  it "Test run with a failing meteor app", (done)->
-    args = [
-      "--app_path"
-      "tests/todos/"
-      "--packages"
-      ""
-      "--timeout"
-      "5000"
-      "--port"
-      "4060"
-    ]
-    testRunnerChild.spawn("bin/mctr",args)
-    testRunnerChild.child.on "exit", (code) =>
-      expect(code).to.equal 2 # meteor app has errors
-      done()
+    testRunnerChild.kill()
 
   it "Test run with a successful test", (done)->
     args = [
@@ -34,7 +18,7 @@ describe "TestRunner Test", ->
       "--timeout"
       "5000"
       "--port"
-      "4070"
+      "7040"
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
@@ -51,7 +35,7 @@ describe "TestRunner Test", ->
       "--timeout"
       "5000"
       "--port"
-      "4080"
+      "7050"
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
@@ -69,11 +53,43 @@ describe "TestRunner Test", ->
       "--timeout"
       "5000"
       "--port"
-      "4090"
+      "7060"
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
       expect(code).to.equal 6 # test timed-out
       done()
 
-  after ->
+  it "Test run with more than one package", (done)->
+    args = [
+      "--app_path"
+      "tests/leaderboard/"
+      "--packages"
+      "packages/success*"
+      "--timeout"
+      "5000"
+      "--port"
+      "7080"
+    ]
+    testRunnerChild.spawn("bin/mctr",args)
+    testRunnerChild.child.on "exit", (code) =>
+      expect(code).to.equal 4 # test succeeded
+      done()
+
+  it "Test run with a failing meteor app", (done)->
+    testRunnerChild = new ChildProcess()
+    args = [
+      "--app_path"
+      "tests/todos/"
+      "--packages"
+      "appfails"
+      "--timeout"
+      "10000"
+      "--port"
+      "7070"
+    ]
+    testRunnerChild.spawn("bin/mctr",args)
+    testRunnerChild.child.on "exit", (code) =>
+      expect(code).to.equal 2 # meteor app has errors
+      done()
+
