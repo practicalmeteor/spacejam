@@ -41,26 +41,24 @@ class Meteor extends EventEmitter
 
     @childProcess = new ChildProcess()
     @childProcess.spawn("meteor",args,options)
-    
+
     @childProcess.child.stdout.on "data", (data) =>
       @buffer.stdout += data
-      @hasErrorText @buffer.stdout
-      @hasReadyText @buffer.stdout
+      @hasErrorText data
+      @hasReadyText data
 
     @childProcess.child.stderr.on "data", (data) =>
       @buffer.stderr += data
-      @hasErrorText @buffer.stderr
+      @hasErrorText data
 
 
 
   hasErrorText: ( buffer )=>
-    log.debug buffer.lastIndexOf( @rc.meteor_error_text )
-    if buffer.lastIndexOf( @rc.meteor_error_text ) isnt -1
+    if buffer.lastIndexOf( @rc.meteor_error_text ) isnt -1 or buffer.lastIndexOf( @rc.meteor_crashing_text ) isnt -1
       @emit "error"
 
 
   hasReadyText: ( buffer )=>
-    log.debug "hasReadyText"
     if buffer.lastIndexOf( @rc.meteor_ready_text ) isnt -1
       @emit "ready"
 
