@@ -26,6 +26,7 @@ class TestRunner
     packages:null,
     meteor_ready_text: "=> Meteor server running on:",
     meteor_error_text: "=> Your application has errors. Waiting for file change."
+    meteor_crashing_text: "=> Your application is crashing. Waiting for file change."
     })
     log.setLevel(@rc.log_level)
 
@@ -47,12 +48,11 @@ class TestRunner
     @meteor = new Meteor(@rc)
     @meteor.on "ready", =>
       log.info "Meteor is ready"
-      @runPhantom()
+      @runPhantom() if not @phantomjs
 
     @meteor.on "error", =>
       log.error "Meteor has errors, exiting"
-      @meteor.childProcess.child.kill()
-      process.exit TestRunner.ERR_CODE.METEOR_ERROR
+      @killAllChilds TestRunner.ERR_CODE.METEOR_ERROR
 
     @meteor.run()
 
