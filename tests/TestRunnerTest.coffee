@@ -9,7 +9,7 @@ describe "TestRunner Test", ->
   afterEach ->
     testRunnerChild.kill()
 
-  it "Test run with a successful test", (done)->
+  it "Run with a successful test", (done)->
     args = [
       "--app_path"
       "tests/leaderboard/"
@@ -22,10 +22,10 @@ describe "TestRunner Test", ->
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
-      expect(code).to.equal 4 # test succeeded
+      expect(code).to.equal 0 # test succeeded
       done()
 
-  it "Test run with a failing test", (done)->
+  it "Run with a failing test", (done)->
     testRunnerChild = new ChildProcess()
     args = [
       "--app_path"
@@ -43,7 +43,7 @@ describe "TestRunner Test", ->
       done()
 
 
-  it "Test run with a test that never ends", (done)->
+  it "Run with a test that never ends", (done)->
     testRunnerChild = new ChildProcess()
     args = [
       "--app_path"
@@ -61,14 +61,13 @@ describe "TestRunner Test", ->
       done()
 
 
-  it "Test run with more than one package", (done)->
+  it "Send more than one package (With * wildcard)", (done)->
     testRunnerChild = new ChildProcess()
     args = [
       "--app_path"
       "tests/leaderboard/"
       "--packages"
-      "success"
-      "success2"
+      "success*"
       "--timeout"
       "5000"
       "--port"
@@ -76,10 +75,10 @@ describe "TestRunner Test", ->
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
-      expect(code).to.equal 4 # test succeeded
+      expect(code).to.equal 0 # test succeeded
       done()
 
-  it "Test run with a failing meteor app", (done)->
+  it "Run with a failing meteor app", (done)->
     testRunnerChild = new ChildProcess()
     args = [
       "--app_path"

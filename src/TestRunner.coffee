@@ -9,8 +9,8 @@ class TestRunner
   phantomjs: null
 
   @ERR_CODE:
+    TEST_SUCCESS: 0
     METEOR_ERROR: 2
-    TEST_SUCCESS: 4
     TEST_FAILED: 5
     TEST_TIMEOUT: 6
 
@@ -26,8 +26,7 @@ class TestRunner
     timeout:120000 # 2 minutes
     packages:null,
     meteor_ready_text: "=> Meteor server running on:",
-    meteor_error_text: "=> Your application has errors. Waiting for file change."
-    meteor_crashing_text: "=> Your application is crashing. Waiting for file change."
+    meteor_error_text: "Waiting for file change."
     })
     log.setLevel(@rc.log_level)
     @handleArgs()
@@ -80,19 +79,19 @@ class TestRunner
 
   handleArgs: ->
     if @rc.help?
-      @usageHelp()
+      @printUsage()
       process.exit 0
 
     if @rc.root_url is null
       @rc.root_url = "http://localhost:#{@rc.port}/"
 
 
-  usageHelp : ->
+  printUsage : ->
     process.stdout.write("Usage: mctr <command>\n\n
     --app_path [directory]     Send the Meteor app root directory.\n
     --root_url [address]       Send the root url for Meteor\n
     --settings_path [json]     Use this json settings file\n
     --timeout [milliseconds]   Send a timeout for the tests\n
-    --packages [directory]     The package(s) to test\n")
+    --packages [directory]     The package to test, \n")
 
 module.exports = new TestRunner()
