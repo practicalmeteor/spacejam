@@ -1,6 +1,7 @@
 expect = require('chai').expect
 ChildProcess = require './ChildProcess'
 EventEmitter = require('events').EventEmitter
+glob = require("glob")
 
 class Meteor extends EventEmitter
 
@@ -25,12 +26,10 @@ class Meteor extends EventEmitter
   run: =>
     log.info("spawning meteor")
     expect(@childProcess).to.be.null
-    #meteor --settings $METEOR_TEST_SETTINGS_PATH test-packages packages/lavaina-base --driver-package test-in-console -p $PORT
     args = [
       "-p"
       @rc.port
       "test-packages"
-      @rc.packages
       "--driver-package"
       "test-in-console"
     ]
@@ -39,26 +38,34 @@ class Meteor extends EventEmitter
       args.push @rc.settings_path
 
     options = {
-      cwd:@rc.app_path,
+      cwd:"#{@rc.app_path}/packages",
       detached:false
     }
+    glob @rc.packages, options, (err, packages)=> # Use glob to get packages that match the @rc.packages arg
+      expect(err).to.be.null
+      if packages.length is 0
+        log.error "no packages matching #{@rc.packages} have been found"
+        process.exit 1
 
-    @childProcess = new ChildProcess()
-    @childProcess.spawn("meteor",args,options)
+      packages.forEach (pkg)-> # Append matching packages in the args array after 'test-packages'
+        args.splice args.indexOf("test-packages")+1,0,pkg
 
-    @childProcess.child.stdout.on "data", (data) =>
-      @buffer.stdout += data
-      @hasErrorText data
-      @hasReadyText data
+      @childProcess = new ChildProcess()
+      @childProcess.spawn("meteor",args,options)
 
-    @childProcess.child.stderr.on "data", (data) =>
-      @buffer.stderr += data
-      @hasErrorText data
+      @childProcess.child.stdout.on "data", (data) =>
+        @buffer.stdout += data
+        @hasErrorText data
+        @hasReadyText data
+
+      @childProcess.child.stderr.on "data", (data) =>
+        @buffer.stderr += data
+        @hasErrorText data
 
 
 
   hasErrorText: ( buffer )=>
-    if buffer.lastIndexOf( @rc.meteor_error_text ) isnt -1 or buffer.lastIndexOf( @rc.meteor_crashing_text ) isnt -1
+    if buffer.lastIndexOf( @rc.meteor_error_text ) isnt -1
       @emit "error"
 
 
