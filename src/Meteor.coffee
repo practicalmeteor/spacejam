@@ -38,10 +38,14 @@ class Meteor extends EventEmitter
       args.push @rc.settings_path
 
     options = {
-      cwd:"#{@rc.app_path}/packages",
+      cwd:@rc.app_path,
       detached:false
     }
-    glob @rc.packages, options, (err, packages)=> # Use glob to get packages that match the @rc.packages arg
+    globOpts = {
+      cwd:"#{@rc.app_path}/packages"
+    }
+
+    glob @rc.packages, globOpts, (err, packages)=> # Use glob to get packages that match the @rc.packages arg
       expect(err).to.be.null
       if packages.length is 0
         log.error "no packages matching #{@rc.packages} have been found"
