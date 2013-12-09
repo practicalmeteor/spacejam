@@ -9,12 +9,14 @@ describe "TestRunner Test", ->
   afterEach ->
     testRunnerChild.kill()
 
-  it "Run with a successful test", (done)->
+  it "Run with a successful test and a settings file", (done)->
     args = [
       "--app_path"
       "tests/leaderboard/"
       "--packages"
       "success"
+      "--settings_path"
+      "settings.json"
       "--timeout"
       "5000"
       "--port"
@@ -68,6 +70,8 @@ describe "TestRunner Test", ->
       "tests/leaderboard/"
       "--packages"
       "success*"
+      "--settings_path"
+      "settings.json"
       "--timeout"
       "5000"
       "--port"

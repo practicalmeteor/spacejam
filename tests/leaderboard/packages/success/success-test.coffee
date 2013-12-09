@@ -1,2 +1,2 @@
 Tinytest.add "Success - test",(test)->
-  test.equal true, true
+  test.equal Meteor.settings.TEST_SETTING, "mctr"
