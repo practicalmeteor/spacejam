@@ -88,10 +88,10 @@ class TestRunner
 
   printUsage : ->
     process.stdout.write("Usage: mctr <command>\n\n
-    --app_path [directory]     Send the Meteor app root directory.\n
-    --root_url [address]       Send the root url for Meteor\n
-    --settings_path [json]     Use this json settings file\n
-    --timeout [milliseconds]   Send a timeout for the tests\n
-    --packages [directory]     The package to test, \n")
+    --app_path [directory]     The Meteor app root directory.\n
+    --root_url [address]       The Meteor ROOT_URL (Optional)\n
+    --settings_path [json]     The Meteor settings file (Optional)\n
+    --timeout [milliseconds]   Total timeout for all tests (Optional)\n
+    --packages [directory]     The meteor packages to test (glob style wildcards can be specified)\n")
 
 module.exports = new TestRunner()
