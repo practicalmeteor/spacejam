@@ -18,7 +18,7 @@ describe "TestRunner Test", ->
       "--settings_path"
       "settings.json"
       "--timeout"
-      "5000"
+      "10000"
       "--port"
       "7040"
     ]
@@ -35,7 +35,7 @@ describe "TestRunner Test", ->
       "--packages"
       "failure"
       "--timeout"
-      "5000"
+      "10000"
       "--port"
       "7050"
     ]
@@ -53,7 +53,7 @@ describe "TestRunner Test", ->
       "--packages"
       "timeout"
       "--timeout"
-      "5000"
+      "10000"
       "--port"
       "7060"
     ]
@@ -73,7 +73,7 @@ describe "TestRunner Test", ->
       "--settings_path"
       "settings.json"
       "--timeout"
-      "5000"
+      "10000"
       "--port"
       "7080"
     ]

@@ -1,6 +1,9 @@
 expect = require('chai').expect
 ChildProcess = require './ChildProcess'
 EventEmitter = require('events').EventEmitter
+path = require 'path'
+phantomjs = require 'phantomjs'
+process.env.PATH += ':' + path.dirname(phantomjs.path)
 _ = require "underscore"
 
 class Phantomjs extends EventEmitter
