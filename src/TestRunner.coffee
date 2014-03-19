@@ -25,7 +25,7 @@ class TestRunner
     settings_path:null
     timeout:120000 # 2 minutes
     packages:null,
-    meteor_ready_text: "=> Meteor server running on:",
+    meteor_ready_text: "=> App running at:",
     meteor_error_text: "Waiting for file change."
     })
     log.setLevel(@rc.log_level)
