@@ -26,13 +26,19 @@ class Meteor extends EventEmitter
   run: =>
     log.info("spawning meteor")
     expect(@childProcess).to.be.null
+
+    testPackages = @_globPackages(@rc.packages)
+
     args = [
       "-p"
       @rc.port
-      "test-packages"
       "--driver-package"
       "test-in-console"
+      "test-packages"
     ]
+
+    args = args.concat(testPackages)
+
     if @rc.settings_path?
       args.push "--settings"
       args.push @rc.settings_path
@@ -41,30 +47,41 @@ class Meteor extends EventEmitter
       cwd:@rc.app_path,
       detached:false
     }
+
+    @childProcess = new ChildProcess()
+    @childProcess.spawn("meteor",args,options)
+
+    @childProcess.child.stdout.on "data", (data) =>
+      @buffer.stdout += data
+      @hasErrorText data
+      @hasReadyText data
+
+    @childProcess.child.stderr.on "data", (data) =>
+      @buffer.stderr += data
+      @hasErrorText data
+
+
+  _globPackages: (packagesStr)=># Use glob to get packages that match the @rc.packages arg
+    log.info("_globPackages",arguments)
+    expect(packagesStr).to.be.a "string"
+
+    packages = packagesStr.split(" ")
+    matchedPackages = []
+
     globOpts = {
       cwd:"#{@rc.app_path}/packages"
     }
+    packages.forEach (globPkg)->
+      globedPackages = glob.sync(globPkg, globOpts)
 
-    glob @rc.packages, globOpts, (err, packages)=> # Use glob to get packages that match the @rc.packages arg
-      expect(err).to.be.null
-      if packages.length is 0
+      if globedPackages.length is 0
         log.error "no packages matching #{@rc.packages} have been found"
         process.exit 1
 
-      packages.forEach (pkg)-> # Append matching packages in the args array after 'test-packages'
-        args.splice args.indexOf("test-packages")+1,0,pkg
+      globedPackages.forEach (pkg)->
+        matchedPackages.push(pkg)
 
-      @childProcess = new ChildProcess()
-      @childProcess.spawn("meteor",args,options)
-
-      @childProcess.child.stdout.on "data", (data) =>
-        @buffer.stdout += data
-        @hasErrorText data
-        @hasReadyText data
-
-      @childProcess.child.stderr.on "data", (data) =>
-        @buffer.stderr += data
-        @hasErrorText data
+    return matchedPackages
 
 
 

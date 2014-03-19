@@ -82,6 +82,25 @@ describe "TestRunner Test", ->
       expect(code).to.equal 0 # test succeeded
       done()
 
+  it "Send more than one package (separated by an space)", (done)->
+    testRunnerChild = new ChildProcess()
+    args = [
+      "--app_path"
+      "tests/leaderboard/"
+      "--packages"
+      "success success2"
+      "--settings_path"
+      "settings.json"
+      "--timeout"
+      "10000"
+      "--port"
+      "7080"
+    ]
+    testRunnerChild.spawn("bin/mctr",args)
+    testRunnerChild.child.on "exit", (code) =>
+      expect(code).to.equal 0 # test succeeded
+      done()
+
   it "Run with a failing meteor app", (done)->
     testRunnerChild = new ChildProcess()
     args = [
