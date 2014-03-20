@@ -41,7 +41,7 @@ describe "TestRunner Test", ->
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
-      expect(code).to.equal 5 # test failed
+      expect(code).to.equal 2 # test failed
       done()
 
 
@@ -59,7 +59,7 @@ describe "TestRunner Test", ->
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
-      expect(code).to.equal 6 # test timed-out
+      expect(code).to.equal 4 # test timed-out
       done()
 
 
@@ -115,5 +115,5 @@ describe "TestRunner Test", ->
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
-      expect(code).to.equal 2 # meteor app has errors
+      expect(code).to.equal 3 # meteor app has errors
       done()

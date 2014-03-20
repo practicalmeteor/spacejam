@@ -10,9 +10,9 @@ class TestRunner
 
   @ERR_CODE:
     TEST_SUCCESS: 0
-    METEOR_ERROR: 2
-    TEST_FAILED: 5
-    TEST_TIMEOUT: 6
+    TEST_FAILED: 2
+    METEOR_ERROR: 3
+    TEST_TIMEOUT: 4
 
   constructor: ->
     log.debug "TestRunner.constructor()"
