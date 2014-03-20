@@ -18,6 +18,9 @@
     "test": "mocha",
     "start": "bin/mctr"
   },
+  "bin":{
+    "mctr":"bin/mctr"
+  },
   "description": "Meteor packages console test runner",
   "keywords": [
     "Meteor",

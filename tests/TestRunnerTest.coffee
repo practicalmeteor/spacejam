@@ -11,16 +11,18 @@ describe "TestRunner Test", ->
 
   it "Run with a successful test and a settings file", (done)->
     args = [
-      "--app_path"
+      "--app"
       "tests/leaderboard/"
       "--packages"
       "success"
-      "--settings_path"
+      "--settings"
       "settings.json"
       "--timeout"
       "10000"
       "--port"
       "7040"
+      "--log_level"
+      "debug"
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
@@ -30,7 +32,7 @@ describe "TestRunner Test", ->
   it "Run with a failing test", (done)->
     testRunnerChild = new ChildProcess()
     args = [
-      "--app_path"
+      "--app"
       "tests/leaderboard/"
       "--packages"
       "failure"
@@ -38,6 +40,8 @@ describe "TestRunner Test", ->
       "10000"
       "--port"
       "7050"
+      "--log_level"
+      "debug"
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
@@ -48,7 +52,7 @@ describe "TestRunner Test", ->
   it "Run with a test that never ends", (done)->
     testRunnerChild = new ChildProcess()
     args = [
-      "--app_path"
+      "--app"
       "tests/leaderboard/"
       "--packages"
       "timeout"
@@ -56,6 +60,8 @@ describe "TestRunner Test", ->
       "10000"
       "--port"
       "7060"
+      "--log_level"
+      "debug"
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
@@ -66,16 +72,18 @@ describe "TestRunner Test", ->
   it "Send more than one package (With * wildcard)", (done)->
     testRunnerChild = new ChildProcess()
     args = [
-      "--app_path"
+      "--app"
       "tests/leaderboard/"
       "--packages"
       "success*"
-      "--settings_path"
+      "--settings"
       "settings.json"
       "--timeout"
       "10000"
       "--port"
       "7080"
+      "--log_level"
+      "debug"
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
@@ -85,16 +93,18 @@ describe "TestRunner Test", ->
   it "Send more than one package (separated by an space)", (done)->
     testRunnerChild = new ChildProcess()
     args = [
-      "--app_path"
+      "--app"
       "tests/leaderboard/"
       "--packages"
       "success success2"
-      "--settings_path"
+      "--settings"
       "settings.json"
       "--timeout"
       "10000"
       "--port"
       "7080"
+      "--log_level"
+      "debug"
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>
@@ -104,7 +114,7 @@ describe "TestRunner Test", ->
   it "Run with a failing meteor app", (done)->
     testRunnerChild = new ChildProcess()
     args = [
-      "--app_path"
+      "--app"
       "tests/todos/"
       "--packages"
       "appfails"
@@ -112,6 +122,8 @@ describe "TestRunner Test", ->
       "10000"
       "--port"
       "7070"
+      "--log_level"
+      "debug"
     ]
     testRunnerChild.spawn("bin/mctr",args)
     testRunnerChild.child.on "exit", (code) =>

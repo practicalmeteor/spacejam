@@ -15,25 +15,25 @@ class TestRunner
     TEST_TIMEOUT: 4
 
   constructor: ->
-    log.debug "TestRunner.constructor()"
-    @rc = require('rc')("mctr", { #defaults go here.
-    help:null
-    log_level:"debug"
-    port:4096
-    root_url:null
-    app_path:null
-    settings_path:null
-    timeout:120000 # 2 minutes
-    packages:null,
-    meteor_ready_text: "=> App running at:",
-    meteor_error_text: "Waiting for file change."
+    @rc = require('rc')("mctr", {
+      help:null
+      log_level:"info"
+      port:4096
+      root_url:null
+      app:null
+      settings:null
+      timeout:120000 # 2 minutes
+      packages:null,
+      meteor_ready_text: "=> App running at:",
+      meteor_error_text: "Waiting for file change."
     })
     log.setLevel(@rc.log_level)
     @handleArgs()
 
 
   run: ->
-    log.debug "TestRunner.run()"
+    log.debug "TestRunner.run()",arguments
+    log.info "Running mctr"
     expect(@meteor).to.be.null
 
     setTimeout(
@@ -56,7 +56,7 @@ class TestRunner
 
 
   runPhantom: ->
-    log.debug "TestRunner.runPhantom()"
+    log.debug "TestRunner.runPhantom()",arguments
     @phantomjs = new Phantomjs(@rc)
 
     @phantomjs.on "exit", (code,signal)=>
@@ -71,13 +71,14 @@ class TestRunner
     @phantomjs.run()
 
   killAllChilds: (code = 1)->
-    log.debug "TestRunner.killAllChilds()"
+    log.debug "TestRunner.killAllChilds()",arguments
     @meteor?.kill()
     @phantomjs?.kill()
     process.exit code
 
 
   handleArgs: ->
+    log.debug "TestRunner.handleArgs()",arguments
     if @rc.help?
       @printUsage()
       process.exit 0
@@ -87,10 +88,11 @@ class TestRunner
 
 
   printUsage : ->
+    log.debug "TestRunner.printUsage()",arguments
     process.stdout.write("Usage: mctr <command>\n\n
-    --app_path [directory]     The Meteor app root directory.\n
+    --app [directory]     The Meteor app root directory.\n
     --root_url [address]       The Meteor ROOT_URL (Optional)\n
-    --settings_path [json]     The Meteor settings file (Optional)\n
+    --settings [json]     The Meteor settings file path (Optional)\n
     --timeout [milliseconds]   Total timeout for all tests (Optional)\n
     --packages [directory]     The meteor packages to test (glob style wildcards can be specified)\n")
 

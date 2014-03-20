@@ -12,11 +12,11 @@ class Phantomjs extends EventEmitter
 
 
   constructor:(@rc)->
-    log.debug "Phantomjs.constructor()"
     expect(@rc.root_url).to.be.a 'string'
 
 
   run: =>
+    log.debug "Phantomjs.run()"
     log.info("spawning phantomjs")
     expect(@childProcess).to.be.null
 
@@ -36,6 +36,7 @@ class Phantomjs extends EventEmitter
       @emit "exit",code,signal
 
   kill:->
+    log.debug "Phantomjs.kill()"
     @childProcess?.child?.kill()
 
 

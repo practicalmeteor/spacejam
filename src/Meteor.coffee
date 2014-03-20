@@ -13,7 +13,7 @@ class Meteor extends EventEmitter
   constructor:(@rc)->
     expect(@rc.port).to.be.a 'number'
 
-    unless @rc.app_path
+    unless @rc.app
       log.error "no app have been specified"
       process.exit 1
 
@@ -24,6 +24,7 @@ class Meteor extends EventEmitter
 
 
   run: =>
+    log.debug "Meteor.run()",arguments
     log.info("spawning meteor")
     expect(@childProcess).to.be.null
 
@@ -39,12 +40,12 @@ class Meteor extends EventEmitter
 
     args = args.concat(testPackages)
 
-    if @rc.settings_path?
+    if @rc.settings?
       args.push "--settings"
-      args.push @rc.settings_path
+      args.push @rc.settings
 
     options = {
-      cwd:@rc.app_path,
+      cwd:@rc.app,
       detached:false
     }
 
@@ -61,17 +62,17 @@ class Meteor extends EventEmitter
       @hasErrorText data
 
 
-  _globPackages: (packagesStr)=># Use glob to get packages that match the @rc.packages arg
-    log.info("_globPackages",arguments)
+  _globPackages: (packagesStr)-> # Use glob to get packages that match the @rc.packages arg
+    log.debug "Meteor._globPackages()",arguments
     expect(packagesStr).to.be.a "string"
 
     packages = packagesStr.split(" ")
     matchedPackages = []
 
     globOpts = {
-      cwd:"#{@rc.app_path}/packages"
+      cwd:"#{@rc.app}/packages"
     }
-    packages.forEach (globPkg)->
+    packages.forEach (globPkg)=>
       globedPackages = glob.sync(globPkg, globOpts)
 
       if globedPackages.length is 0
