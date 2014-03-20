@@ -1,5 +1,4 @@
 // Lists -- {name: String}
-FAIL
 Lists = new Meteor.Collection("lists");
 
 // Publish complete set of lists to all clients.

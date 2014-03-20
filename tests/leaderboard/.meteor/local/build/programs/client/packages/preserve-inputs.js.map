@@ -1,0 +1,2 @@
+)]}'
+{"version":3,"file":"/packages/preserve-inputs.js","sources":["preserve-inputs/preserve-inputs.js"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA,iE;;AAEA,8C;AACA,+C;AACA,c;;AAEA,6D","sourcesContent":["var inputTags = 'input textarea button select option'.split(' ');\n\nvar selector = _.map(inputTags, function (t) {\n  return t.replace(/^.*$/, '$&[id], $&[name]');\n}).join(', ');\n\nSpark._addGlobalPreserve(selector, Spark._labelFromIdOrName);\n"]}
