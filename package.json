@@ -26,6 +26,10 @@
     "Meteor",
     "Meteor test runner"
   ],
+  "licenses": [{
+    "type" : "MIT",
+    "url" : "https://raw.github.com/lavaina/meteor-console-test-runner/master/LICENSE"
+  }],
   "engines": {
     "node": ">= 0.8.x",
     "npm": ">= 1.1.x"
