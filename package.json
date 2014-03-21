@@ -15,8 +15,7 @@
     "chai": "~1.8.1"
   },
   "scripts": {
-    "test": "mocha",
-    "start": "bin/mctr"
+    "test": "cake test"
   },
   "bin":{
     "mctr":"bin/mctr"
