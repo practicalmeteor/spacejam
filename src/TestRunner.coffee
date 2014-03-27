@@ -89,11 +89,16 @@ class TestRunner
 
   printUsage : ->
     log.debug "TestRunner.printUsage()",arguments
-    process.stdout.write("Usage: mctr <command>\n\n
-    --app [directory]     The Meteor app root directory.\n
-    --root_url [address]       The Meteor ROOT_URL (Optional)\n
-    --settings [json]     The Meteor settings file path (Optional)\n
-    --timeout [milliseconds]   Total timeout for all tests (Optional)\n
-    --packages [directory]     The meteor packages to test (glob style wildcards can be specified)\n")
+    process.stdout.write("Usage: mctr <command>\n
+    --app directory             The Meteor app directory.\n
+    --help                      Display a list of all arguments.\n
+    --log_level <level>         Sets the log level for the tests. TRACE|DEBUG|INFO|WARN|ERROR\n
+    --port <port>               Port in which tets should be run.\n
+    --meteor_ready_text <text>  Optional. Meteor ready message to listen.\n
+    --meteor_error_text <text>  Optional. Meteor error message to listen.\n
+    --packages <directory>      The meteor packages to test (glob style wildcards can be specified).\n
+    --root_url address          Optional. Url to use as Meteor ROOT_URL. Default is http://localhost:3000\n
+    --settings <file>           Optional. The Meteor settings file path.\n
+    --timeout  <milliseconds>   Optional. Total timeout for all tests. Default is 120000\n")
 
 module.exports = new TestRunner()
