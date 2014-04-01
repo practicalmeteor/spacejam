@@ -10,63 +10,57 @@ As for now, ```mctr``` is only tested to work on [```meteor 0.7.2```](https://gi
 Installation
 ---------------------------
 
-The ```mctr``` runner is a binary which runs ```meteor test-packages```. Install ```mctr``` with:
-
-```bash
-git clone https://github.com/lavaina/meteor-console-test-runner.git mctr
-cd mctr
-npm install
-# Run the line below to see command line options
-mctr --help
-```
-
-Command line options
----------------------------
-```mctr``` accepts the following command line arguments:
-
-	--app directory             The Meteor app directory.
-    --help                      Display a list of all arguments.        
-    --log_level <level>         Sets the log level for the tests. TRACE|DEBUG|INFO|WARN|ERROR
-    --port <port>               Port in which tets should be run.
-    --meteor_ready_text <text>  Optional. Meteor ready message to listen.    
-    --meteor_error_text <text>  Optional. Meteor error message to listen.
-    --packages <directory>      The meteor packages to test (glob style wildcards can be specified).
-    --root_url address          Optional. Url to use as Meteor ROOT_URL. Default is http://localhost:3000
-    --settings <file>           Optional. The Meteor settings file path.
-    --timeout  <milliseconds>   Optional. Total timeout for all tests. Default is 120000
-
-
-Different versions of Meteor may use different error and ready output so you can change the either of them to the desired value ussing ```meteor_ready_text``` and ```meteor_error_text``` options.
-
-These options are captured using [rc](https://github.com/dominictarr/rc) so if any of this argumnets is not provided ```mctr``` will look for env vars prefixed with ```MCTR_```. For example, if an ```MCTR_ROOT_URL``` env var  exists its value will be use as the ```--root_url``` argument for ```mctr```. See the [rc documentation](https://github.com/dominictarr/rc) for more info.
-
-
-Exit codes
----------------------------
-
-```mctr``` will return an exit c ode of ```0``` if all the test were run successfully. The codes for a failing tests are as follow:
-
-* ```1``` for a usage error with the ```mctr``` command.
-* ```2``` for a failing test.
-* ```3``` for an Meteor Application error.
-* ```4``` if the test hit the specified ```mctr``` timeout.
-
-The Protractor runner is a binary which accepts a config file. Install protractor with
-
-    npm install mctr
-    # Run the line below to see command line options
-    mctr --help
-
-
-Self test
-------------------------------------------
-Clone the :octocat: github repository. The tests will run against [Meteor example apps](https://www.meteor.com/examples/) Todos and Leaderboard.
+We haven't published mctr to npmjs.org yet. For now, just:
 
     git clone https://github.com/lavaina/meteor-console-test-runner.git mctr
     cd mctr
     npm install
+	PATH=./node_modules/.bin:$PATH
+	export PATH
+	# Or export PATH=./node_modules/.bin:$PATH for bash
+    # Run the command below to see command line options
+    mctr --help
+
+Command Line Options
+---------------------------
+ 
+	--app <directory>             The directory of your meteor app to test (Required).
+    --packages <name1> [name2...] The meteor packages to test in your app, with suport for glob style wildcards (Required).
+    --log_level <level>           mctr log level. One of TRACE|DEBUG|INFO|WARN|ERROR.
+    --port <port>                 The port in which to run your meteor app (default 3000).
+    --root_url <url>              The meteor app ROOT_URL (default http://localhost:3000/).
+    --settings <file>             The meteor app settings path.
+    --timeout  <milliseconds>     Total timeout for all tests (default 120000 milliseconds, i.e. 2 minutes). 
+    --meteor_ready_text <text>    The meteor print-out text to wait for that indicates the app is ready. 
+    --meteor_error_text <text>    The meteor print-out text that indicates that your app has errors.
+    --help                        This help text.
 
 
-Then run the tests with
+```mctr``` uses the [rc](https://www.npmjs.org/package/rc) for runtime configuration, so every command line option can also be set by an uper case environment variable of the same name, and a prefix of ```MCTR_```, i.e. ```MCTR_PORT```. 
 
-    npm test
+Different versions of Meteor may print out different text to indicate your app is ready or that your app has errors, so if that's the case, you will be able to provide the appropiate text, using the relevant options. For meteor 0.7.2, we use:
+
+      meteor_ready_text: "=> App running at:",
+      meteor_error_text: "Waiting for file change."
+
+Exit codes
+---------------------------
+
+```mctr``` will return a different exit code, depending on the result of it's run:
+
+* ```0``` All the package tests have passed.
+* ```1``` ```mctr``` usage error.
+* ```2``` At least one test has failed.
+* ```3``` The meteor app has errors.
+* ```4``` The tests timed out.
+
+Self Tests
+------------------------------------------
+We created a couple of meteor test apps, for self testing ```mctr```. Just run:
+
+	npm test
+
+Contributions
+----------------------------
+Are more than welcome. Just create pull requests.
+ 
