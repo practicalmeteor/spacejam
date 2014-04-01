@@ -90,15 +90,15 @@ class TestRunner
   printUsage : ->
     log.debug "TestRunner.printUsage()",arguments
     process.stdout.write("Usage: mctr <command>\n
-    --app directory             The Meteor app directory.\n
-    --help                      Display a list of all arguments.\n
-    --log_level <level>         Sets the log level for the tests. TRACE|DEBUG|INFO|WARN|ERROR\n
-    --port <port>               Port in which tets should be run.\n
-    --meteor_ready_text <text>  Optional. Meteor ready message to listen.\n
-    --meteor_error_text <text>  Optional. Meteor error message to listen.\n
-    --packages <directory>      The meteor packages to test (glob style wildcards can be specified).\n
-    --root_url address          Optional. Url to use as Meteor ROOT_URL. Default is http://localhost:3000\n
-    --settings <file>           Optional. The Meteor settings file path.\n
-    --timeout  <milliseconds>   Optional. Total timeout for all tests. Default is 120000\n")
+    --app <directory>             The directory of your meteor app to test (Required).\n
+    --packages <name1> [name2...] The meteor packages to test in your app, with suport for glob style wildcards (Required).\n
+    --log_level <level>           mctr log level. One of TRACE|DEBUG|INFO|WARN|ERROR.\n
+    --port <port>                 The port in which to run your meteor app (default 3000).\n
+    --root_url <url>              The meteor app ROOT_URL (default http://localhost:3000/).\n
+    --settings <file>             The meteor app settings path.\n
+    --timeout  <milliseconds>     Total timeout for all tests (default 120000 milliseconds, i.e. 2 minutes).\n
+    --meteor_ready_text <text>    The meteor print-out text to wait for that indicates the app is ready.\n
+    --meteor_error_text <text>    The meteor print-out text that indicates that your app has errors.\n
+    --help                        This help text.\n")
 
 module.exports = new TestRunner()
