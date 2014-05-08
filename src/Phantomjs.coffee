@@ -12,7 +12,7 @@ class Phantomjs extends EventEmitter
 
 
   constructor:(@rc)->
-    expect(@rc.root_url).to.be.a 'string'
+    expect(@rc["root-url"]).to.be.a 'string'
 
 
   run: =>
@@ -20,7 +20,7 @@ class Phantomjs extends EventEmitter
     log.info("spawning phantomjs")
     expect(@childProcess).to.be.null
 
-    env = _.extend process.env, {ROOT_URL: @rc.root_url}
+    env = _.extend process.env, {ROOT_URL: @rc["root-url"]}
 
     args = ["phantom-runner.js"]
     options = {

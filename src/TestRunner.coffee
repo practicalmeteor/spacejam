@@ -1,6 +1,5 @@
-global.log = require('loglevel')
-expect = require('chai').expect
-spawn = require('child_process').spawn
+global.log = require("loglevel")
+expect = require("chai").expect
 Meteor = require("./Meteor")
 Phantomjs = require("./Phantomjs")
 
@@ -15,19 +14,27 @@ class TestRunner
     TEST_TIMEOUT: 4
 
   constructor: ->
-    @rc = require('rc')("mctr", {
-      help:null
-      log_level:"info"
-      port:4096
-      root_url:null
-      app:null
-      settings:null
-      timeout:120000 # 2 minutes
-      packages:null,
-      meteor_ready_text: "=> App running at:",
-      meteor_error_text: "Waiting for file change."
+    #TODO: Diffrent options for run and testPackages. But with a base one for both (_.extend).
+    #TODO: Save the options object as static member in Meteor called defaultOpts.
+    @options = require("rc")("mctr", {
+      "help"                : null
+      "log-level"           : "info"
+      "port"                : process.env.PORT || 4096
+      "root-url"            : process.env.ROOT_URL || null
+      "mongo-url"           : process.env.MONGO_URL || null
+      "driver-package"      : "test-in-console" #TODO: Add support
+      "app"                 : null #TODO: App not required in test-packages
+      "app-packages"        : true #TODO Add Support
+      "settings"            : null
+      "timeout"             : 120000 # 2 minutes
+      "packages"            : null
+      "production"          : false #TODO: Support
+      "once"                : false #TODO: Support
+      "run-phantomjs-tests" : false #TODO: SUpport
+      "meteor_ready_text"   : "=> App running at:" #TODO: Check test-packages ready text
+      "meteor_error_text"   : "Waiting for file change." #TODO: Check test-packages error text
     })
-    log.setLevel(@rc.log_level)
+    log.setLevel(@options["log-level"])
     @handleArgs()
 
 
@@ -38,12 +45,12 @@ class TestRunner
 
     setTimeout(
       =>
-        log.error "Tests timed out after #{@rc.timeout} milliseconds."
+        log.error "Tests timed out after #{@options.timeout} milliseconds."
         @killAllChilds( TestRunner.ERR_CODE.TEST_TIMEOUT )
-      ,@rc.timeout
+      ,@options.timeout
     )
 
-    @meteor = new Meteor(@rc)
+    @meteor = new Meteor(@options)
     @meteor.on "ready", =>
       log.info "Meteor is ready"
       @runPhantom() if not @phantomjs
@@ -57,7 +64,7 @@ class TestRunner
 
   runPhantom: ->
     log.debug "TestRunner.runPhantom()",arguments
-    @phantomjs = new Phantomjs(@rc)
+    @phantomjs = new Phantomjs(@options)
 
     @phantomjs.on "exit", (code,signal)=>
       @meteor.kill()
@@ -79,22 +86,22 @@ class TestRunner
 
   handleArgs: ->
     log.debug "TestRunner.handleArgs()",arguments
-    if @rc.help?
+    if @options.help?
       @printUsage()
       process.exit 0
 
-    if @rc.root_url is null
-      @rc.root_url = "http://localhost:#{@rc.port}/"
+#    if @options["root-url"] is null
+#      @options["root-url"] = "http://localhost:#{@options.port}/"
 
-
+  #TODO: Update
   printUsage : ->
     log.debug "TestRunner.printUsage()",arguments
-    process.stdout.write("Usage: mctr <command>\n
+    process.stdout.write("root-urlUsage: mctr <command>\n
     --app <directory>             The directory of your meteor app to test (Required).\n
     --packages <name1> [name2...] The meteor packages to test in your app, with suport for glob style wildcards (Required).\n
-    --log_level <level>           mctr log level. One of TRACE|DEBUG|INFO|WARN|ERROR.\n
+    --log-level <level>           mctr log level. One of TRACE|DEBUG|INFO|WARN|ERROR.\n
     --port <port>                 The port in which to run your meteor app (default 3000).\n
-    --root_url <url>              The meteor app ROOT_URL (default http://localhost:3000/).\n
+    --root-url <url>              The meteor app ROOT_URL (default http://localhost:3000/).\n
     --settings <file>             The meteor app settings path.\n
     --timeout  <milliseconds>     Total timeout for all tests (default 120000 milliseconds, i.e. 2 minutes).\n
     --meteor_ready_text <text>    The meteor print-out text to wait for that indicates the app is ready.\n
