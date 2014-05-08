@@ -45,9 +45,9 @@ class TestRunner
 
     setTimeout(
       =>
-        log.error "Tests timed out after #{@options.timeout} milliseconds."
+        log.error "Tests timed out after #{@options['timeout']} milliseconds."
         @killAllChilds( TestRunner.ERR_CODE.TEST_TIMEOUT )
-      ,@options.timeout
+      ,@options["timeout"]
     )
 
     @meteor = new Meteor(@options)
@@ -86,12 +86,12 @@ class TestRunner
 
   handleArgs: ->
     log.debug "TestRunner.handleArgs()",arguments
-    if @options.help?
+    if @options["help"]?
       @printUsage()
       process.exit 0
 
 #    if @options["root-url"] is null
-#      @options["root-url"] = "http://localhost:#{@options.port}/"
+#      @options["root-url"] = "http://localhost:#{@options['port']}/"
 
   #TODO: Update
   printUsage : ->

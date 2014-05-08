@@ -10,14 +10,14 @@ class Meteor extends EventEmitter
     stdout:""
     stderr:""
 
-  constructor:(@rc)->
-    expect(@rc.port).to.be.a 'number'
+  constructor:(@opts)->
+    expect(@opts["port"]).to.be.a 'number'
 
-    unless @rc.app
+    unless @opts["app"]
       log.error "no app have been specified"
       process.exit 1
 
-    unless @rc.packages
+    unless @opts["packages"]
       log.error "no packages to test have been specified"
       process.exit 1
 
@@ -28,11 +28,11 @@ class Meteor extends EventEmitter
     log.info("spawning meteor")
     expect(@childProcess).to.be.null
 
-    testPackages = @_globPackages(@rc.packages)
+    testPackages = @_globPackages(@opts["packages"])
 
     args = [
       "-p"
-      @rc.port
+      @opts["port"]
       "--driver-package"
       "test-in-console"
       "test-packages"
@@ -40,12 +40,12 @@ class Meteor extends EventEmitter
 
     args = args.concat(testPackages)
 
-    if @rc.settings?
+    if @opts["settings"]?
       args.push "--settings"
-      args.push @rc.settings
+      args.push @opts["settings"]
 
     options = {
-      cwd:@rc.app,
+      cwd:@opts["app"],
       detached:false
     }
 
@@ -62,7 +62,7 @@ class Meteor extends EventEmitter
       @hasErrorText data
 
 
-  _globPackages: (packagesStr)-> # Use glob to get packages that match the @rc.packages arg
+  _globPackages: (packagesStr)-> # Use glob to get packages that match the @opts["packages"] arg
     log.debug "Meteor._globPackages()",arguments
     expect(packagesStr).to.be.a "string"
 
@@ -70,13 +70,13 @@ class Meteor extends EventEmitter
     matchedPackages = []
 
     globOpts = {
-      cwd:"#{@rc.app}/packages"
+      cwd:"#{@opts['app']}/packages"
     }
     packages.forEach (globPkg)=>
       globedPackages = glob.sync(globPkg, globOpts)
 
       if globedPackages.length is 0
-        log.error "no packages matching #{@rc.packages} have been found"
+        log.error "no packages matching #{@opts['packages']} have been found"
         process.exit 1
 
       globedPackages.forEach (pkg)->
@@ -87,12 +87,12 @@ class Meteor extends EventEmitter
 
 
   hasErrorText: ( buffer )=>
-    if buffer.lastIndexOf( @rc.meteor_error_text ) isnt -1
+    if buffer.lastIndexOf( @opts["meteor_error_text"]) isnt -1
       @emit "error"
 
 
   hasReadyText: ( buffer )=>
-    if buffer.lastIndexOf( @rc.meteor_ready_text ) isnt -1
+    if buffer.lastIndexOf( @opts["meteor_ready_text"]) isnt -1
       @emit "ready"
 
   kill:->
