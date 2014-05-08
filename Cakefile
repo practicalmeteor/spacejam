@@ -1,5 +1,6 @@
-ChildProcess = require './src/ChildProcess'
-global.log = require('loglevel')
+require 'coffee-script/register'
+ChildProcess = require "./src/ChildProcess"
+global.log = require("loglevel")
 
 task "compile", "Compile library", ->
   child = new ChildProcess()
