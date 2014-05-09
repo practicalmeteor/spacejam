@@ -1,3 +1,3 @@
-testRunner = require './TestRunner'
+meteorWrapper = require './MeteorWrapper'
 
-testRunner.run()
+meteorWrapper.run()

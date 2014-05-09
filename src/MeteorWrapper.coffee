@@ -3,7 +3,7 @@ expect = require("chai").expect
 Meteor = require("./Meteor")
 Phantomjs = require("./Phantomjs")
 
-class TestRunner
+class MeteorWrapper
   meteor: null
   phantomjs: null
 
@@ -39,14 +39,14 @@ class TestRunner
 
 
   run: ->
-    log.debug "TestRunner.run()",arguments
+    log.debug "MeteorWrapper.run()",arguments
     log.info "Running mctr"
     expect(@meteor).to.be.null
 
     setTimeout(
       =>
         log.error "Tests timed out after #{@options['timeout']} milliseconds."
-        @killAllChilds( TestRunner.ERR_CODE.TEST_TIMEOUT )
+        @killAllChilds( MeteorWrapper.ERR_CODE.TEST_TIMEOUT )
       ,@options["timeout"]
     )
 
@@ -57,13 +57,13 @@ class TestRunner
 
     @meteor.on "error", =>
       log.error "Meteor has errors, exiting"
-      @killAllChilds TestRunner.ERR_CODE.METEOR_ERROR
+      @killAllChilds MeteorWrapper.ERR_CODE.METEOR_ERROR
 
     @meteor.run()
 
 
   runPhantom: ->
-    log.debug "TestRunner.runPhantom()",arguments
+    log.debug "MeteorWrapper.runPhantom()",arguments
     @phantomjs = new Phantomjs(@options)
 
     @phantomjs.on "exit", (code,signal)=>
@@ -71,21 +71,21 @@ class TestRunner
       if code?
         process.exit code
       else if signal?
-        process.exit TestRunner.ERR_CODE.PHANTOM_ERROR
+        process.exit MeteorWrapper.ERR_CODE.PHANTOM_ERROR
       else
-        process.exit TestRunner.ERR_CODE.PHANTOM_ERROR
+        process.exit MeteorWrapper.ERR_CODE.PHANTOM_ERROR
 
     @phantomjs.run()
 
   killAllChilds: (code = 1)->
-    log.debug "TestRunner.killAllChilds()",arguments
+    log.debug "MeteorWrapper.killAllChilds()",arguments
     @meteor?.kill()
     @phantomjs?.kill()
     process.exit code
 
 
   handleArgs: ->
-    log.debug "TestRunner.handleArgs()",arguments
+    log.debug "MeteorWrapper.handleArgs()",arguments
     if @options["help"]?
       @printUsage()
       process.exit 0
@@ -95,7 +95,7 @@ class TestRunner
 
   #TODO: Update
   printUsage : ->
-    log.debug "TestRunner.printUsage()",arguments
+    log.debug "MeteorWrapper.printUsage()",arguments
     process.stdout.write("root-urlUsage: mctr <command>\n
     --app <directory>             The directory of your meteor app to test (Required).\n
     --packages <name1> [name2...] The meteor packages to test in your app, with suport for glob style wildcards (Required).\n
@@ -108,4 +108,4 @@ class TestRunner
     --meteor_error_text <text>    The meteor print-out text that indicates that your app has errors.\n
     --help                        This help text.\n")
 
-module.exports = new TestRunner()
+module.exports = new MeteorWrapper()
