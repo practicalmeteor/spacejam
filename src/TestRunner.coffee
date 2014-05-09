@@ -22,15 +22,15 @@ class TestRunner
       "port"                : process.env.PORT || 4096
       "root-url"            : process.env.ROOT_URL || null
       "mongo-url"           : process.env.MONGO_URL || null
-      "driver-package"      : "test-in-console" #TODO: Add support
+      "driver-package"      : "test-in-console"
       "app"                 : null #TODO: App not required in test-packages
       "app-packages"        : true #TODO Add Support
       "settings"            : null
       "timeout"             : 120000 # 2 minutes
       "packages"            : null
-      "production"          : false #TODO: Support
-      "once"                : false #TODO: Support
-      "run-phantomjs-tests" : false #TODO: SUpport
+      "production"          : false
+#      "once"                : false #TODO: Support
+      "run-phantomjs-tests" : false #TODO: Support
       "meteor_ready_text"   : "=> App running at:" #TODO: Check test-packages ready text
       "meteor_error_text"   : "Waiting for file change." #TODO: Check test-packages error text
     })

@@ -1,4 +1,5 @@
 expect = require('chai').expect
+_ = require("underscore")
 ChildProcess = require './ChildProcess'
 EventEmitter = require('events').EventEmitter
 glob = require("glob")
@@ -31,18 +32,22 @@ class Meteor extends EventEmitter
     testPackages = @_globPackages(@opts["packages"])
 
     args = [
-      "-p"
+      "--port"
       @opts["port"]
       "--driver-package"
-      "test-in-console"
+      @opts["driver-package"]
+      "--production" if @opts["production"]
+#      "--once" if @opts["once"]
+      "--settings" if @opts["settings"]
+      @opts["settings"]
       "test-packages"
+      testPackages
     ]
-
-    args = args.concat(testPackages)
-
-    if @opts["settings"]?
-      args.push "--settings"
-      args.push @opts["settings"]
+    # Remove undefined values from args
+    args = _.without(args,undefined)
+    args = _.without(args,null)
+    # flatten nested testPackages array into args
+    args = _.flatten(args)
 
     options = {
       cwd:@opts["app"],
