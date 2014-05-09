@@ -11,7 +11,7 @@ class Meteor extends EventEmitter
     stderr:""
 
   constructor:(@opts)->
-    expect(@opts["port"]).to.be.a 'number'
+    expect(+@opts["port"]).to.be.ok
 
     unless @opts["app"]
       log.error "no app have been specified"
