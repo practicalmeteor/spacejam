@@ -7,13 +7,14 @@ class ChildProcess
   child: null
 
   constructor:->
-    log.debug "ChildProcess.constructor", arguments
+    log.debug "ChildProcess.constructor()", arguments
 
+  # TODO: Check if is used (least important)
   exec: (command, taskName)->
     log.debug "ChildProcess.exec()", arguments
-    expect(@child).to.be.null
-    expect(command).to.be.a 'string'
-    expect(taskName).to.be.a 'string'
+    expect(@child,"ChildProcess is already running").to.be.null
+    expect(command,"Invalid @command argument").to.be.a 'string'
+    expect(taskName,"Invalid @taskName argument").to.be.a 'string'
 
     @child = _exec command, (err, stdout, stderr) =>
       if err?.code? and err.code isnt 0
@@ -31,13 +32,13 @@ class ChildProcess
 
   spawn: (command,args,options)->
     log.debug "ChildProcess.spawn() ",command
-    expect(@child).to.be.null
-    expect(command).to.be.a 'string'
+    expect(@child,"ChildProcess is already running").to.be.null
+    expect(command,"Invalid @command argument").to.be.a 'string'
     if args?
-      expect(args).to.be.an 'array'
+      expect(args,"Invalid @args").to.be.an 'array'
 
     if options?
-      expect(options).to.be.an 'object'
+      expect(options,"Invalid @options").to.be.an 'object'
 
     @child = _spawn(command,args,options)
 

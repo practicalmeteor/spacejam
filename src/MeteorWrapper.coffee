@@ -1,11 +1,14 @@
-global.log = require("loglevel")
+#TODO: Fix bug: Exit code is 0 if Meteor does'n run because of used port
+
 expect = require("chai").expect
 Meteor = require("./Meteor")
 Phantomjs = require("./Phantomjs")
 
 class MeteorWrapper
-  meteor: null
-  phantomjs: null
+
+  @meteor: null
+
+  @phantomjs: null
 
   @ERR_CODE:
     TEST_SUCCESS: 0
@@ -13,88 +16,76 @@ class MeteorWrapper
     METEOR_ERROR: 3
     TEST_TIMEOUT: 4
 
-  constructor: ->
-    #TODO: Diffrent options for run and testPackages. But with a base one for both (_.extend).
-    #TODO: Save the options object as static member in Meteor called defaultOpts.
-    @options = require("rc")("mctr", {
-      "help"                : null
-      "log-level"           : "info"
-      "port"                : process.env.PORT || 4096
-      "root-url"            : process.env.ROOT_URL || null
-      "mongo-url"           : process.env.MONGO_URL || null
-      "driver-package"      : "test-in-console"
-      "app"                 : null #TODO: App not required in test-packages
-      "app-packages"        : true #TODO Add Support
-      "settings"            : null
-      "timeout"             : 120000 # 2 minutes
-      "packages"            : null
-      "production"          : false
-#      "once"                : false #TODO: Support
-      "run-phantomjs-tests" : false #TODO: Support
-      "meteor_ready_text"   : "=> App running at:" #TODO: Check test-packages ready text
-      "meteor_error_text"   : "Waiting for file change." #TODO: Check test-packages error text
-    })
-    log.setLevel(@options["log-level"])
-    @handleArgs()
 
 
-  run: ->
-    log.debug "MeteorWrapper.run()",arguments
+# TODO: Rename to exec. It is static and move to Meteor
+# TODO: CHeck first argument (help,run or test-packages)
+  @exec: ->
+    log.debug "MeteorWrapper.exec()",arguments
     log.info "Running mctr"
-    expect(@meteor).to.be.null
+    expect(MeteorWrapper.meteor,"Meteor is already running").to.be.null
+
+    opts = require("rc")("mctr",{
+      "root-url"  : process.env.ROOT_URL || null
+      "timeout"  : process.env.ROOT_URL || null
+    })
+
+    command = opts._[0]
+    runCommands[command]()
 
     setTimeout(
       =>
-        log.error "Tests timed out after #{@options['timeout']} milliseconds."
+        log.error "Tests timed out after #{opts['timeout']} milliseconds."
         @killAllChilds( MeteorWrapper.ERR_CODE.TEST_TIMEOUT )
-      ,@options["timeout"]
+      ,opts["timeout"]
     )
 
-    @meteor = new Meteor(@options)
-    @meteor.on "ready", =>
+    MeteorWrapper.meteor = Meteor.exec()
+
+    MeteorWrapper.meteor.on "ready", =>
       log.info "Meteor is ready"
-      @runPhantom() if not @phantomjs
+      MeteorWrapper.runPhantom(opts["root-url"]) if not MeteorWrapper.phantomjs
 
-    @meteor.on "error", =>
+    MeteorWrapper.meteor.on "error", =>
       log.error "Meteor has errors, exiting"
-      @killAllChilds MeteorWrapper.ERR_CODE.METEOR_ERROR
+      MeteorWrapper.killAllChilds MeteorWrapper.ERR_CODE.METEOR_ERROR
 
-    @meteor.run()
+    MeteorWrapper.meteor.testPackages()
 
 
-  runPhantom: ->
+  @runPhantom: (url)->
     log.debug "MeteorWrapper.runPhantom()",arguments
-    @phantomjs = new Phantomjs(@options)
+    MeteorWrapper.phantomjs = new Phantomjs()
 
-    @phantomjs.on "exit", (code,signal)=>
-      @meteor.kill()
+    MeteorWrapper.phantomjs.on "exit", (code,signal)=>
+      MeteorWrapper.meteor.kill()
       if code?
         process.exit code
       else if signal?
         process.exit MeteorWrapper.ERR_CODE.PHANTOM_ERROR
       else
         process.exit MeteorWrapper.ERR_CODE.PHANTOM_ERROR
+    #TODO: Refactor
+    MeteorWrapper.phantomjs.run(url)
 
-    @phantomjs.run()
-
-  killAllChilds: (code = 1)->
+  @killAllChilds: (code = 1)->
     log.debug "MeteorWrapper.killAllChilds()",arguments
-    @meteor?.kill()
-    @phantomjs?.kill()
+    MeteorWrapper.meteor?.kill()
+    MeteorWrapper.phantomjs?.kill()
     process.exit code
 
 
-  handleArgs: ->
+  @handleArgs: ->
     log.debug "MeteorWrapper.handleArgs()",arguments
-    if @options["help"]?
-      @printUsage()
-      process.exit 0
+#    if @options["help"]?
+#      MeteorWrapper.printUsage()
+#      process.exit 0
 
 #    if @options["root-url"] is null
 #      @options["root-url"] = "http://localhost:#{@options['port']}/"
 
   #TODO: Update
-  printUsage : ->
+  @printUsage : ->
     log.debug "MeteorWrapper.printUsage()",arguments
     process.stdout.write("root-urlUsage: mctr <command>\n
     --app <directory>             The directory of your meteor app to test (Required).\n
@@ -108,4 +99,4 @@ class MeteorWrapper
     --meteor_error_text <text>    The meteor print-out text that indicates that your app has errors.\n
     --help                        This help text.\n")
 
-module.exports = new MeteorWrapper()
+module.exports = MeteorWrapper

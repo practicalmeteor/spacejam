@@ -11,16 +11,13 @@ class Phantomjs extends EventEmitter
   childProcess: null
 
 
-  constructor:(@opts)->
-    expect(@opts["root-url"]).to.be.a 'string'
-
-
-  run: =>
+  run: (url)=>
     log.debug "Phantomjs.run()"
     log.info("spawning phantomjs")
-    expect(@childProcess).to.be.null
+    expect(url,"Invalid @url").to.be.a 'string'
+    expect(@childProcess,"ChildProcess is already running").to.be.null
 
-    env = _.extend process.env, {ROOT_URL: @opts["root-url"]}
+    env = _.extend process.env, {ROOT_URL: url}
 
     args = ["phantom-runner.js"]
     options = {
