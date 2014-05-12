@@ -15,7 +15,8 @@
     "test": "cake test"
   },
   "bin":{
-    "mctr":"bin/mctr"
+    "mctr":"bin/mctr",
+    "spacejam":"bin/spacejam"
   },
   "description": "Meteor packages console test runner",
   "homepage": "https://github.com/lavaina/meteor-console-test-runner",

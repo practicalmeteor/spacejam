@@ -13,14 +13,14 @@ class Meteor extends EventEmitter
     stderr:""
   }
 
-  #TODO: Why static?
+  #Ask: Why static?
   defaultOpts: {
     "port"        : process.env.PORT || 4096
     "root-url"    : process.env.ROOT_URL || null
     "mongo-url"   : process.env.MONGO_URL || null
     "settings"    : null
     "production"  : false
-#      "once"     : false #Ask about this
+    "once"        : false
   }
 
   runOpts:{
@@ -38,20 +38,17 @@ class Meteor extends EventEmitter
     "meteor_error_text"   : "Waiting for file change." #TODO: Check test-packages error text
   }
 
-  runCommands = {
-    "help": -> MeteorWrapper.printUsage()
-    "run": ->
-    "test-packages":->
-  }
 
 
   @exec: ->
     log.debug "Meteor.exec()",arguments
+    return new Meteor()
+
+
 
   run: ->
     log.debug "Meteor.run()",arguments
     log.info("Spawning meteor")
-
 
   # @opts
   # @parseCommandLine: default true (an empty func if false)

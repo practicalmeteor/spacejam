@@ -1,7 +1,8 @@
 ChildProcess = require '../src/ChildProcess'
 expect = require("chai").expect
-log = require('loglevel')
+global.log = require('loglevel')
 log.setLevel "debug"
+
 describe "MCTR Test", ->
   @timeout 30000
   mctrChild = new ChildProcess()
@@ -12,6 +13,7 @@ describe "MCTR Test", ->
   it "Run with a successful test and a settings file", (done)->
     testPort = "7040"
     args = [
+      "test-packages"
       "--app"
       "tests/leaderboard/"
       "--root-url"
@@ -27,7 +29,7 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/mctr",args)
+    mctrChild.spawn("bin/spacejam",args)
     mctrChild.child.on "exit", (code) =>
       expect(code).to.equal 0 # test succeeded
       done()
@@ -36,6 +38,7 @@ describe "MCTR Test", ->
     mctrChild = new ChildProcess()
     testPort = "7050"
     args = [
+      "test-packages"
       "--app"
       "tests/leaderboard/"
       "--root-url"
@@ -49,7 +52,7 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/mctr",args)
+    mctrChild.spawn("bin/spacejam",args)
     mctrChild.child.on "exit", (code) =>
       expect(code).to.equal 2 # test failed
       done()
@@ -59,6 +62,7 @@ describe "MCTR Test", ->
     mctrChild = new ChildProcess()
     testPort = "7060"
     args = [
+      "test-packages"
       "--app"
       "tests/leaderboard/"
       "--root-url"
@@ -72,7 +76,7 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/mctr",args)
+    mctrChild.spawn("bin/spacejam",args)
     mctrChild.child.on "exit", (code) =>
       expect(code).to.equal 4 # test timed-out
       done()
@@ -82,6 +86,7 @@ describe "MCTR Test", ->
     mctrChild = new ChildProcess()
     testPort = "7070"
     args = [
+      "test-packages"
       "--app"
       "tests/leaderboard/"
       "--root-url"
@@ -97,7 +102,7 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/mctr",args)
+    mctrChild.spawn("bin/spacejam",args)
     mctrChild.child.on "exit", (code) =>
       expect(code).to.equal 0 # test succeeded
       done()
@@ -106,6 +111,7 @@ describe "MCTR Test", ->
     mctrChild = new ChildProcess()
     testPort = "7080"
     args = [
+      "test-packages"
       "--app"
       "tests/leaderboard/"
       "--root-url"
@@ -121,7 +127,7 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/mctr",args)
+    mctrChild.spawn("bin/spacejam",args)
     mctrChild.child.on "exit", (code) =>
       expect(code).to.equal 0 # test succeeded
       done()
@@ -130,6 +136,7 @@ describe "MCTR Test", ->
     mctrChild = new ChildProcess()
     testPort = "7090"
     args = [
+      "test-packages"
       "--app"
       "tests/todos/"
       "--root-url"
@@ -143,7 +150,7 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/mctr",args)
+    mctrChild.spawn("bin/spacejam",args)
     mctrChild.child.on "exit", (code) =>
       expect(code).to.equal 3 # meteor app has errors
       done()
