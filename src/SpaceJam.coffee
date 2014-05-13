@@ -24,10 +24,10 @@ class SpaceJam
     expect(meteor,"Meteor is already running").to.be.null
 
     opts = require("rc")("spacejam",{
-      "root-url"            : process.env.ROOT_URL || null
-      "timeout"             : 120000
-      "log-level"           : "debug"
-      "run-phantomjs-tests" : true #TODO: Set to false when browsers are supported
+      "root-url"   : process.env.ROOT_URL || null
+      "timeout"    : 120000
+      "log-level"  : "debug"
+      "--tinytest" : "phantomjs" #TODO: For now only phantomjs is supported
     })
     log.setLevel opts["log-level"]
 
@@ -35,8 +35,8 @@ class SpaceJam
     if _.has(runCommands,command)
       runCommands[command](opts)
     else
-      log.error "#{command} not found\n"
-      runCommands["help"]()
+      log.error "'#{command}' is not a spacejam command\n"
+      runCommands.help()
 
 
 
@@ -88,25 +88,26 @@ class SpaceJam
 
 
   #TODO: Update
-  printUsage =->
-    log.debug "SpaceJam.printUsage()",arguments
-    process.stdout.write("root-urlUsage: mctr <command>\n
+  printHelp =->
+    process.stdout.write(
+      "Usage: spacejam test-packages [--flags]\nFlags:\n\n
+
     --app <directory>             The directory of your meteor app to test (Required).\n
     --packages <name1> [name2...] The meteor packages to test in your app, with suport for glob style wildcards (Required).\n
-    --log-level <level>           mctr log level. One of TRACE|DEBUG|INFO|WARN|ERROR.\n
+    --log-level <level>           spacejam log level. One of TRACE|DEBUG|INFO|WARN|ERROR.\n
     --port <port>                 The port in which to run your meteor app (default 3000).\n
     --root-url <url>              The meteor app ROOT_URL (default http://localhost:3000/).\n
     --settings <file>             The meteor app settings path.\n
-    --timeout  <milliseconds>     Total timeout for all tests (default 120000 milliseconds, i.e. 2 minutes).\n
-    --meteor_ready_text <text>    The meteor print-out text to wait for that indicates the app is ready.\n
-    --meteor_error_text <text>    The meteor print-out text that indicates that your app has errors.\n
+    --timeout  <milliseconds>     Total timeout for all tests (default 120000 milliseconds).\n
+    --meteor-ready-text <text>    The meteor print-out text to wait for that indicates the app is ready.\n
+    --meteor-error-text <text>    The meteor print-out text that indicates that your app has errors.\n
     --help                        This help text.\n")
 
 
 
   runCommands = {
     "test-packages" : testPackages
-    "help"          : printUsage
+    "help"          : printHelp
   }
 
 module.exports = SpaceJam

@@ -29,7 +29,7 @@ class Meteor extends EventEmitter
   testPackagesOpts:{
     "app"                 : null
     "driver-package"      : "test-in-console"
-    "app-packages"        : true #TODO Add Support
+    "app-packages"        : true #TODO Add Support for testing all packages within an app that are not symlinks
     "timeout"             : 120000 # 2 minutes
     "packages"            : null
     "meteor-ready-text"   : "=> App running at:"
@@ -57,16 +57,21 @@ class Meteor extends EventEmitter
     expect(@childProcess,"ChildProcess is already running").to.be.null
     opts = _.extend(_.clone(@defaultOpts),opts)
     opts = _.extend(_.clone(@testPackagesOpts),opts)
-    opts = require("rc")("spacejam",opts,parseCommandLine || ->)
 
-    expect(+opts["port"],"Invalid @port").to.be.ok
+    if parseCommandLine
+      opts = require("rc")("spacejam",opts)
+    else
+      opts = require("rc")("spacejam",opts,->)
+
+
+    expect(+opts["port"],"--port is not a number. See 'spacejam help' for more info.").to.be.ok
 
     if !opts["app"]
-      log.error "no app have been specified"
+      log.error "No meteor app has been specified. See 'spacejam help' for more info."
       process.exit 1
 
     if !opts["packages"]
-      log.error "no packages to test have been specified"
+      log.error "No packages to test have been specified. See 'spacejam help' for more info."
       process.exit 1
 
 
@@ -90,9 +95,14 @@ class Meteor extends EventEmitter
     # flatten nested testPackages array into args
     args = _.flatten(args)
 
+    env = _.clone(process.env)
+    env.ROOT_URL = opts["root-url"] if opts["root-url"]
+    env.MONGO_URL = opts["mongo-url"] if opts["mongo-url"]
+
     options = {
-      cwd:opts["app"],
-      detached:false
+      cwd: opts["app"],
+      env: env
+      detached:false,
     }
 
     @childProcess = new ChildProcess()

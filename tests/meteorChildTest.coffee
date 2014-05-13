@@ -1,3 +1,7 @@
+### TODO: Tests
+  Tests for root-url and mongo-url command line and make sure that it overwrites env vars that are set
+###
+
 global.log = require("loglevel")
 chai = require("chai")
 expect = chai.expect
