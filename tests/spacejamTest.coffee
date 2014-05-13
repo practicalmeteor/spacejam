@@ -3,15 +3,13 @@ ChildProcess = require '../src/ChildProcess'
 SpaceJam = require '../src/SpaceJam'
 expect = require("chai").expect
 
-describe "MCTR Test", ->
+describe "SpaceJam Test", ->
   @timeout 30000
 
   spacejamChild = new ChildProcess()
 
   afterEach ->
     spacejamChild?.kill()
-
-
 
   it "Run with a successful test and a settings file", (done)->
     testPort = "7040"
