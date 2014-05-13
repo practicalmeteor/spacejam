@@ -1,4 +1,3 @@
-global.log = require("loglevel")
 expect = require("chai").expect
 _spawn = require("child_process").spawn
 _exec = require("child_process").exec

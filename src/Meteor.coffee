@@ -13,7 +13,6 @@ class Meteor extends EventEmitter
     stderr:""
   }
 
-  #Ask: Why static?
   defaultOpts: {
     "port"        : process.env.PORT || 4096
     "root-url"    : process.env.ROOT_URL || null
@@ -56,10 +55,11 @@ class Meteor extends EventEmitter
   testPackages: (opts,parseCommandLine)=>
     log.debug "Meteor.testPackages()",arguments
     log.info("Spawning meteor")
-    expect(@childProcess,"ChildProcess is already running").to.be.null
 
-    extendedOpts = _.extend(@defaultOpts,@testPackagesOpts)
-    opts = require("rc")("mctr",extendedOpts)
+    expect(@childProcess,"ChildProcess is already running").to.be.null
+    opts = _.extend(_.clone(@defaultOpts),opts)
+    opts = _.extend(_.clone(@testPackagesOpts),opts)
+    opts = require("rc")("mctr",opts)
 
     expect(+opts["port"],"Invalid @port").to.be.ok
 
@@ -80,7 +80,7 @@ class Meteor extends EventEmitter
       "--driver-package"
       opts["driver-package"]
       "--production" if opts["production"]
-#      "--once" if opts["once"]
+      "--once" if opts["once"]
       "--settings" if opts["settings"]
       opts["settings"]
       "test-packages"
@@ -100,12 +100,12 @@ class Meteor extends EventEmitter
     @childProcess = new ChildProcess()
     @childProcess.spawn("meteor",args,options)
 
-    @childProcess.child.stdout.on "data", (data) =>
+    @childProcess.child?.stdout.on "data", (data) =>
       @buffer.stdout += data
       @hasErrorText data
       @hasReadyText data
 
-    @childProcess.child.stderr.on "data", (data) =>
+    @childProcess.child?.stderr.on "data", (data) =>
       @buffer.stderr += data
       @hasErrorText data
 

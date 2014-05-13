@@ -2,7 +2,6 @@ expect = require("chai").expect
 _ = require("underscore")
 Meteor = require("./Meteor")
 Phantomjs = require("./Phantomjs")
-log.setLevel "debug"
 
 class SpaceJam
 
@@ -18,7 +17,6 @@ class SpaceJam
 
 
 
-# TODO: Check first argument (help,run or test-packages)
   @exec: ->
     log.debug "SpaceJam.exec()"
     log.info "Running mctr"
@@ -27,8 +25,10 @@ class SpaceJam
 
     opts = require("rc")("mctr",{
       "root-url"  : process.env.ROOT_URL || null
-      "timeout"  : 120000
+      "timeout"   : 120000
+      "log-level" : "debug"
     })
+    log.setLevel opts["log-level"]
 
     command = opts._[0]
     if _.has(runCommands,command)

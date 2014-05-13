@@ -1,14 +1,17 @@
+global.log = require("loglevel")
 ChildProcess = require '../src/ChildProcess'
+SpaceJam = require '../src/SpaceJam'
 expect = require("chai").expect
-global.log = require('loglevel')
-log.setLevel "debug"
 
 describe "MCTR Test", ->
   @timeout 30000
-  mctrChild = new ChildProcess()
+
+  spacejamChild = new ChildProcess()
 
   afterEach ->
-    mctrChild.kill()
+    spacejamChild?.kill()
+
+
 
   it "Run with a successful test and a settings file", (done)->
     testPort = "7040"
@@ -29,13 +32,15 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/spacejam",args)
-    mctrChild.child.on "exit", (code) =>
-      expect(code).to.equal 0 # test succeeded
+    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code).to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
 
+
+
   it "Run with a failing test", (done)->
-    mctrChild = new ChildProcess()
+    spacejamChild = new ChildProcess()
     testPort = "7050"
     args = [
       "test-packages"
@@ -52,14 +57,15 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/spacejam",args)
-    mctrChild.child.on "exit", (code) =>
-      expect(code).to.equal 2 # test failed
+    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code).to.equal SpaceJam.ERR_CODE.TEST_FAILED
       done()
 
 
+
   it "Run with a test that never ends", (done)->
-    mctrChild = new ChildProcess()
+    spacejamChild = new ChildProcess()
     testPort = "7060"
     args = [
       "test-packages"
@@ -76,14 +82,15 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/spacejam",args)
-    mctrChild.child.on "exit", (code) =>
-      expect(code).to.equal 4 # test timed-out
+    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code).to.equal SpaceJam.ERR_CODE.TEST_TIMEOUT
       done()
 
 
+
   it "Send more than one package (With * wildcard)", (done)->
-    mctrChild = new ChildProcess()
+    spacejamChild = new ChildProcess()
     testPort = "7070"
     args = [
       "test-packages"
@@ -102,13 +109,15 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/spacejam",args)
-    mctrChild.child.on "exit", (code) =>
-      expect(code).to.equal 0 # test succeeded
+    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code).to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
 
+
+
   it "Send more than one package (separated by an space)", (done)->
-    mctrChild = new ChildProcess()
+    spacejamChild = new ChildProcess()
     testPort = "7080"
     args = [
       "test-packages"
@@ -127,13 +136,15 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/spacejam",args)
-    mctrChild.child.on "exit", (code) =>
-      expect(code).to.equal 0 # test succeeded
+    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code).to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
 
+
+
   it "Run with a failing meteor app", (done)->
-    mctrChild = new ChildProcess()
+    spacejamChild = new ChildProcess()
     testPort = "7090"
     args = [
       "test-packages"
@@ -150,7 +161,7 @@ describe "MCTR Test", ->
       "--log-level"
       "debug"
     ]
-    mctrChild.spawn("bin/spacejam",args)
-    mctrChild.child.on "exit", (code) =>
-      expect(code).to.equal 3 # meteor app has errors
+    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code).to.equal SpaceJam.ERR_CODE.METEOR_ERROR
       done()
