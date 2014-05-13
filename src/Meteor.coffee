@@ -32,8 +32,8 @@ class Meteor extends EventEmitter
     "app-packages"        : true #TODO Add Support
     "timeout"             : 120000 # 2 minutes
     "packages"            : null
-    "meteor_ready_text"   : "=> App running at:"
-    "meteor_error_text"   : "Waiting for file change."
+    "meteor-ready-text"   : "=> App running at:"
+    "meteor-error-text"   : "Waiting for file change."
   }
 
 
@@ -132,12 +132,12 @@ class Meteor extends EventEmitter
 
 
   hasErrorText: ( buffer )=>
-    if buffer.lastIndexOf( @testPackagesOpts["meteor_error_text"] ) isnt -1
+    if buffer.lastIndexOf( @testPackagesOpts["meteor-error-text"] ) isnt -1
       @emit "error"
 
 
   hasReadyText: ( buffer )=>
-    if buffer.lastIndexOf( @testPackagesOpts["meteor_ready_text"] ) isnt -1
+    if buffer.lastIndexOf( @testPackagesOpts["meteor-ready-text"] ) isnt -1
       @emit "ready"
 
   kill:->
