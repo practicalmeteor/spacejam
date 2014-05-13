@@ -27,14 +27,13 @@ class Meteor extends EventEmitter
   }
 
   testPackagesOpts:{
-    "app"                 : null #TODO: App not required in test-packages, Ask abut this
+    "app"                 : null
     "driver-package"      : "test-in-console"
     "app-packages"        : true #TODO Add Support, Ask abut this
     "timeout"             : 120000 # 2 minutes
     "packages"            : null
-    "run-phantomjs-tests" : false #TODO: Support
-    "meteor_ready_text"   : "=> App running at:" #TODO: Check test-packages ready text
-    "meteor_error_text"   : "Waiting for file change." #TODO: Check test-packages error text
+    "meteor_ready_text"   : "=> App running at:"
+    "meteor_error_text"   : "Waiting for file change."
   }
 
 
@@ -50,16 +49,15 @@ class Meteor extends EventEmitter
     log.info("Spawning meteor")
 
   # @opts
-  # @parseCommandLine: default true (an empty func if false)
-  # TODO: extend rc options with opts argument
-  testPackages: (opts,parseCommandLine)=>
-    log.debug "Meteor.testPackages()",arguments
+  # @parseCommandLine
+  testPackages: (opts,parseCommandLine=true)=>
+    log.debug "Meteor.testPackages()"
     log.info("Spawning meteor")
 
     expect(@childProcess,"ChildProcess is already running").to.be.null
     opts = _.extend(_.clone(@defaultOpts),opts)
     opts = _.extend(_.clone(@testPackagesOpts),opts)
-    opts = require("rc")("mctr",opts)
+    opts = require("rc")("spacejam",opts,parseCommandLine || ->)
 
     expect(+opts["port"],"Invalid @port").to.be.ok
 
