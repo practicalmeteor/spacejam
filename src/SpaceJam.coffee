@@ -23,10 +23,11 @@ class SpaceJam
 
     expect(meteor,"Meteor is already running").to.be.null
 
-    opts = require("rc")("mctr",{
-      "root-url"  : process.env.ROOT_URL || null
-      "timeout"   : 120000
-      "log-level" : "debug"
+    opts = require("rc")("spacejam",{
+      "root-url"            : process.env.ROOT_URL || null
+      "timeout"             : 120000
+      "log-level"           : "debug"
+      "run-phantomjs-tests" : true #TODO: Set to false when browsers are supported
     })
     log.setLevel opts["log-level"]
 
@@ -40,8 +41,8 @@ class SpaceJam
 
 
   testPackages = (opts)->
-    log.debug "SpaceJam.testPackages()",opts
-    meteor = Meteor.exec() #TODO: Returns Meteor instance
+    log.debug "SpaceJam.testPackages()"
+    meteor = Meteor.exec()
 
     setTimeout(
       =>
@@ -52,7 +53,7 @@ class SpaceJam
 
     meteor.on "ready", =>
       log.info "Meteor is ready"
-      runPhantom(opts["root-url"]) if not phantomjs
+      runPhantom(opts["root-url"]) if opts["run-phantomjs-tests"]
 
     meteor.on "error", =>
       log.error "Meteor has errors, exiting"
@@ -74,7 +75,6 @@ class SpaceJam
         process.exit SpaceJam.ERR_CODE.PHANTOM_ERROR
       else
         process.exit SpaceJam.ERR_CODE.PHANTOM_ERROR
-    #TODO: Refactor
     phantomjs.run(url)
 
 

@@ -29,7 +29,7 @@ class Meteor extends EventEmitter
   testPackagesOpts:{
     "app"                 : null
     "driver-package"      : "test-in-console"
-    "app-packages"        : true #TODO Add Support, Ask abut this
+    "app-packages"        : true #TODO Add Support
     "timeout"             : 120000 # 2 minutes
     "packages"            : null
     "meteor_ready_text"   : "=> App running at:"
