@@ -1,7 +1,3 @@
-### TODO: Tests
-  Tests for root-url and mongo-url command line and make sure that it overwrites env vars that are set
-###
-
 global.log = require("loglevel")
 chai = require("chai")
 expect = chai.expect
@@ -21,9 +17,9 @@ describe "Meteor class Test", ->
 
   globPackagesStub = null
 
-  spawnOptions = { cwd: "app", detached: false }
+  env = process.env
 
-
+  spawnOptions = { cwd: "app", detached: false ,env: env }
 
   beforeEach ->
     meteor = new Meteor()
@@ -118,4 +114,25 @@ describe "Meteor class Test", ->
                  "two"
     ]
     expect(spawnStub.args[0]).to.eql(["meteor",spawnArgs,spawnOptions])
+    done()
+
+
+
+  it "Spawns meteor with root-url and mongo-url args overwrite env", (done)->
+    expectedSpawnOptions = spawnOptions
+    mongoUrl = "mongodb://localhost/mydb"
+    rootUrl = "http://localhost:5000/"
+    opts = {app:"app",packages:"packages","root-url":rootUrl,"mongo-url":mongoUrl}
+    meteor.testPackages(opts)
+    spawnArgs = ["--port",
+                 "3000",
+                 "--driver-package",
+                 "test-in-console",
+                 "test-packages",
+                 "one",
+                 "two"
+    ]
+    expectedSpawnOptions.env.ROOT_URL = rootUrl
+    expectedSpawnOptions.env.MONGO_URL = mongoUrl
+    expect(spawnStub.args[0]).to.eql(["meteor",spawnArgs,expectedSpawnOptions])
     done()
