@@ -26,6 +26,7 @@ describe "Meteor class Test", ->
     spawnStub = sinon.stub(ChildProcess.prototype,"spawn")
     globPackagesStub = sinon.stub(meteor,"_globPackages")
     globPackagesStub.returns ["one","two"]
+    log.setLevel "debug"
 
 
 
@@ -35,7 +36,7 @@ describe "Meteor class Test", ->
 
 
   it "Spawns meteor with correct arguments", (done)->
-    opts = {app:"app",packages:"packages"}
+    opts = {app:"app","_":["","packages"]}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
                  "3000",
@@ -51,7 +52,7 @@ describe "Meteor class Test", ->
 
 
   it "Spawns meteor with correct arguments (--settings)", (done)->
-    opts = {app:"app",packages:"packages",settings:"settings.json"}
+    opts = {app:"app","_":["","packages"],settings:"settings.json"}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
                  "3000",
@@ -69,7 +70,7 @@ describe "Meteor class Test", ->
 
 
   it "Spawns meteor with correct arguments (--driver-package)", (done)->
-    opts = {app:"app",packages:"packages","driver-package":"test-in-browser"}
+    opts = {app:"app","_":["","packages"],"driver-package":"test-in-browser"}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
                  "3000",
@@ -85,7 +86,7 @@ describe "Meteor class Test", ->
 
 
   it "Spawns meteor with correct arguments (--once)", (done)->
-    opts = {app:"app",packages:"packages",once:true}
+    opts = {app:"app","_":["","packages"],once:true}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
                  "3000",
@@ -102,7 +103,7 @@ describe "Meteor class Test", ->
 
 
   it "Spawns meteor with correct arguments (--production)", (done)->
-    opts = {app:"app",packages:"packages",production:true}
+    opts = {app:"app","_":["","packages"],production:true}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
                  "3000",
@@ -122,7 +123,7 @@ describe "Meteor class Test", ->
     expectedSpawnOptions = spawnOptions
     mongoUrl = "mongodb://localhost/mydb"
     rootUrl = "http://localhost:5000/"
-    opts = {app:"app",packages:"packages","root-url":rootUrl,"mongo-url":mongoUrl}
+    opts = {app:"app","_":["","packages"],"root-url":rootUrl,"mongo-url":mongoUrl}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
                  "3000",

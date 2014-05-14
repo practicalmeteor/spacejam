@@ -31,7 +31,6 @@ class Meteor extends EventEmitter
     "driver-package"      : "test-in-console"
     "app-packages"        : true #TODO Add Support for testing all packages within an app that are not symlinks
     "timeout"             : 120000 # 2 minutes
-    "packages"            : null
     "meteor-ready-text"   : "=> App running at:"
     "meteor-error-text"   : "Waiting for file change."
   }
@@ -58,6 +57,8 @@ class Meteor extends EventEmitter
     opts = _.extend(_.clone(@defaultOpts),opts)
     opts = _.extend(_.clone(@testPackagesOpts),opts)
 
+    packages = opts._[1..] # Get packages from command line
+
     if parseCommandLine
       opts = require("rc")("spacejam",opts)
     else
@@ -70,12 +71,12 @@ class Meteor extends EventEmitter
       log.error "No meteor app has been specified. See 'spacejam help' for more info."
       process.exit 1
 
-    if !opts["packages"]
+    if !packages.length > 0
       log.error "No packages to test have been specified. See 'spacejam help' for more info."
       process.exit 1
 
 
-    testPackages = @_globPackages(opts["app"],opts["packages"])
+    testPackages = @_globPackages(opts["app"],packages)
 
     args = [
       "--port"
@@ -117,11 +118,10 @@ class Meteor extends EventEmitter
       @buffer.stderr += data
       @hasErrorText data
 
-  _globPackages: (app,packagesStr)-> # Use glob to get packages that match the opts["packages"] arg
+  _globPackages: (app,packages)-> # Use glob to get packages that match the packages arg
     log.debug "Meteor._globPackages()",arguments
-    expect(packagesStr,"Invalid @packagesStr").to.be.a "string"
+    expect(packages,"Invalid @packages").to.be.an "array"
 
-    packages = packagesStr.split(" ")
     matchedPackages = []
 
     globOpts = {
@@ -131,7 +131,7 @@ class Meteor extends EventEmitter
       globedPackages = glob.sync(globPkg, globOpts)
 
       if globedPackages.length is 0
-        log.error "no packages matching #{packagesStr} have been found"
+        log.error "no packages matching #{packages} have been found"
         process.exit 1
 
       globedPackages.forEach (pkg)->
