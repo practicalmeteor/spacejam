@@ -148,7 +148,7 @@ describe "SpaceJam Test", ->
       "http://localhost:#{testPort}/"
       "appfails"
       "--timeout"
-      "10000"
+      "30000"
       "--port"
       testPort
       "--log-level"

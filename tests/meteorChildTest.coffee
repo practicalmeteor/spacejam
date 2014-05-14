@@ -26,7 +26,6 @@ describe "Meteor class Test", ->
     spawnStub = sinon.stub(ChildProcess.prototype,"spawn")
     globPackagesStub = sinon.stub(meteor,"_globPackages")
     globPackagesStub.returns ["one","two"]
-    log.setLevel "debug"
 
 
 
