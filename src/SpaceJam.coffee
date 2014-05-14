@@ -1,3 +1,4 @@
+global.log = require("loglevel")
 expect = require("chai").expect
 _ = require("underscore")
 Meteor = require("./Meteor")
@@ -24,10 +25,10 @@ class SpaceJam
     expect(meteor,"Meteor is already running").to.be.null
 
     opts = require("rc")("spacejam",{
-      "root-url"   : process.env.ROOT_URL || null
-      "timeout"    : 120000
-      "log-level"  : "debug"
-      "--tinytest" : "phantomjs" #TODO: For now only phantomjs is supported
+      "root-url"  : process.env.ROOT_URL || null
+      "timeout"   : 120000
+      "log-level" : "debug"
+      "tinytest"  : "phantomjs" #TODO: For now only phantomjs is supported
     })
     log.setLevel opts["log-level"]
 
@@ -53,7 +54,7 @@ class SpaceJam
 
     meteor.on "ready", =>
       log.info "Meteor is ready"
-      runPhantom(opts["root-url"]) if opts["run-phantomjs-tests"]
+      runPhantom(opts["root-url"]) if opts["tinytest"] is "phantomjs"
 
     meteor.on "error", =>
       log.error "Meteor has errors, exiting"
