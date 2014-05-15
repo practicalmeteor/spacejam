@@ -87,22 +87,90 @@ class SpaceJam
     process.exit code
 
 
-
-  #TODO: Update
+  
   printHelp =->
     process.stdout.write(
-      "Usage: spacejam test-packages [--flags]\nFlags:\n\n
+      """
+Usage
+-----
 
-    --app <directory>             The directory of your meteor app to test (Required).\n
-    --packages <name1> [name2...] The meteor packages to test in your app, with suport for glob style wildcards (Required).\n
-    --log-level <level>           spacejam log level. One of TRACE|DEBUG|INFO|WARN|ERROR.\n
-    --port <port>                 The port in which to run your meteor app (default 3000).\n
-    --root-url <url>              The meteor app ROOT_URL (default http://localhost:3000/).\n
-    --settings <file>             The meteor app settings path.\n
-    --timeout  <milliseconds>     Total timeout for all tests (default 120000 milliseconds).\n
-    --meteor-ready-text <text>    The meteor print-out text to wait for that indicates the app is ready.\n
-    --meteor-error-text <text>    The meteor print-out text that indicates that your app has errors.\n
-    --help                        This help text.\n")
+spacejam test-packages [options] <packages-to-test>
+
+<packages-to-test> can be a list of packages with tinytests or munit tests.
+It enhances meteor test-packages, by supporting glob wildcards on package names
+that are matched against all package names in the meteor app packages 
+directory.
+
+The following options are specific to spacejam:
+
+  --app <directory>           The directory of your meteor app (required, for
+                              now).
+
+  --log-level <level>         spacejam log level. One of
+                              TRACE|DEBUG|INFO|WARN|ERROR.
+
+  --port <port>               The port in which to run your meteor app
+                              (defaults to the PORT env var or 4096).
+
+  --root-url <url>            The meteor app ROOT_URL (defaults to the
+                              ROOT_URL env var or http://localhost:3000/).
+
+  --mongo-url <url>           The meteor app MONGO_URL (defaults to
+                              the MONGO_URL env var, if exists).
+
+  --timeout  <milliseconds>   Total timeout for all tests (defaults to
+                              120000 milliseconds, i.e. 2 minutes).
+
+  --tinytest                  The browser to run the tests in automatically.
+                              Currently, only phantomjs is supported and is
+                              the default.
+
+  --meteor-ready-text <text>  The meteor output text that indicates that the
+                              app is ready.
+
+  --meteor-error-text <text>  The meteor output text that indicates that the 
+                              app has errors.
+
+
+The following options are meteor options and are passed through to meteor (all
+are optional):
+
+  --settings <file>   Path to a meteor settings file.
+
+  --production        Simulate meteor production mode. Minify and bundle CSS 
+                      and JS files (defaults to false).
+
+  --once              If true, do not wait for file changes if meteor has 
+                      errors, exit immediately.
+
+  --driver-package    One of "test-in-console" (default) or "test-in-browser".
+                      "test-in-console" will print test results to the console.
+                      "test-in-browser" will allow you to open any browser on 
+                      the ROOT_URL, run the tests in that browser, and get the 
+                      results in html.
+
+Other commands:
+
+spacejam help - This help text.
+
+Environment Variables
+---------------------
+
+Every command line option can also be set by an upper case environment 
+variable of the same name, and a prefix of SPACEJAM_, i.e. SPACEJAM_PORT
+
+Exit codes
+----------
+
+0 - All the tests have passed in all packages.
+1 - spacejam usage error.
+2 - At least one test has failed.
+3 - The meteor app has errors.
+4 - The tests have timed out.
+
+For additional usage info, please visit https://github.com/spacejamio/spacejam
+
+""")
 
 
 
