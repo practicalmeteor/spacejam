@@ -7,6 +7,7 @@ chai.use(sinonChai)
 Meteor = require "../src/Meteor"
 ChildProcess = require "../src/ChildProcess"
 
+#TODO give all tests 30000 other than the timeout test
 
 describe "Meteor class Test", ->
   @timeout 30000
@@ -22,6 +23,9 @@ describe "Meteor class Test", ->
   spawnOptions = { cwd: "app", detached: false ,env: env }
 
   beforeEach ->
+    delete process.env.PORT
+    delete process.env.ROOT_URL
+    delete process.env.MONGO_URL
     meteor = new Meteor()
     spawnStub = sinon.stub(ChildProcess.prototype,"spawn")
     globPackagesStub = sinon.stub(meteor,"_globPackages")
@@ -38,7 +42,7 @@ describe "Meteor class Test", ->
     opts = {app:"app","_":["","packages"]}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
-                 "3000",
+                 process.env.PORT || "4096",
                  "--driver-package",
                  "test-in-console",
                  "test-packages",

@@ -3,6 +3,8 @@ _ = require("underscore")
 ChildProcess = require './ChildProcess'
 EventEmitter = require('events').EventEmitter
 glob = require("glob")
+clone = require("clone")
+
 
 class Meteor extends EventEmitter
 
@@ -13,27 +15,27 @@ class Meteor extends EventEmitter
     stderr:""
   }
 
-  defaultOpts: {
+  # It is a function not an object because of design for testability, so we can modify process.env before each tests.
+  defaultOpts: ->
     "port"        : process.env.PORT || 4096
     "root-url"    : process.env.ROOT_URL || null
     "mongo-url"   : process.env.MONGO_URL || null
     "settings"    : null
     "production"  : false
     "once"        : false
-  }
 
   runOpts:{
 
   }
 
-  testPackagesOpts:{
+  # See defaultOpts why it is a function an not an object.
+  testPackagesOpts: ->
     "app"                 : null
     "driver-package"      : "test-in-console"
     "app-packages"        : true #TODO Add Support for testing all packages within an app that are not symlinks
     "timeout"             : 120000 # 2 minutes
     "meteor-ready-text"   : "=> App running at:"
     "meteor-error-text"   : "Waiting for file change."
-  }
 
 
 
@@ -54,8 +56,8 @@ class Meteor extends EventEmitter
     log.info("Spawning meteor")
 
     expect(@childProcess,"ChildProcess is already running").to.be.null
-    opts = _.extend(_.clone(@defaultOpts),opts)
-    opts = _.extend(_.clone(@testPackagesOpts),opts)
+    opts = _.extend(@defaultOpts(),opts)
+    opts = _.extend(@testPackagesOpts(),opts)
 
     packages = opts._[1..] # Get packages from command line
 
@@ -63,7 +65,6 @@ class Meteor extends EventEmitter
       opts = require("rc")("spacejam",opts)
     else
       opts = require("rc")("spacejam",opts,->)
-
 
     expect(+opts["port"],"--port is not a number. See 'spacejam help' for more info.").to.be.ok
 
@@ -96,7 +97,7 @@ class Meteor extends EventEmitter
     # flatten nested testPackages array into args
     args = _.flatten(args)
 
-    env = _.clone(process.env)
+    env = clone(process.env)
     env.ROOT_URL = opts["root-url"] if opts["root-url"]
     env.MONGO_URL = opts["mongo-url"] if opts["mongo-url"]
 
