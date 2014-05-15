@@ -44,19 +44,20 @@ The following options are specific to spacejam:
                                   (defaults to the MONGO_URL env var or the 
                                   internal meteor mongodb).
                                   
-    --timeout  <milliseconds>     Total timeout for all tests (defaults to 120000 milliseconds, 
-                                  i.e. 2 minutes).
+    --timeout  <milliseconds>     Total timeout for all tests (defaults to 120000
+                                  milliseconds, i.e. 2 minutes).
                                   
-    --tinytest                    The browser to run the tests in automatically. Currently, 
-                                  only phantomjs is supported and is the default.
+    --tinytest                    The browser to run the tests in automatically.
+                                  Currently, only phantomjs is supported and is
+                                  the default.
                                   
-    --meteor-ready-text <text>    The meteor output text that indicates that the app is ready.
-                                  If not provided, defaults to the text meteor 0.8.1 prints out
-                                  when the app is ready.  
+    --meteor-ready-text <text>    The meteor output text that indicates that the app
+                                  is ready. If not provided, defaults to the text
+                                  meteor 0.8.1 prints out when the app is ready.
                                     
-    --meteor-error-text <text>    The meteor output text that indicates that the app has errors.
-                                  If not provided, defaults to the text meteor 0.8.1 prints out 
-                                  when the app is crashing.
+    --meteor-error-text <text>    The meteor output text that indicates that the app
+                                  has errors. If not provided, defaults to the text
+                                  meteor 0.8.1 prints out when the app is crashing.
 
 The following options are meteor options and are passed through to meteor (all are optional):
 
@@ -71,10 +72,12 @@ The following options are meteor options and are passed through to meteor (all a
                                   environment, and setting it to false in your development 
                                   environment defaults to false).
                                   
-    --driver-package              One of "test-in-console" (default) or "test-in-browser".
-                                  "test-in-console" will print test results to the console.
-                                  "test-in-browser" will allow you to open any browser on the
-                                  ROOT_URL, run the tests in that browser, 
+    --driver-package              One of "test-in-console" (default) or
+                                  "test-in-browser".
+                                  "test-in-console" will print test results to the
+                                  console.
+                                  "test-in-browser" will allow you to open any browser on
+                                  the ROOT_URL, run the tests in that browser,
                                   and get the results in html.
  
  To get help, just:
