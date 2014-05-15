@@ -19,7 +19,7 @@
   "bin": {
     "spacejam": "bin/spacejam"
   },
-  "description": "Wrapper for meteor test-packages for use in continuous integration enviroments.",
+  "description": "Wrapper for meteor test-packages for use in continuous integration environments.",
   "homepage": "https://github.com/spacejamio/spacejam",
   "bugs": "https://github.com/spacejamio/spacejam/issues",
   "keywords": [
