@@ -4,14 +4,9 @@ SpaceJam = require '../src/SpaceJam'
 expect = require("chai").expect
 
 describe "SpaceJam Test", ->
-  @timeout 30000
+  @timeout 40000
 
   spacejamChild = new ChildProcess()
-
-#  before ->
-#    delete process.env.PORT
-#    delete process.env.ROOT_URL
-#    delete process.env.MONGO_URL
 
 
   afterEach ->
@@ -29,7 +24,7 @@ describe "SpaceJam Test", ->
       "--settings"
       "settings.json"
       "--timeout"
-      "10000"
+      "30000"
       "--port"
       testPort
       "--log-level"
@@ -53,7 +48,7 @@ describe "SpaceJam Test", ->
       "http://localhost:#{testPort}/"
       "failure"
       "--timeout"
-      "10000"
+      "30000"
       "--port"
       testPort
       "--log-level"
@@ -103,7 +98,7 @@ describe "SpaceJam Test", ->
       "--settings"
       "settings.json"
       "--timeout"
-      "10000"
+      "30000"
       "--port"
       testPort
       "--log-level"
@@ -130,7 +125,7 @@ describe "SpaceJam Test", ->
       "--settings"
       "settings.json"
       "--timeout"
-      "10000"
+      "30000"
       "--port"
       testPort
       "--log-level"
