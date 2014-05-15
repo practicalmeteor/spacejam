@@ -1,7 +1,7 @@
 SpaceJam
 ========
 
-**spacejam** is a console test runner for packages in [meteor](https://www.meteor.com/) applications. It wraps meteor test-packages with some enhancements, allowing you to easily run your package tinytests or [munit](https://atmospherejs.com/package/munit) tests from the command line. It's primary use is in continuous integration environments. It starts meteor test-packages, waits for it to be ready, and then runs the tinytests or munit tests in phantomjs. Support for more browsers is coming shortly.
+**spacejam** is a console test runner for [meteor](https://www.meteor.com/) packages. It wraps meteor test-packages with some enhancements, allowing you to easily run your package tinytests or [munit](https://atmospherejs.com/package/munit) tests from the command line. It's primary use is in continuous integration environments. It starts meteor test-packages, waits for it to be ready, and then runs the tinytests or munit tests in phantomjs. Support for more browsers is coming shortly.
 
 Supported Meteor Releases
 -------------------------
