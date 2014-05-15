@@ -36,7 +36,7 @@ class SpaceJam
     if _.has(runCommands,command)
       runCommands[command](opts)
     else
-      log.error "'#{command}' is not a spacejam command\n"
+      log.error "\n'#{command}' is not a spacejam command\n" if command
       runCommands.help()
 
 
