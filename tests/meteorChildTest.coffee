@@ -22,10 +22,12 @@ describe "Meteor class Test", ->
 
   spawnOptions = { cwd: "app", detached: false ,env: env }
 
-  beforeEach ->
+  before ->
     delete process.env.PORT
     delete process.env.ROOT_URL
     delete process.env.MONGO_URL
+
+  beforeEach ->
     meteor = new Meteor()
     spawnStub = sinon.stub(ChildProcess.prototype,"spawn")
     globPackagesStub = sinon.stub(meteor,"_globPackages")
@@ -42,7 +44,7 @@ describe "Meteor class Test", ->
     opts = {app:"app","_":["","packages"]}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
-                 process.env.PORT || "4096",
+                 process.env.PORT || 4096,
                  "--driver-package",
                  "test-in-console",
                  "test-packages",
@@ -58,7 +60,7 @@ describe "Meteor class Test", ->
     opts = {app:"app","_":["","packages"],settings:"settings.json"}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
-                 "3000",
+                 process.env.PORT || 4096,
                  "--driver-package",
                  "test-in-console",
                  "--settings",
@@ -76,7 +78,7 @@ describe "Meteor class Test", ->
     opts = {app:"app","_":["","packages"],"driver-package":"test-in-browser"}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
-                 "3000",
+                 process.env.PORT || 4096,
                  "--driver-package",
                  "test-in-browser",
                  "test-packages",
@@ -92,7 +94,7 @@ describe "Meteor class Test", ->
     opts = {app:"app","_":["","packages"],once:true}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
-                 "3000",
+                 process.env.PORT || 4096,
                  "--driver-package",
                  "test-in-console",
                  "--once",
@@ -109,7 +111,7 @@ describe "Meteor class Test", ->
     opts = {app:"app","_":["","packages"],production:true}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
-                 "3000",
+                 process.env.PORT || 4096,
                  "--driver-package",
                  "test-in-console",
                  "--production",
@@ -129,7 +131,7 @@ describe "Meteor class Test", ->
     opts = {app:"app","_":["","packages"],"root-url":rootUrl,"mongo-url":mongoUrl}
     meteor.testPackages(opts)
     spawnArgs = ["--port",
-                 "3000",
+                 process.env.PORT || 4096,
                  "--driver-package",
                  "test-in-console",
                  "test-packages",

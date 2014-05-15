@@ -8,10 +8,11 @@ describe "SpaceJam Test", ->
 
   spacejamChild = new ChildProcess()
 
-  beforeEach ->
-    delete process.env.PORT
-    delete process.env.ROOT_URL
-    delete process.env.MONGO_URL
+#  before ->
+#    delete process.env.PORT
+#    delete process.env.ROOT_URL
+#    delete process.env.MONGO_URL
+
 
   afterEach ->
     spacejamChild?.kill()

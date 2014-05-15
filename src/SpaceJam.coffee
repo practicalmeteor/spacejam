@@ -54,7 +54,7 @@ class SpaceJam
 
     meteor.on "ready", =>
       log.info "Meteor is ready"
-      runPhantom(opts["root-url"]) if opts["tinytest"] is "phantomjs"
+      runPhantom(opts["root-url"])
 
     meteor.on "error", =>
       log.error "Meteor has errors, exiting"

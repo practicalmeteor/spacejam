@@ -3,7 +3,6 @@ _ = require("underscore")
 ChildProcess = require './ChildProcess'
 EventEmitter = require('events').EventEmitter
 glob = require("glob")
-clone = require("clone")
 
 
 class Meteor extends EventEmitter
@@ -17,12 +16,14 @@ class Meteor extends EventEmitter
 
   # It is a function not an object because of design for testability, so we can modify process.env before each tests.
   defaultOpts: ->
+    {
     "port"        : process.env.PORT || 4096
     "root-url"    : process.env.ROOT_URL || null
     "mongo-url"   : process.env.MONGO_URL || null
     "settings"    : null
     "production"  : false
     "once"        : false
+    }
 
   runOpts:{
 
@@ -30,13 +31,14 @@ class Meteor extends EventEmitter
 
   # See defaultOpts why it is a function an not an object.
   testPackagesOpts: ->
-    "app"                 : null
-    "driver-package"      : "test-in-console"
-    "app-packages"        : true #TODO Add Support for testing all packages within an app that are not symlinks
-    "timeout"             : 120000 # 2 minutes
-    "meteor-ready-text"   : "=> App running at:"
-    "meteor-error-text"   : "Waiting for file change."
-
+    {
+    "app": null
+    "driver-package": "test-in-console"
+    "app-packages": true #TODO Add Support for testing all packages within an app that are not symlinks
+    "timeout": 120000 # 2 minutes
+    "meteor-ready-text": "=> App running at:"
+    "meteor-error-text": "Waiting for file change."
+    }
 
 
   @exec: ->
@@ -97,7 +99,7 @@ class Meteor extends EventEmitter
     # flatten nested testPackages array into args
     args = _.flatten(args)
 
-    env = clone(process.env)
+    env = process.env
     env.ROOT_URL = opts["root-url"] if opts["root-url"]
     env.MONGO_URL = opts["mongo-url"] if opts["mongo-url"]
 
@@ -143,12 +145,12 @@ class Meteor extends EventEmitter
 
 
   hasErrorText: ( buffer )=>
-    if buffer.lastIndexOf( @testPackagesOpts["meteor-error-text"] ) isnt -1
+    if buffer.lastIndexOf( @testPackagesOpts()["meteor-error-text"] ) isnt -1
       @emit "error"
 
 
   hasReadyText: ( buffer )=>
-    if buffer.lastIndexOf( @testPackagesOpts["meteor-ready-text"] ) isnt -1
+    if buffer.lastIndexOf( @testPackagesOpts()["meteor-ready-text"] ) isnt -1
       @emit "ready"
 
   kill:->
