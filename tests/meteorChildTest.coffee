@@ -61,13 +61,17 @@ describe "Meteor class Test", ->
 
     process.env.SPACEJAM_PORT = 5000
     returnedRootUrl = Meteor.getDefaultRootUrl()
-    expect(returnedRootUrl,"Returned root url should include the $SPACEJAM_PORT env var").to.equal("http://localhost:#{process.env.SPACEJAM_PORT}/")
+    expect(returnedRootUrl,"Returned root url should use the $SPACEJAM_PORT env var").to.equal("http://localhost:#{process.env.SPACEJAM_PORT}/")
     delete process.env.SPACEJAM_PORT
 
     process.env.PORT = 6000
     returnedRootUrl = Meteor.getDefaultRootUrl()
-    expect(returnedRootUrl,"Returned root url should include the $PORT env var").to.equal("http://localhost:#{process.env.PORT}/")
+    expect(returnedRootUrl,"Returned root url should use the $PORT env var").to.equal("http://localhost:#{process.env.PORT}/")
     delete process.env.PORT
+
+    returnedRootUrl = Meteor.getDefaultRootUrl(8000)
+    expect(returnedRootUrl,"Returned root url should use the @port param if any").to.equal("http://localhost:8000/")
+
 
 
 
