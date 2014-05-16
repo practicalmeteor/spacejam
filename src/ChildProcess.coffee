@@ -1,10 +1,15 @@
 expect = require("chai").expect
 _spawn = require("child_process").spawn
 _exec = require("child_process").exec
+psTree = require("ps-tree")
 
 class ChildProcess
 
+  @children: []
+
   child: null
+
+  descendants: []
 
 
   constructor:->
@@ -44,6 +49,7 @@ class ChildProcess
     expect(options,"Invalid @options").to.be.an "object"
 
     @child = _spawn(command,args,options)
+    ChildProcess.children[@child.pid] = @child
 
     @child.stdout.setEncoding "utf8"
     @child.stderr.setEncoding "utf8"
@@ -55,6 +61,7 @@ class ChildProcess
       log.error data
 
     @child.on "exit", (code,signal)=>
+      delete ChildProcess.children[@child.pid]
       if code?
         log.info "#{command} exited with code: #{code}"
       else if signal?
@@ -63,8 +70,26 @@ class ChildProcess
         log.error "#{command} exited: #{args}"
 
 
-  kill: (signal)->
+  @killAll: (signal="SIGINT")->
+    log.debug "ChildProcess.killAll()",arguments
+    childrenPids = []
+    ChildProcess.children.forEach (child,pid)->
+      childrenPids.push(pid)
+
+    for pid in childrenPids
+      log.debug "killing child with pid:",pid
+      process.kill pid,signal
+
+
+  kill: (signal="SIGINT")->
+    log.debug "ChildProcess.kill()",arguments
     @child.kill(signal)
 
 
+
+process.on 'exit', ->
+  ChildProcess.killAll()
+
+
 module.exports = ChildProcess
+

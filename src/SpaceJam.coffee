@@ -1,6 +1,4 @@
-global.log = require('loglevel')
-log.setLevel "debug"
-
+require('./log')
 expect = require("chai").expect
 _ = require("underscore")
 Meteor = require("./Meteor")
@@ -24,8 +22,8 @@ class SpaceJam
       "port"      : process.env.PORT || 4096
       "root-url"  : process.env.ROOT_URL || null
       "timeout"   : 120000
-      "log-level" : "debug"
       "tinytest"  : "phantomjs" #TODO: For now only phantomjs is supported
+      "crash-spacejam-after": 0
     }
 
 
@@ -36,6 +34,7 @@ class SpaceJam
     expect(meteor,"Meteor is already running").to.be.null
 
     opts = require("rc")("spacejam",spacejamDefaultOpts())
+
     opts["root-url"] ?= Meteor.getDefaultRootUrl(opts["port"])
 
     command = opts._[0]
@@ -67,6 +66,11 @@ class SpaceJam
       killChildren(SpaceJam.ERR_CODE.METEOR_ERROR)
 
     meteor.testPackages(opts)
+
+    if +opts["crash-spacejam-after"] > 0
+      setTimeout(->
+        throw new Error("Testing spacejam crash")
+      ,+opts["crash-spacejam-after"])
 
 
 

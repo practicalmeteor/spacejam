@@ -2,6 +2,7 @@ require 'coffee-script/register'
 global.log = require('loglevel')
 ChildProcess = require "./src/ChildProcess"
 
+
 task "compile", "Compile library", ->
   child = new ChildProcess()
   child.spawn "coffee -o lib -c src/*.coffee"

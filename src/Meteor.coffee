@@ -189,8 +189,9 @@ class Meteor extends EventEmitter
 
 
   # TODO: Test
-  kill:->
-    @childProcess?.child?.kill()
+  kill: (signal="SIGINT")->
+    log.debug "Meteor.kill()",arguments
+    @childProcess?.kill(signal)
 
 
 module.exports = Meteor

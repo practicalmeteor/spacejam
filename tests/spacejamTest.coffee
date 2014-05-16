@@ -18,7 +18,7 @@ describe "SpaceJam Test", ->
     spacejamChild?.kill()
 
 
-  it.only "Run with with default options and no env", (done)->
+  it "Run with with default options and no env", (done)->
     @timeout 30000
     args = [
       "test-packages"
