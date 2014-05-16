@@ -21,7 +21,7 @@ class Meteor extends EventEmitter
   defaultOpts: ->
     {
       "port"        : process.env.PORT || 4096
-      "root-url"    : process.env.ROOT_URL || Meteor.getDefaultRootUrl()
+      "root-url"    : process.env.ROOT_URL || null
       "mongo-url"   : process.env.MONGO_URL || null
       "settings"    : null
       "production"  : false
@@ -71,8 +71,8 @@ class Meteor extends EventEmitter
     expect(parseCommandLine,"@parseCommandLine should be a boolean.").to.be.a "boolean"
 
     expect(@childProcess,"Meteor's child process is already running").to.be.null
-    opts = _.extend(@defaultOpts(),opts)
     opts = _.extend(@testPackagesOpts(),opts)
+    opts = _.extend(@defaultOpts(),opts)
 
     packages = opts._[1..] # Get packages from command line
 
@@ -82,6 +82,8 @@ class Meteor extends EventEmitter
       opts = require("rc")("spacejam",opts,->)
 
     expect(+opts["port"],"--port is not a number. See 'spacejam help' for more info.").to.be.ok
+
+    opts["root-url"] ?= Meteor.getDefaultRootUrl(opts["port"])
 
     if !opts["app"]
       log.error "No meteor app has been specified. See 'spacejam help' for more info."
@@ -118,8 +120,8 @@ class Meteor extends EventEmitter
 
     options = {
       cwd: opts["app"],
-      env: env
-      detached:false,
+      env: env,
+      detached:false
     }
 
     @childProcess = new ChildProcess()
@@ -136,9 +138,13 @@ class Meteor extends EventEmitter
 
 
 
-  @getDefaultRootUrl: ->
-    log.debug "Meteor.getDefaultRootUrl()"
-    port = process.env.SPACEJAM_PORT || # TODO: Remove if unnecessary
+  @getDefaultRootUrl: (port)->
+    log.debug "Meteor.getDefaultRootUrl()",arguments
+    if port
+      expect(+port,"--port is not a number. See 'spacejam help' for more info.").to.be.ok
+
+    port = port ||
+      process.env.SPACEJAM_PORT ||
       process.env.PORT ||
       4096
     rootUrl = "http://localhost:#{port}/"
