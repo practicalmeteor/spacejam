@@ -4,8 +4,6 @@ ChildProcess = require './ChildProcess'
 EventEmitter = require('events').EventEmitter
 glob = require("glob")
 
-
-
 class Meteor extends EventEmitter
 
   childProcess: null
@@ -14,6 +12,7 @@ class Meteor extends EventEmitter
     stdout:""
     stderr:""
   }
+
 
 
 

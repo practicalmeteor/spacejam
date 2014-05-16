@@ -1,7 +1,7 @@
 expect = require("chai").expect
 _spawn = require("child_process").spawn
 _exec = require("child_process").exec
-psTree = require("ps-tree")
+Pipe = require("./Pipe")
 
 class ChildProcess
 
@@ -10,6 +10,8 @@ class ChildProcess
   child: null
 
   descendants: []
+
+  pipe : null
 
 
   constructor:->
@@ -40,7 +42,7 @@ class ChildProcess
 
 
 
-  spawn: (command,args=[],options={})->
+  spawn: (command,args=[],options={}, pipeClass=null)->
     log.debug "ChildProcess.spawn()",command
 
     expect(@child,"ChildProcess is already running").to.be.null
@@ -51,14 +53,10 @@ class ChildProcess
     @child = _spawn(command,args,options)
     ChildProcess.children[@child.pid] = @child
 
-    @child.stdout.setEncoding "utf8"
-    @child.stderr.setEncoding "utf8"
-
-    @child.stdout.on "data", (data)=>
-      log.info data
-
-    @child.stderr.on "data", (data)=>
-      log.error data
+    if pipeClass
+      @pipe = new pipeClass(@child.stdout,@child.stderr)
+    else
+      @pipe = new Pipe(@child.stdout,@child.stderr)
 
     @child.on "exit", (code,signal)=>
       delete ChildProcess.children[@child.pid]

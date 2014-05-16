@@ -29,7 +29,7 @@ class SpaceJam
 
   @exec: ->
     log.debug "SpaceJam.exec()"
-    log.info "Running mctr"
+    log.info "Jamming spacejam"
 
     expect(meteor,"Meteor is already running").to.be.null
 
