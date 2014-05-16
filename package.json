@@ -10,9 +10,7 @@
     "phantomjs": "~1.9.2-5",
     "mocha": "~1.18.2",
     "chai": "~1.9.1",
-    "sinon-chai": "~2.5.0",
-    "clone": "^0.1.15",
-    "ps-tree": "0.0.3"
+    "sinon-chai": "~2.5.0"
   },
   "scripts": {
     "test": "cake test"
