@@ -1,4 +1,3 @@
-global.log = require("loglevel")
 chai = require("chai")
 expect = chai.expect
 sinon = require("sinon")
@@ -6,8 +5,6 @@ sinonChai = require("sinon-chai")
 chai.use(sinonChai)
 Meteor = require "../src/Meteor"
 ChildProcess = require "../src/ChildProcess"
-
-#TODO give all tests 30000 other than the timeout test
 
 describe "Meteor class Test", ->
   @timeout 30000
@@ -18,20 +15,32 @@ describe "Meteor class Test", ->
 
   globPackagesStub = null
 
+  defaultTestPort = 4096
+
+  defaultDriverPackage = "test-in-console"
+
+  testPackage = "package"
+
   env = process.env
 
-  spawnOptions = { cwd: "app", detached: false ,env: env }
+  expectedSpawnOptions = { cwd: "app", detached: false, env: env }
+
+
 
   before ->
+    log.setLevel "error"
     delete process.env.PORT
     delete process.env.ROOT_URL
     delete process.env.MONGO_URL
+    delete process.env.SPACEJAM_PORT
+
+
 
   beforeEach ->
     meteor = new Meteor()
     spawnStub = sinon.stub(ChildProcess.prototype,"spawn")
     globPackagesStub = sinon.stub(meteor,"_globPackages")
-    globPackagesStub.returns ["one","two"]
+    globPackagesStub.returns [testPackage]
 
 
 
@@ -40,105 +49,115 @@ describe "Meteor class Test", ->
 
 
 
-  it "Spawns meteor with correct arguments", (done)->
+  it "exec()",->
+    meteorInstance = Meteor.exec()
+    expect(meteorInstance,"exec() did not return a Meteor instance").to.be.an.instanceOf(Meteor)
+
+
+
+  it "getDefaultRootUrl()",->
+    returnedRootUrl = Meteor.getDefaultRootUrl()
+    expect(returnedRootUrl,"Returned root url should be the default").to.equal("http://localhost:#{defaultTestPort}/")
+
+    process.env.SPACEJAM_PORT = 5000
+    returnedRootUrl = Meteor.getDefaultRootUrl()
+    expect(returnedRootUrl,"Returned root url should include the $SPACEJAM_PORT env var").to.equal("http://localhost:#{process.env.SPACEJAM_PORT}/")
+    delete process.env.SPACEJAM_PORT
+
+    process.env.PORT = 6000
+    returnedRootUrl = Meteor.getDefaultRootUrl()
+    expect(returnedRootUrl,"Returned root url should include the $PORT env var").to.equal("http://localhost:#{process.env.PORT}/")
+    delete process.env.PORT
+
+
+
+  it "testPackages() - Spawns meteor with correct arguments",->
     opts = {app:"app","_":["","packages"]}
     meteor.testPackages(opts)
-    spawnArgs = ["--port",
-                 process.env.PORT || 4096,
-                 "--driver-package",
-                 "test-in-console",
-                 "test-packages",
-                 "one",
-                 "two"
+    expectedSpawnArgs = ["--port",
+                         defaultTestPort,
+                         "--driver-package",
+                         defaultDriverPackage,
+                         "test-packages",
+                         testPackage
     ]
-    expect(spawnStub.args[0]).to.eql(["meteor",spawnArgs,spawnOptions])
-    done()
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
 
 
 
-  it "Spawns meteor with correct arguments (--settings)", (done)->
+  it "testPackages() - Spawns meteor with correct arguments (--settings)",->
     opts = {app:"app","_":["","packages"],settings:"settings.json"}
     meteor.testPackages(opts)
-    spawnArgs = ["--port",
-                 process.env.PORT || 4096,
-                 "--driver-package",
-                 "test-in-console",
-                 "--settings",
-                 "settings.json",
-                 "test-packages",
-                 "one",
-                 "two"
+    expectedSpawnArgs = ["--port",
+                         defaultTestPort,
+                         "--driver-package",
+                         defaultDriverPackage,
+                         "--settings",
+                         "settings.json",
+                         "test-packages",
+                         testPackage
     ]
-    expect(spawnStub.args[0]).to.eql(["meteor",spawnArgs,spawnOptions])
-    done()
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
 
 
 
-  it "Spawns meteor with correct arguments (--driver-package)", (done)->
+  it "testPackages() - Spawns meteor with correct arguments (--driver-package)",->
     opts = {app:"app","_":["","packages"],"driver-package":"test-in-browser"}
     meteor.testPackages(opts)
-    spawnArgs = ["--port",
-                 process.env.PORT || 4096,
-                 "--driver-package",
-                 "test-in-browser",
-                 "test-packages",
-                 "one",
-                 "two"
+    expectedSpawnArgs = ["--port",
+                         defaultTestPort,
+                         "--driver-package",
+                         "test-in-browser",
+                         "test-packages",
+                         testPackage
     ]
-    expect(spawnStub.args[0]).to.eql(["meteor",spawnArgs,spawnOptions])
-    done()
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
 
 
 
-  it "Spawns meteor with correct arguments (--once)", (done)->
+  it "testPackages() - Spawns meteor with correct arguments (--once)",->
     opts = {app:"app","_":["","packages"],once:true}
     meteor.testPackages(opts)
-    spawnArgs = ["--port",
-                 process.env.PORT || 4096,
-                 "--driver-package",
-                 "test-in-console",
-                 "--once",
-                 "test-packages",
-                 "one",
-                 "two"
+    expectedSpawnArgs = ["--port",
+                         defaultTestPort,
+                         "--driver-package",
+                         defaultDriverPackage,
+                         "--once",
+                         "test-packages",
+                         testPackage
     ]
-    expect(spawnStub.args[0]).to.eql(["meteor",spawnArgs,spawnOptions])
-    done()
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
 
 
 
-  it "Spawns meteor with correct arguments (--production)", (done)->
+  it "testPackages() - Spawns meteor with correct arguments (--production)",->
     opts = {app:"app","_":["","packages"],production:true}
     meteor.testPackages(opts)
-    spawnArgs = ["--port",
-                 process.env.PORT || 4096,
-                 "--driver-package",
-                 "test-in-console",
-                 "--production",
-                 "test-packages",
-                 "one",
-                 "two"
+    expectedSpawnArgs = ["--port",
+                         defaultTestPort,
+                         "--driver-package",
+                         defaultDriverPackage,
+                         "--production",
+                         "test-packages",
+                         testPackage
     ]
-    expect(spawnStub.args[0]).to.eql(["meteor",spawnArgs,spawnOptions])
-    done()
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
 
 
 
-  it "Spawns meteor with root-url and mongo-url args overwrite env", (done)->
-    expectedSpawnOptions = spawnOptions
+  it "Spawns meteor with root-url and mongo-url args overwrite env",->
+    _expectedSpawnOptions = expectedSpawnOptions
     mongoUrl = "mongodb://localhost/mydb"
     rootUrl = "http://localhost:5000/"
     opts = {app:"app","_":["","packages"],"root-url":rootUrl,"mongo-url":mongoUrl}
     meteor.testPackages(opts)
-    spawnArgs = ["--port",
-                 process.env.PORT || 4096,
-                 "--driver-package",
-                 "test-in-console",
-                 "test-packages",
-                 "one",
-                 "two"
+    expectedSpawnArgs = ["--port",
+                         defaultTestPort,
+                         "--driver-package",
+                         defaultDriverPackage,
+                         "test-packages",
+                         testPackage
     ]
-    expectedSpawnOptions.env.ROOT_URL = rootUrl
-    expectedSpawnOptions.env.MONGO_URL = mongoUrl
-    expect(spawnStub.args[0]).to.eql(["meteor",spawnArgs,expectedSpawnOptions])
-    done()
+    _expectedSpawnOptions.env.ROOT_URL = rootUrl
+    _expectedSpawnOptions.env.MONGO_URL = mongoUrl
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,_expectedSpawnOptions])
