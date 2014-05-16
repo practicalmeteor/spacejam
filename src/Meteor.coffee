@@ -5,6 +5,7 @@ EventEmitter = require('events').EventEmitter
 glob = require("glob")
 
 
+
 class Meteor extends EventEmitter
 
   childProcess: null
@@ -14,31 +15,39 @@ class Meteor extends EventEmitter
     stderr:""
   }
 
+
+
   # It is a function not an object because of design for testability, so we can modify process.env before each tests.
   defaultOpts: ->
     {
-    "port"        : process.env.PORT || 4096
-    "root-url"    : process.env.ROOT_URL || null
-    "mongo-url"   : process.env.MONGO_URL || null
-    "settings"    : null
-    "production"  : false
-    "once"        : false
+      "port"        : process.env.PORT || 4096
+      "root-url"    : process.env.ROOT_URL || Meteor.getDefaultRootUrl()
+      "mongo-url"   : process.env.MONGO_URL || null
+      "settings"    : null
+      "production"  : false
+      "once"        : false
     }
 
-  runOpts:{
+
+
+  runOpts: ->
+  {
 
   }
+
+
 
   # See defaultOpts why it is a function an not an object.
   testPackagesOpts: ->
     {
-    "app": null
-    "driver-package": "test-in-console"
-    "app-packages": true #TODO Add Support for testing all packages within an app that are not symlinks
-    "timeout": 120000 # 2 minutes
-    "meteor-ready-text": "=> App running at:"
-    "meteor-error-text": "Waiting for file change."
+      "app": null
+      "driver-package": "test-in-console"
+      "app-packages": true #TODO Add Support for testing all packages within an app that are not symlinks
+      "timeout": 120000 # 2 minutes
+      "meteor-ready-text": "=> App running at:"
+      "meteor-error-text": "Waiting for file change."
     }
+
 
 
   @exec: ->
@@ -51,13 +60,17 @@ class Meteor extends EventEmitter
     log.debug "Meteor.run()",arguments
     log.info("Spawning meteor")
 
+
+
   # @opts
   # @parseCommandLine
   testPackages: (opts,parseCommandLine=true)=>
     log.debug "Meteor.testPackages()"
     log.info("Spawning meteor")
+    expect(opts,"@opts should be an object.").to.be.an "object"
+    expect(parseCommandLine,"@parseCommandLine should be a boolean.").to.be.a "boolean"
 
-    expect(@childProcess,"ChildProcess is already running").to.be.null
+    expect(@childProcess,"Meteor's child process is already running").to.be.null
     opts = _.extend(@defaultOpts(),opts)
     opts = _.extend(@testPackagesOpts(),opts)
 
@@ -121,9 +134,23 @@ class Meteor extends EventEmitter
       @buffer.stderr += data
       @hasErrorText data
 
+
+
+  @getDefaultRootUrl: ->
+    log.debug "Meteor.getDefaultRootUrl()"
+    port = process.env.SPACEJAM_PORT || # TODO: Remove if unnecessary
+      process.env.PORT ||
+      4096
+    rootUrl = "http://localhost:#{port}/"
+    return rootUrl
+
+
+
+  # TODO: Test
   _globPackages: (app,packages)-> # Use glob to get packages that match the packages arg
     log.debug "Meteor._globPackages()",arguments
-    expect(packages,"Invalid @packages").to.be.an "array"
+    expect(app,"@app should be a string").to.be.a "string"
+    expect(packages,"@packages should be and array").to.be.an "array"
 
     matchedPackages = []
 
@@ -149,13 +176,15 @@ class Meteor extends EventEmitter
       @emit "error"
 
 
+
   hasReadyText: ( buffer )=>
     if buffer.lastIndexOf( @testPackagesOpts()["meteor-ready-text"] ) isnt -1
       @emit "ready"
 
+
+  # TODO: Test
   kill:->
     @childProcess?.child?.kill()
 
 
 module.exports = Meteor
-
