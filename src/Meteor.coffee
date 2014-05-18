@@ -1,3 +1,4 @@
+require('./log')
 expect = require('chai').expect
 _ = require("underscore")
 ChildProcess = require './ChildProcess'
@@ -14,7 +15,7 @@ class Meteor extends EventEmitter
   }
 
 
-
+  opts = null
 
   # It is a function not an object because of design for testability, so we can modify process.env before each tests.
   defaultOpts: ->
@@ -70,40 +71,46 @@ class Meteor extends EventEmitter
     expect(parseCommandLine,"@parseCommandLine should be a boolean.").to.be.a "boolean"
 
     expect(@childProcess,"Meteor's child process is already running").to.be.null
-    opts = _.extend(@testPackagesOpts(),opts)
-    opts = _.extend(@defaultOpts(),opts)
+    # @testPackagesOpts overwrite @defaultOpts
+    @opts = _.extend(@defaultOpts(), @testPackagesOpts())
 
-    packages = opts._[1..] # Get packages from command line
+    # input opts take higher precedence
+    @opts = _.extend(@opts, opts)
 
+    # command line opts take even higher precedence
     if parseCommandLine
-      opts = require("rc")("spacejam",opts)
+      @opts = require("rc")("spacejam",@opts)
     else
-      opts = require("rc")("spacejam",opts,->)
+      @opts = require("rc")("spacejam",@opts,->)
 
-    expect(+opts["port"],"--port is not a number. See 'spacejam help' for more info.").to.be.ok
+    expect(+@opts["port"],"--port is not a number. See 'spacejam help' for more info.").to.be.ok
 
-    opts["root-url"] ?= Meteor.getDefaultRootUrl(opts["port"])
+    @opts["root-url"] ?= Meteor.getDefaultRootUrl(@opts["port"])
 
-    if !opts["app"]
+    log.debug "meteor test-packages opts=\n",@opts
+
+    if !@opts["app"]
       log.error "No meteor app has been specified. See 'spacejam help' for more info."
       process.exit 1
+
+    packages = @opts._[1..] # Get packages from command line
 
     if !packages.length > 0
       log.error "No packages to test have been specified. See 'spacejam help' for more info."
       process.exit 1
 
 
-    testPackages = @_globPackages(opts["app"],packages)
+    testPackages = @_globPackages(@opts["app"],packages)
 
     args = [
       "--port"
-      opts["port"]
+      @opts["port"]
       "--driver-package"
-      opts["driver-package"]
-      "--production" if opts["production"]
-      "--once" if opts["once"]
-      "--settings" if opts["settings"]
-      opts["settings"]
+      @opts["driver-package"]
+      "--production" if @opts["production"]
+      "--once" if @opts["once"]
+      "--settings" if @opts["settings"]
+      @opts["settings"] if @opts["settings"]
       "test-packages"
       testPackages
     ]
@@ -113,12 +120,16 @@ class Meteor extends EventEmitter
     # flatten nested testPackages array into args
     args = _.flatten(args)
 
+    log.debug "meteor test-packages args=\n",args
+
     env = process.env
-    env.ROOT_URL = opts["root-url"] if opts["root-url"]
-    env.MONGO_URL = opts["mongo-url"] if opts["mongo-url"]
+    env.ROOT_URL = @opts["root-url"]
+    env.MONGO_URL = @opts["mongo-url"] if @opts["mongo-url"]
+
+    log.debug "ROOT_URL=",env.ROOT_URL
 
     options = {
-      cwd: opts["app"],
+      cwd: @opts["app"],
       env: env,
       detached:false
     }

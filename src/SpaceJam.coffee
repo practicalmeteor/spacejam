@@ -6,9 +6,11 @@ Phantomjs = require("./Phantomjs")
 
 class SpaceJam
 
-  meteor = null
+  @opts = null;
 
-  phantomjs = null
+  @meteor = null
+
+  @phantomjs = null
 
   @ERR_CODE:
     TEST_SUCCESS: 0
@@ -17,10 +19,8 @@ class SpaceJam
     TEST_TIMEOUT: 4
 
 
-  spacejamDefaultOpts =->
+  @defaultOpts =->
     {
-      "port"      : process.env.PORT || 4096
-      "root-url"  : process.env.ROOT_URL || null
       "timeout"   : 120000
       "tinytest"  : "phantomjs" #TODO: For now only phantomjs is supported
       "crash-spacejam-after": 0
@@ -29,17 +29,15 @@ class SpaceJam
 
   @exec: ->
     log.debug "SpaceJam.exec()"
-    log.info "Jamming spacejam"
+    log.info "spacejam jamming"
 
-    expect(meteor,"Meteor is already running").to.be.null
+    expect(SpaceJam.meteor,"Meteor is already running").to.be.null
 
-    opts = require("rc")("spacejam",spacejamDefaultOpts())
+    SpaceJam.opts = require("rc")("spacejam",SpaceJam.defaultOpts())
 
-    opts["root-url"] ?= Meteor.getDefaultRootUrl(opts["port"])
-
-    command = opts._[0]
+    command = SpaceJam.opts._[0]
     if _.has(runCommands,command)
-      runCommands[command](opts)
+      runCommands[command](SpaceJam.opts)
     else
       log.error "\n'#{command}' is not a spacejam command\n" if command
       runCommands.help()
@@ -48,7 +46,7 @@ class SpaceJam
 
   testPackages = (opts)->
     log.debug "SpaceJam.testPackages()",arguments
-    meteor = Meteor.exec()
+    SpaceJam.meteor = Meteor.exec()
 
     setTimeout(
       =>
@@ -57,15 +55,15 @@ class SpaceJam
     ,opts["timeout"]
     )
 
-    meteor.on "ready", =>
-      log.info "Meteor is ready"
-      runPhantom(opts["root-url"])
+    SpaceJam.meteor.on "ready", =>
+      log.info "spacejam: meteor is ready"
+      runPhantom(SpaceJam.meteor.opts["root-url"])
 
-    meteor.on "error", =>
-      log.error "Meteor has errors, exiting"
+    SpaceJam.meteor.on "error", =>
+      log.error "spacejam: meteor has errors, exiting"
       killChildren(SpaceJam.ERR_CODE.METEOR_ERROR)
 
-    meteor.testPackages(opts)
+    SpaceJam.meteor.testPackages(opts)
 
     if +opts["crash-spacejam-after"] > 0
       setTimeout(->
@@ -76,24 +74,24 @@ class SpaceJam
 
   runPhantom=(url)->
     log.debug "SpaceJam.runPhantom()",arguments
-    phantomjs = new Phantomjs()
+    SpaceJam.phantomjs = new Phantomjs()
 
-    phantomjs.on "exit", (code,signal)=>
-      meteor.kill()
+    SpaceJam.phantomjs.on "exit", (code,signal)=>
+      SpaceJam.meteor.kill()
       if code?
         process.exit code
       else if signal?
         process.exit SpaceJam.ERR_CODE.PHANTOM_ERROR
       else
         process.exit SpaceJam.ERR_CODE.PHANTOM_ERROR
-    phantomjs.run(url)
+    SpaceJam.phantomjs.run(url)
 
 
   #Kill all running child_process instances
   killChildren=(code = 1)->
     log.debug "SpaceJam.killChildren()",arguments
-    meteor?.kill()
-    phantomjs?.kill()
+    SpaceJam.meteor?.kill()
+    SpaceJam.phantomjs?.kill()
     process.exit code
 
 

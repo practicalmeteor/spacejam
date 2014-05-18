@@ -5,9 +5,9 @@ class Pipe
     @stderr.setEncoding "utf8"
 
     @stdout.on "data", (data)=>
-      log.info data
+      process.stdout.write data
 
     @stderr.on "data", (data)=>
-      log.error data
+      process.stderr.write data
 
 module.exports = Pipe
