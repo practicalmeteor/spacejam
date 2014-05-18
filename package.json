@@ -8,12 +8,15 @@
     "loglevel": "~0.6.0",
     "glob": "~3.2.9",
     "phantomjs": "~1.9.2-5",
-    "mocha": "~1.18.2",
-    "chai": "~1.9.1",
-    "sinon-chai": "~2.5.0"
+    "chai": "~1.9.1"
+  },
+  "devDependencies": {
+     "mocha": "~1.18.2",
+     "sinon-chai": "~2.5.0"
   },
   "scripts": {
-    "test": "cake test"
+    "test": "cake test",
+    "compile": "cake compile"
   },
   "bin": {
     "spacejam": "bin/spacejam"
