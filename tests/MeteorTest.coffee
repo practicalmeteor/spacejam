@@ -149,6 +149,40 @@ describe "Meteor class Test", ->
 
 
 
+  it "testPackages() - Spawns meteor with correct arguments (--release)",->
+    testRelease = "8.0"
+    opts = {app:"app","_":["","packages"],release:testRelease}
+    meteor.testPackages(opts)
+    expectedSpawnArgs = ["--port",
+                         defaultTestPort,
+                         "--driver-package",
+                         defaultDriverPackage,
+                         "--release",
+                         testRelease,
+                         "test-packages",
+                         testPackage
+    ]
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+
+
+
+  it "testPackages() - Spawns meteor with correct arguments (--deploy)",->
+    deployServer = "spacejamtest.meteor.com"
+    opts = {app:"app","_":["","packages"],deploy:deployServer}
+    meteor.testPackages(opts)
+    expectedSpawnArgs = ["--port",
+                         defaultTestPort,
+                         "--driver-package",
+                         defaultDriverPackage,
+                         "--deploy",
+                         deployServer,
+                         "test-packages",
+                         testPackage
+    ]
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+
+
+
   it "Spawns meteor with root-url and mongo-url args overwrite env",->
     _expectedSpawnOptions = expectedSpawnOptions
     mongoUrl = "mongodb://localhost/mydb"
@@ -165,3 +199,4 @@ describe "Meteor class Test", ->
     _expectedSpawnOptions.env.ROOT_URL = rootUrl
     _expectedSpawnOptions.env.MONGO_URL = mongoUrl
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,_expectedSpawnOptions])
+

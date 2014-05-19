@@ -111,6 +111,10 @@ class Meteor extends EventEmitter
       "--once" if @opts["once"]
       "--settings" if @opts["settings"]
       @opts["settings"] if @opts["settings"]
+      "--release" if @opts["release"]
+      @opts["release"] if @opts["release"]
+      "--deploy" if @opts["deploy"]
+      @opts["deploy"] if @opts["deploy"]
       "test-packages"
       testPackages
     ]
