@@ -18,18 +18,48 @@ describe "SpaceJam Test", ->
     spacejamChild?.kill()
 
 
-  it "Run with with default options and no env", (done)->
+  it "Run with with default options and no env, outside a Meteor app", (done)->
     @timeout 30000
+    spacejamChild = new ChildProcess()
     args = [
       "test-packages"
+      "success"
+    ]
+    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code,"spacejam exited with the wrong code").to.equal 1
+      done()
+
+
+
+  it "Run with with default options and no env, outside a Meteor app with --app arg", (done)->
+    @timeout 30000
+    spacejamChild = new ChildProcess()
+    args = [
+      "test-packages"
+      "success"
       "--app"
       "tests/leaderboard/"
-      "success"
     ]
     spacejamChild.spawn("bin/spacejam",args)
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
+
+
+
+  it "Run with with default options and no env, inside a Meteor app", (done)->
+    @timeout 30000
+    spacejamChild = new ChildProcess()
+    args = [
+      "test-packages"
+      "success"
+    ]
+    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
+    spacejamChild.child.on "exit", (code) =>
+      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
+      done()
+
 
   it "Run with a successful test and a settings file", (done)->
     @timeout 30000
@@ -37,15 +67,13 @@ describe "SpaceJam Test", ->
     testPort = "7040"
     args = [
       "test-packages"
-      "--app"
-      "tests/leaderboard/"
       "settings"
       "--settings"
       "settings.json"
       "--port"
       testPort
     ]
-    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
@@ -58,13 +86,11 @@ describe "SpaceJam Test", ->
     testPort = "7050"
     args = [
       "test-packages"
-      "--app"
-      "tests/leaderboard/"
       "failure"
       "--port"
       testPort
     ]
-    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_FAILED
       done()
@@ -77,15 +103,13 @@ describe "SpaceJam Test", ->
     testPort = "7060"
     args = [
       "test-packages"
-      "--app"
-      "tests/leaderboard/"
       "timeout"
       "--timeout"
       "10000"
       "--port"
       testPort
     ]
-    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_TIMEOUT
       done()
@@ -98,15 +122,13 @@ describe "SpaceJam Test", ->
     testPort = "7070"
     args = [
       "test-packages"
-      "--app"
-      "tests/leaderboard/"
       "success*"
       "--settings"
       "settings.json"
       "--port"
       testPort
     ]
-    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
@@ -119,8 +141,6 @@ describe "SpaceJam Test", ->
     testPort = "7080"
     args = [
       "test-packages"
-      "--app"
-      "tests/leaderboard/"
       "success"
       "settings"
       "--settings"
@@ -128,7 +148,7 @@ describe "SpaceJam Test", ->
       "--port"
       testPort
     ]
-    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
@@ -141,13 +161,11 @@ describe "SpaceJam Test", ->
     testPort = "7090"
     args = [
       "test-packages"
-      "--app"
-      "tests/todos/"
       "appfails"
       "--port"
       testPort
     ]
-    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/todos/"})
     spacejamChild.child.on "exit", (code) =>
       expect(code).to.equal SpaceJam.ERR_CODE.METEOR_ERROR
       done()

@@ -111,51 +111,51 @@ directory.
 
 The following options are specific to spacejam:
 
-  --app <directory>           The directory of your meteor app (required, for
+ --app <directory>           The directory of your meteor app (required, for
                               now).
 
-  --log-level <level>         spacejam log level. One of
+ --log-level <level>         spacejam log level. One of
                               TRACE|DEBUG|INFO|WARN|ERROR.
 
-  --port <port>               The port in which to run your meteor app
-                              (defaults to the PORT env var or 4096).
-
-  --root-url <url>            The meteor app ROOT_URL (defaults to the
+ --root-url <url>            The meteor app ROOT_URL (defaults to the
                               ROOT_URL env var or http://localhost:3000/).
 
-  --mongo-url <url>           The meteor app MONGO_URL (defaults to
+ --mongo-url <url>           The meteor app MONGO_URL (defaults to
                               the MONGO_URL env var, if exists).
 
-  --timeout  <milliseconds>   Total timeout for all tests (defaults to
+ --timeout  <milliseconds>   Total timeout for all tests (defaults to
                               120000 milliseconds, i.e. 2 minutes).
 
-  --tinytest                  The browser to run the tests in automatically.
+ --tinytest                  The browser to run the tests in automatically.
                               Currently, only phantomjs is supported and is
                               the default.
 
-  --meteor-ready-text <text>  The meteor output text that indicates that the
+ --meteor-ready-text <text>  The meteor output text that indicates that the
                               app is ready.
 
-  --meteor-error-text <text>  The meteor output text that indicates that the 
+ --meteor-error-text <text>  The meteor output text that indicates that the
                               app has errors.
 
 
 The following options are meteor options and are passed through to meteor (all
 are optional):
 
-  --settings <file>   Path to a meteor settings file.
+ --port <port>         The port in which to run your meteor app
+                       (defaults to the PORT env var or 4096).
 
-  --production        Simulate meteor production mode. Minify and bundle CSS 
-                      and JS files (defaults to false).
+ --settings <file>     Path to a meteor settings file.
 
-  --once              If true, do not wait for file changes if meteor has 
-                      errors, exit immediately.
+ --production          Simulate meteor production mode. Minify and bundle CSS
+                       and JS files (defaults to false).
 
-  --driver-package    One of "test-in-console" (default) or "test-in-browser".
-                      "test-in-console" will print test results to the console.
-                      "test-in-browser" will allow you to open any browser on 
-                      the ROOT_URL, run the tests in that browser, and get the 
-                      results in html.
+ --once                If true, do not wait for file changes if meteor has
+                       errors, exit immediately.
+
+ --driver-package      One of "test-in-console" (default) or "test-in-browser".
+                       "test-in-console" will print test results to the console.
+                       "test-in-browser" will allow you to open any browser on
+                       the ROOT_URL, run the tests in that browser, and get the
+                       results in html.
 
 Other commands:
 

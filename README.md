@@ -29,13 +29,10 @@ It enhances meteor test-packages, by supporting glob wildcards on package names 
     
 The following options are specific to spacejam:
 
-    --app <directory>             The directory of your meteor app (required, for now).
+    --app <directory>             The directory of your meteor app (default is '.').
     
     --log-level <level>           spacejam log level. One of TRACE|DEBUG|INFO|WARN|ERROR.
-    
-    --port <port>                 The port in which to run your meteor app 
-                                  (defaults to the PORT env var or 4096).
-                                  
+
     --root-url <url>              The meteor app ROOT_URL 
                                   (defaults to the ROOT_URL env var or 
                                   http://localhost:3000/).
@@ -61,10 +58,15 @@ The following options are specific to spacejam:
 
 The following options are meteor options and are passed through to meteor (all are optional):
 
+    --port <port>                 The port in which to run your meteor app
+                                  (defaults to the PORT env var or 4096).
+
     --settings <file>             Path to a meteor settings file.
     
     --production                  Simulate meteor production mode. Minify and bundle 
                                   CSS and JS files (defaults to false).
+
+    --release <version>           Specify the release of Meteor to use.
                                   
     --once                        If true, do not wait for file changes if meteor 
                                   has errors, exit immediately. We recommend 
@@ -72,7 +74,7 @@ The following options are meteor options and are passed through to meteor (all a
                                   environment, and setting it to false in your development 
                                   environment defaults to false).
                                   
-    --driver-package              One of "test-in-console" (default) or
+    --driver-package <driver>     One of "test-in-console" (default) or
                                   "test-in-browser".
                                   "test-in-console" will print test results to the
                                   console.
@@ -120,7 +122,6 @@ Contributions
 -------------
 Are more than welcome. Just create pull requests. Following are a list of enhancements we were thinking of:
 
-* Make the `--app` option optional, if you run spacejam from a meteor app directory.
 * Passing through to meteor all unrecognized options to make spacejam future proof. Currently, we don't support `--deploy` due to that.
 
 Note that we are about to include support for running tests in any browser from the command line so no need to work on that.

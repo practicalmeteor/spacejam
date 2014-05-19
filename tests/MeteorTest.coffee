@@ -1,6 +1,7 @@
 chai = require("chai")
 expect = chai.expect
 sinon = require("sinon")
+_ = require("underscore")
 sinonChai = require("sinon-chai")
 chai.use(sinonChai)
 Meteor = require "../src/Meteor"
@@ -23,7 +24,7 @@ describe "Meteor class Test", ->
 
   env = process.env
 
-  expectedSpawnOptions = { cwd: "app", detached: false, env: env }
+  expectedSpawnOptions = null
 
 
 
@@ -38,6 +39,7 @@ describe "Meteor class Test", ->
 
   beforeEach ->
     meteor = new Meteor()
+    expectedSpawnOptions = { cwd: ".", detached: false, env: env }
     spawnStub = sinon.stub(ChildProcess.prototype,"spawn")
     globPackagesStub = sinon.stub(meteor,"_globPackages")
     globPackagesStub.returns [testPackage]
@@ -76,7 +78,7 @@ describe "Meteor class Test", ->
 
 
   it "testPackages() - Spawns meteor with correct arguments",->
-    opts = {app:"app","_":["","packages"]}
+    opts = {"_":["","packages"]}
     meteor.testPackages(opts)
     expectedSpawnArgs = ["--port",
                          defaultTestPort,
@@ -89,8 +91,23 @@ describe "Meteor class Test", ->
 
 
 
+  it "testPackages() - Spawns meteor with correct arguments (--app)",->
+    opts = {"_":["","packages"],app:"app"}
+    meteor.testPackages(opts)
+    expectedSpawnArgs = ["--port",
+                         defaultTestPort,
+                         "--driver-package",
+                         defaultDriverPackage,
+                         "test-packages",
+                         testPackage
+    ]
+    expectedSpawnOptions.cwd = "app"
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+
+
+
   it "testPackages() - Spawns meteor with correct arguments (--settings)",->
-    opts = {app:"app","_":["","packages"],settings:"settings.json"}
+    opts = {"_":["","packages"],settings:"settings.json"}
     meteor.testPackages(opts)
     expectedSpawnArgs = ["--port",
                          defaultTestPort,
@@ -106,7 +123,7 @@ describe "Meteor class Test", ->
 
 
   it "testPackages() - Spawns meteor with correct arguments (--driver-package)",->
-    opts = {app:"app","_":["","packages"],"driver-package":"test-in-browser"}
+    opts = {"_":["","packages"],"driver-package":"test-in-browser"}
     meteor.testPackages(opts)
     expectedSpawnArgs = ["--port",
                          defaultTestPort,
@@ -120,7 +137,7 @@ describe "Meteor class Test", ->
 
 
   it "testPackages() - Spawns meteor with correct arguments (--once)",->
-    opts = {app:"app","_":["","packages"],once:true}
+    opts = {"_":["","packages"],once:true}
     meteor.testPackages(opts)
     expectedSpawnArgs = ["--port",
                          defaultTestPort,
@@ -135,7 +152,7 @@ describe "Meteor class Test", ->
 
 
   it "testPackages() - Spawns meteor with correct arguments (--production)",->
-    opts = {app:"app","_":["","packages"],production:true}
+    opts = {"_":["","packages"],production:true}
     meteor.testPackages(opts)
     expectedSpawnArgs = ["--port",
                          defaultTestPort,
@@ -151,7 +168,7 @@ describe "Meteor class Test", ->
 
   it "testPackages() - Spawns meteor with correct arguments (--release)",->
     testRelease = "8.0"
-    opts = {app:"app","_":["","packages"],release:testRelease}
+    opts = {"_":["","packages"],release:testRelease}
     meteor.testPackages(opts)
     expectedSpawnArgs = ["--port",
                          defaultTestPort,
@@ -166,28 +183,27 @@ describe "Meteor class Test", ->
 
 
 
-  it "testPackages() - Spawns meteor with correct arguments (--deploy)",->
-    deployServer = "spacejamtest.meteor.com"
-    opts = {app:"app","_":["","packages"],deploy:deployServer}
-    meteor.testPackages(opts)
-    expectedSpawnArgs = ["--port",
-                         defaultTestPort,
-                         "--driver-package",
-                         defaultDriverPackage,
-                         "--deploy",
-                         deployServer,
-                         "test-packages",
-                         testPackage
-    ]
-    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
-
+#  it "testPackages() - Spawns meteor with correct arguments (--deploy)",->
+#    deployServer = "spacejamtest.meteor.com"
+#    opts = {"_":["","packages"],deploy:deployServer}
+#    meteor.testPackages(opts)
+#    expectedSpawnArgs = ["--port",
+#                         defaultTestPort,
+#                         "--driver-package",
+#                         defaultDriverPackage,
+#                         "--deploy",
+#                         deployServer,
+#                         "test-packages",
+#                         testPackage
+#    ]
+#    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+#
 
 
   it "Spawns meteor with root-url and mongo-url args overwrite env",->
-    _expectedSpawnOptions = expectedSpawnOptions
     mongoUrl = "mongodb://localhost/mydb"
     rootUrl = "http://localhost:5000/"
-    opts = {app:"app","_":["","packages"],"root-url":rootUrl,"mongo-url":mongoUrl}
+    opts = {"_":["","packages"],"root-url":rootUrl,"mongo-url":mongoUrl}
     meteor.testPackages(opts)
     expectedSpawnArgs = ["--port",
                          defaultTestPort,
@@ -196,7 +212,7 @@ describe "Meteor class Test", ->
                          "test-packages",
                          testPackage
     ]
-    _expectedSpawnOptions.env.ROOT_URL = rootUrl
-    _expectedSpawnOptions.env.MONGO_URL = mongoUrl
-    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,_expectedSpawnOptions])
+    expectedSpawnOptions.env.ROOT_URL = rootUrl
+    expectedSpawnOptions.env.MONGO_URL = mongoUrl
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
 

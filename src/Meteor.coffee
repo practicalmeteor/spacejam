@@ -42,7 +42,7 @@ class Meteor extends EventEmitter
   # See defaultOpts why it is a function an not an object.
   testPackagesOpts: ->
     {
-      "app": null
+      "app": "."
       "driver-package": "test-in-console"
       "app-packages": true #TODO Add Support for testing all packages within an app that are not symlinks
       "timeout": 120000 # 2 minutes
@@ -91,9 +91,9 @@ class Meteor extends EventEmitter
 
     log.debug "meteor test-packages opts=\n",@opts
 
-    if !@opts["app"]
-      log.error "No meteor app has been specified. See 'spacejam help' for more info."
-      process.exit 1
+#    if !@opts["app"]
+#      log.error "No meteor app has been specified. See 'spacejam help' for more info."
+#      process.exit 1
 
     packages = @opts._[1..] # Get packages from command line
 
@@ -115,8 +115,8 @@ class Meteor extends EventEmitter
       @opts["settings"] if @opts["settings"]
       "--release" if @opts["release"]
       @opts["release"] if @opts["release"]
-      "--deploy" if @opts["deploy"]
-      @opts["deploy"] if @opts["deploy"]
+#      "--deploy" if @opts["deploy"]
+#      @opts["deploy"] if @opts["deploy"]
       "test-packages"
       testPackages
     ]
@@ -176,9 +176,14 @@ class Meteor extends EventEmitter
 
     matchedPackages = []
 
-    globOpts = {
-      cwd:"#{app}/packages"
-    }
+    if app is "."
+      globOpts = {
+        cwd: app
+      }
+    else
+      globOpts = {
+        cwd: "#{app}/packages"
+      }
     packages.forEach (globPkg)=>
       globedPackages = glob.sync(globPkg, globOpts)
 
