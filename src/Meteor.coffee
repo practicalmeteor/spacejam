@@ -25,6 +25,8 @@ class Meteor extends EventEmitter
       "mongo-url"   : process.env.MONGO_URL || null
       "settings"    : null
       "production"  : false
+      "production"  : false
+      "production"  : false
       "once"        : false
     }
 
