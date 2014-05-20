@@ -9,17 +9,17 @@ then
 
     if [ $testStatus -gt 0 ]
     then
-        echo "ERROR: npm test failed. Exiting..." >&2;
-        exit 1;
+        echo "ERROR: npm test failed. Exiting..." >&2
+        exit 1
     else
-        echo "Bumping package version to $version";
-        npm version $version -m "Bump package version to (%s)";
-        git push origin master;
+        echo "Bumping package version to $version"
+        npm version $version -m "Bump package version to (%s)"
+        git push origin master
         git push origin v$version
         npm publish
-        exit 0;
+        exit 0
     fi
 else
-  echo "ERROR: No package version supplied. Exiting..." >&2;
-  exit 1;
+  echo "ERROR: No package version supplied. Exiting..." >&2
+  exit 1
 fi
