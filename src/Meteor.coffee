@@ -176,19 +176,16 @@ class Meteor extends EventEmitter
 
     matchedPackages = []
 
-    if app is "."
-      globOpts = {
-        cwd: app
-      }
-    else
-      globOpts = {
-        cwd: "#{app}/packages"
-      }
+    globOpts = {
+      cwd: "#{app}/packages"
+    }
     packages.forEach (globPkg)=>
       globedPackages = glob.sync(globPkg, globOpts)
 
       if globedPackages.length is 0
-        log.error "no packages matching #{packages} have been found"
+        log.error "No packages matching #{packages} have been found."
+        if app is "."
+          log.error "Please make sure you are running spacejam within a meteor app. Use --app otherwise."
         process.exit 1
 
       globedPackages.forEach (pkg)->

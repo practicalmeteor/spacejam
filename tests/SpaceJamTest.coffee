@@ -7,6 +7,16 @@ describe "SpaceJam Test", ->
 
   spacejamChild = new ChildProcess()
 
+  spacejamCmdLineLocal = "../../bin/spacejam"
+
+  spacejamCmdLine = "bin/spacejam"
+
+  testApp1 = "tests/leaderboard/"
+
+  testApp2 = "tests/todos/"
+
+
+
   before ->
     log.setLevel "debug"
     delete process.env.PORT
@@ -25,7 +35,7 @@ describe "SpaceJam Test", ->
       "test-packages"
       "success"
     ]
-    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.spawn(spacejamCmdLine,args)
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal 1
       done()
@@ -39,9 +49,9 @@ describe "SpaceJam Test", ->
       "test-packages"
       "success"
       "--app"
-      "tests/leaderboard/"
+      testApp1
     ]
-    spacejamChild.spawn("bin/spacejam",args)
+    spacejamChild.spawn(spacejamCmdLine,args)
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
@@ -55,7 +65,7 @@ describe "SpaceJam Test", ->
       "test-packages"
       "success"
     ]
-    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
+    spacejamChild.spawn(spacejamCmdLineLocal,args,{cwd:testApp1})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
@@ -73,7 +83,7 @@ describe "SpaceJam Test", ->
       "--port"
       testPort
     ]
-    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
+    spacejamChild.spawn(spacejamCmdLineLocal,args,{cwd:testApp1})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
@@ -90,7 +100,7 @@ describe "SpaceJam Test", ->
       "--port"
       testPort
     ]
-    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
+    spacejamChild.spawn(spacejamCmdLineLocal,args,{cwd:testApp1})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_FAILED
       done()
@@ -109,7 +119,7 @@ describe "SpaceJam Test", ->
       "--port"
       testPort
     ]
-    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
+    spacejamChild.spawn(spacejamCmdLineLocal,args,{cwd:testApp1})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_TIMEOUT
       done()
@@ -128,7 +138,7 @@ describe "SpaceJam Test", ->
       "--port"
       testPort
     ]
-    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
+    spacejamChild.spawn(spacejamCmdLineLocal,args,{cwd:testApp1})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
@@ -148,7 +158,7 @@ describe "SpaceJam Test", ->
       "--port"
       testPort
     ]
-    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/leaderboard/"})
+    spacejamChild.spawn(spacejamCmdLineLocal,args,{cwd:testApp1})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()
@@ -165,7 +175,7 @@ describe "SpaceJam Test", ->
       "--port"
       testPort
     ]
-    spacejamChild.spawn("../../bin/spacejam",args,{cwd:"tests/todos/"})
+    spacejamChild.spawn(spacejamCmdLineLocal,args,{cwd:testApp2})
     spacejamChild.child.on "exit", (code) =>
       expect(code).to.equal SpaceJam.ERR_CODE.METEOR_ERROR
       done()
