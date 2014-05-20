@@ -1,9 +1,11 @@
-## vNEXT
+## 0.2.6
 
 #### Features
 
 
 * `--app` is no longer required. spacejam will use the current working directory, if no --app folder is specified.
+* Added spacejam ([bin/run-tests.sh](bin/run-tests.sh)) and meteor ([bin/run-app.sh](bin/run-app.sh)) wrapper scripts in order to easily specify different environments for meteor and spacejam.
+* Added a script ([bin/unset-meteor-env.sh](bin/unset-meteor-env.sh)) to easily unset meteor related environment variables.
 
 ## 0.2.5
 

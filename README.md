@@ -7,17 +7,14 @@ Supported Meteor Versions
 -------------------------
 ```spacejam``` has only been tested with [```meteor 0.8.1```](https://github.com/meteor/meteor/tree/release/0.8.1/), but it should work with any recent meteor version.
 
+Changelog
+---------
+See [CHANGELOG.md](CHANGELOG.md)
+
 Installation
 ------------
-Gobal installation:
-
     npm install -g spacejam
 This will automatically add spacejam to your path.
-
-Local installation:
-
-    npm install spacejam [--save-dev]
-Use `--save-dev` if you want to add spacejam to your nodejs package.json
 
 Usage
 -----
@@ -112,11 +109,22 @@ Exit codes
 * ```3``` The meteor app has errors.
 * ```4``` The tests have timed out.
 
-SpaceJam Self Tests
+Helper Scripts
+--------------
+In the bin folder, in addition to spacejam, you will find the following scripts that you can copy and modify to suit your needs: 
+
+* [run.tests.sh](bin/run-tests.sh) - set / unset environment variables before running spacejam.
+* [run.app.sh](bin/run-app.sh) - set / unset environment variables before running your meteor app.
+* [unset-meteor-env.sh](bin/unset-meteor-env.sh) - unset meteor related environment variables.
+
+
+spacejam self tests
 -------------------
 We use CoffeScript's cake for that so, clone the repository, run `npm install` in the repo root and then run: 
 
-`cake test`
+`npm test`
+
+This will execute `cake test`.
 
 Contributions
 -------------
