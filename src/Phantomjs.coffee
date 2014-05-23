@@ -5,6 +5,7 @@ path = require 'path'
 phantomjs = require 'phantomjs'
 process.env.PATH = path.dirname(phantomjs.path) + ':' + process.env.PATH
 _ = require "underscore"
+log.debug "PATH="+process.env.PATH
 
 class Phantomjs extends EventEmitter
 
