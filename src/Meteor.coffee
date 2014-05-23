@@ -14,12 +14,12 @@ class Meteor extends EventEmitter
     stderr:""
   }
 
-  driverPackage: "test-in-spacejam"
+  driverPackage: "test-in-console"
 
   opts = null
 
   # It is a function not an object because of design for testability, so we can modify process.env before each tests.
-  defaultOpts: ->
+  baseOpts: ->
     {
       "port"        : process.env.PORT || 4096
       "root-url"    : process.env.ROOT_URL || null
@@ -40,7 +40,7 @@ class Meteor extends EventEmitter
 
 
 
-  # See defaultOpts why it is a function an not an object.
+  # See baseOpts why it is a function an not an object.
   testPackagesOpts: ->
     {
       "app": "."
@@ -73,8 +73,8 @@ class Meteor extends EventEmitter
     expect(parseCommandLine,"@parseCommandLine should be a boolean.").to.be.a "boolean"
 
     expect(@childProcess,"Meteor's child process is already running").to.be.null
-    # @testPackagesOpts overwrite @defaultOpts
-    @opts = _.extend(@defaultOpts(), @testPackagesOpts())
+    # @testPackagesOpts overwrite @baseOpts
+    @opts = _.extend(@baseOpts(), @testPackagesOpts())
 
     # input opts take higher precedence
     @opts = _.extend(@opts, opts)

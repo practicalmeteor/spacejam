@@ -1,7 +1,7 @@
 SpaceJam
 ========
 
-**spacejam** is a console test runner for [meteor](https://www.meteor.com/) packages. It wraps meteor test-packages with some enhancements, allowing you to easily run your package tinytests or [munit](https://atmospherejs.com/package/munit) tests from the command line. It's primary use is in continuous integration environments. It starts meteor test-packages, waits for it to be ready, and then runs the tinytests or [munit](https://atmospherejs.com/package/munit) tests in phantomjs. Support for more browsers is coming shortly.
+**spacejam** is a console test runner for [meteor](https://www.meteor.com/) packages. It wraps meteor test-packages with some enhancements, allowing you to easily run your package tinytests or [munit](https://atmospherejs.com/package/munit) tests from the command line. It's primary use is in continuous integration environments. It starts meteor test-packages (--driver-package test-in-console), waits for it to be ready, and then runs the tinytests or [munit](https://atmospherejs.com/package/munit) tests in phantomjs. Support for more browsers is coming shortly.
 
 Supported Meteor Versions
 -------------------------
@@ -15,6 +15,13 @@ Installation
 ------------
     npm install -g spacejam
 This will automatically add spacejam to your path.
+
+Quick Start
+-----------
+In your meteor app folder:    
+
+	spacejam test-packages <your-package1> [your-package2...]
+
 
 Usage
 -----
@@ -71,14 +78,7 @@ The following options are meteor options and are passed through to meteor (all a
                                   environment, and setting it to false in your development 
                                   environment defaults to false).
                                   
-    --driver-package <driver>     One of "test-in-console" (default) or
-                                  "test-in-browser".
-                                  "test-in-console" will print test results to the
-                                  console.
-                                  "test-in-browser" will allow you to open any browser on
-                                  the ROOT_URL, run the tests in that browser,
-                                  and get the results in html.
- 
+    
  To get help, just:
     
     spacejam help

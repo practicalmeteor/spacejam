@@ -1,3 +1,11 @@
+## 0.2.7
+
+#### Changes
+
+
+* `--driver-package` option has been removed. It will always use `test-in-console`.
+
+
 ## 0.2.6
 
 #### Features
