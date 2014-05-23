@@ -19,7 +19,8 @@
     "compile": "cake compile"
   },
   "bin": {
-    "spacejam": "bin/spacejam"
+    "spacejam": "bin/spacejam",
+     "coffee": "node_modules/coffee-script/bin/coffee"
   },
   "description": "Wrapper for meteor test-packages for use in continuous integration environments.",
   "homepage": "https://github.com/spacejamio/spacejam",
