@@ -14,6 +14,7 @@ class Meteor extends EventEmitter
     stderr:""
   }
 
+  driverPackage: "test-in-spacejam"
 
   opts = null
 
@@ -43,7 +44,6 @@ class Meteor extends EventEmitter
   testPackagesOpts: ->
     {
       "app": "."
-      "driver-package": "test-in-console"
       "app-packages": true #TODO Add Support for testing all packages within an app that are not symlinks
       "timeout": 120000 # 2 minutes
       "meteor-ready-text": "=> App running at:"
@@ -108,7 +108,7 @@ class Meteor extends EventEmitter
       "--port"
       @opts["port"]
       "--driver-package"
-      @opts["driver-package"]
+      @driverPackage
       "--production" if @opts["production"]
       "--once" if @opts["once"]
       "--settings" if @opts["settings"]

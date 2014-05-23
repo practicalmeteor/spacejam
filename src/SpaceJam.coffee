@@ -151,11 +151,6 @@ are optional):
  --once                If true, do not wait for file changes if meteor has
                        errors, exit immediately.
 
- --driver-package      One of "test-in-console" (default) or "test-in-browser".
-                       "test-in-console" will print test results to the console.
-                       "test-in-browser" will allow you to open any browser on
-                       the ROOT_URL, run the tests in that browser, and get the
-                       results in html.
 
 Other commands:
 
