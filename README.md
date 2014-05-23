@@ -125,6 +125,12 @@ In the bin folder, in addition to spacejam, you will find the following scripts 
 * [unset-meteor-env.sh](bin/unset-meteor-env.sh) - unset meteor related environment variables.
 
 
+Known Issues
+------------
+meteor's internal mongodb doesn't exit cleanly. You will have to kill them manually:
+
+	killall mongod
+
 spacejam self tests
 -------------------
 We use CoffeScript's cake for that so, clone the repository, run `npm install` in the repo root and then run: 
