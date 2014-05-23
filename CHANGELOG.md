@@ -1,3 +1,8 @@
+## 0.2.8
+
+#### Changes
+* Updated documentation to reflect that spacejam_ environment variables need to be lower case.
+
 ## 0.2.7
 
 #### Changes
