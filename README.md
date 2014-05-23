@@ -11,6 +11,13 @@ Changelog
 ---------
 See [CHANGELOG.md](CHANGELOG.md)
 
+Prerequisites
+-------------
+CoffeeScript:
+
+	npm install -g spacejam
+
+
 Installation
 ------------
     npm install -g spacejam

@@ -1,4 +1,3 @@
-require 'coffee-script/register'
 ChildProcess = require './src/ChildProcess'
 
 mochaCmdLine = "mocha --colors --compilers coffee:coffee-script --reporter spec tests/*Test.coffee"

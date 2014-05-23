@@ -7,7 +7,7 @@
     "rc": "~0.3.5",
     "loglevel": "~0.6.0",
     "glob": "~3.2.9",
-    "phantomjs": "~1.9.2-5",
+    "phantomjs": "1.9.7-7",
     "chai": "~1.9.1"
   },
   "devDependencies": {
@@ -19,8 +19,7 @@
     "compile": "cake compile"
   },
   "bin": {
-    "spacejam": "bin/spacejam",
-     "coffee": "node_modules/coffee-script/bin/coffee"
+    "spacejam": "bin/spacejam"
   },
   "description": "Wrapper for meteor test-packages for use in continuous integration environments.",
   "homepage": "https://github.com/spacejamio/spacejam",

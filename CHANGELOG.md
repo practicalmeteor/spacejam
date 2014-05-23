@@ -4,6 +4,7 @@
 
 
 * `--driver-package` option has been removed. It will always use `test-in-console`.
+* Updated documentation to include prerequisites (coffee-script) and quick start.
 
 
 ## 0.2.6

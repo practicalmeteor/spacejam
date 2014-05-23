@@ -3,7 +3,7 @@ ChildProcess = require './ChildProcess'
 EventEmitter = require('events').EventEmitter
 path = require 'path'
 phantomjs = require 'phantomjs'
-process.env.PATH += ':' + path.dirname(phantomjs.path)
+process.env.PATH = path.dirname(phantomjs.path) + ':' + process.env.PATH
 _ = require "underscore"
 
 class Phantomjs extends EventEmitter
