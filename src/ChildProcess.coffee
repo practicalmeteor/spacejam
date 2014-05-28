@@ -14,6 +14,7 @@ class ChildProcess
 
   pipe : null
 
+  command: null
 
   constructor:->
     log.debug "ChildProcess.constructor()", arguments
@@ -26,6 +27,8 @@ class ChildProcess
     expect(@child).to.be.null
     expect(command).to.be.a 'string'
     expect(taskName).to.be.a 'string'
+
+    @command = taskName
 
     @child = _exec command, (err, stdout, stderr) =>
       if err?.code? and err.code isnt 0
@@ -45,6 +48,8 @@ class ChildProcess
     expect(command,"Invalid @command argument").to.be.a "string"
     expect(args,"Invalid @args argument").to.be.an "array"
     expect(options,"Invalid @options").to.be.an "object"
+
+    @command = command
 
     @child = _spawn(command,args,options)
     ChildProcess.children[@child.pid] = @child
@@ -77,6 +82,7 @@ class ChildProcess
 
   kill: (signal="SIGINT")->
     log.debug "ChildProcess.kill()",arguments
+    log.info "Killing ", @command
     @child.kill(signal)
 
 
