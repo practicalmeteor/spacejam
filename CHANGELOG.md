@@ -1,3 +1,8 @@
+## v.NEXT
+
+#### Features
+* Add support for running tests for standalone packages
+
 ## 0.2.8
 
 #### Changes
