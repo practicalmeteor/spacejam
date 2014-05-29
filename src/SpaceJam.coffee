@@ -10,6 +10,8 @@ class SpaceJam
 
   @meteor = null
 
+  @waitForMeteorMongodbKillDone = false
+
   @phantomjs = null
 
   @ERR_CODE:
@@ -57,10 +59,17 @@ class SpaceJam
 
     SpaceJam.meteor.on "ready", =>
       log.info "spacejam: meteor is ready"
+      SpaceJam.waitForMeteorMongodbKillDone = SpaceJam.meteor.hasMongodb()
+      if SpaceJam.waitForMeteorMongodbKillDone
+        SpaceJam.meteor.meteorMongodb.on "kill-done", onMeteorMongodbKillDone
+
       runPhantom(SpaceJam.meteor.opts["root-url"])
 
     SpaceJam.meteor.on "error", =>
       log.error "spacejam: meteor has errors, exiting"
+      SpaceJam.waitForMeteorMongodbKillDone = SpaceJam.meteor.hasMongodb()
+      if SpaceJam.waitForMeteorMongodbKillDone
+        SpaceJam.meteor.meteorMongodb.on "kill-done", onMeteorMongodbKillDone
       killChildren(SpaceJam.ERR_CODE.METEOR_ERROR)
 
     SpaceJam.meteor.testPackages(opts)
@@ -79,12 +88,26 @@ class SpaceJam
     SpaceJam.phantomjs.on "exit", (code,signal)=>
       SpaceJam.meteor.kill()
       if code?
-        process.exit code
+        exit code
       else if signal?
-        process.exit SpaceJam.ERR_CODE.PHANTOM_ERROR
+        exit SpaceJam.ERR_CODE.PHANTOM_ERROR
       else
-        process.exit SpaceJam.ERR_CODE.PHANTOM_ERROR
+        exit SpaceJam.ERR_CODE.PHANTOM_ERROR
     SpaceJam.phantomjs.run(url)
+
+
+  onMeteorMongodbKillDone =->
+    log.debug "SpaceJam.onMeteorMongodbKillDone()"
+    process.exit @exitCode
+
+
+  exit=(code)->
+    log.debug "SpaceJam.exit()",arguments
+    SpaceJam.waitForMeteorMongodbKillDone = SpaceJam.meteor.hasMongodb()
+    process.exit code if not SpaceJam.waitForMeteorMongodbKillDone
+    @exitCode = code
+    SpaceJam.meteor.meteorMongodb.kill()
+
 
 
   #Kill all running child_process instances
@@ -92,7 +115,7 @@ class SpaceJam
     log.debug "SpaceJam.killChildren()",arguments
     SpaceJam.meteor?.kill()
     SpaceJam.phantomjs?.kill()
-    process.exit code
+    exit(code)
 
 
   

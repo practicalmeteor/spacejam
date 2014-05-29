@@ -3,6 +3,7 @@ expect = require('chai').expect
 _ = require("underscore")
 ChildProcess = require './ChildProcess'
 EventEmitter = require('events').EventEmitter
+MeteorMongodb = require("./MeteorMongodb.coffee")
 glob = require("glob")
 fs = require("fs")
 
@@ -17,7 +18,10 @@ class Meteor extends EventEmitter
 
   driverPackage: "test-in-console"
 
-  opts = null
+  opts: null
+
+  meteorMongodb: null
+
 
   # It is a function not an object because of design for testability, so we can modify process.env before each tests.
   baseOpts: ->
@@ -203,13 +207,20 @@ class Meteor extends EventEmitter
 
   hasErrorText: ( buffer )=>
     if buffer.lastIndexOf( @testPackagesOpts()["meteor-error-text"] ) isnt -1
+      @meteorMongodb = new MeteorMongodb(@childProcess.child.pid)
       @emit "error"
 
 
 
   hasReadyText: ( buffer )=>
     if buffer.lastIndexOf( @testPackagesOpts()["meteor-ready-text"] ) isnt -1
+      @meteorMongodb = new MeteorMongodb(@childProcess.child.pid)
       @emit "ready"
+
+
+  hasMongodb: ->
+    log.debug "Meteor.hasMongodb()"
+    return @meteorMongodb.hasMongodb()
 
 
   # TODO: Test
