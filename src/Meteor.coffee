@@ -4,6 +4,7 @@ _ = require("underscore")
 ChildProcess = require './ChildProcess'
 EventEmitter = require('events').EventEmitter
 glob = require("glob")
+fs = require("fs")
 
 class Meteor extends EventEmitter
 
@@ -176,8 +177,13 @@ class Meteor extends EventEmitter
 
     matchedPackages = []
 
+    if fs.existsSync("#{app}/.meteor")
+      cwd = "#{app}/packages"
+    else
+      cwd = app
+
     globOpts = {
-      cwd: "#{app}/packages"
+      cwd: cwd
     }
     packages.forEach (globPkg)=>
       globedPackages = glob.sync(globPkg, globOpts)

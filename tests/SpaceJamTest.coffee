@@ -16,6 +16,8 @@ describe "SpaceJam Test", ->
 
   testApp2 = "tests/todos/"
 
+  standAlonePackage = "tests/standalone-package"
+
 
 
   before ->
@@ -23,6 +25,7 @@ describe "SpaceJam Test", ->
     delete process.env.PORT
     delete process.env.ROOT_URL
     delete process.env.MONGO_URL
+    delete process.env.PACKAGE_DIRS
 
 
   afterEach ->
@@ -51,6 +54,35 @@ describe "SpaceJam Test", ->
       "success"
       "--app"
       testApp1
+    ]
+    spacejamChild.spawn(spacejamBin,args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
+      done()
+
+
+
+  it "Run with with an standalone packages as option (fails if deps are not found)", (done)->
+    @timeout 30000
+    spacejamChild = new ChildProcess()
+    args = [
+      "test-packages"
+      standAlonePackage
+    ]
+    spacejamChild.spawn(spacejamBin,args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.METEOR_ERROR
+      done()
+
+
+
+  it "Run with with an standalone packages as option", (done)->
+    @timeout 30000
+    process.env.PACKAGE_DIRS = __dirname
+    spacejamChild = new ChildProcess()
+    args = [
+      "test-packages"
+      standAlonePackage
     ]
     spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
