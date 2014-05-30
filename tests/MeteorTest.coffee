@@ -9,7 +9,7 @@ ChildProcess = require "../src/ChildProcess"
 ps = require('ps-node')
 
 
-describe.only "Meteor class Test", ->
+describe "Meteor class Test", ->
   @timeout 30000
 
   meteor = null

@@ -59,7 +59,6 @@ class MeteorMongodb extends EventEmitter
             if not mongod.dead?
               try
                 process.kill mongod.pid, signal
-                mongod.dead = true #r
               catch e
                 mongod.dead = true
 
