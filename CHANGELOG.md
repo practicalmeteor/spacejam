@@ -2,6 +2,7 @@
 
 #### Features
 * Add support for running tests for standalone packages
+* Kills meteor internal mongodb cleanly. See #3
 
 ## 0.2.8
 

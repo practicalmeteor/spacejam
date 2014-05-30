@@ -207,15 +207,24 @@ class Meteor extends EventEmitter
 
   hasErrorText: ( buffer )=>
     if buffer.lastIndexOf( @testPackagesOpts()["meteor-error-text"] ) isnt -1
-      @meteorMongodb = new MeteorMongodb(@childProcess.child.pid)
-      @emit "error"
+      if not @opts["mongo-url"] #This means that meteor used the internal mongodb
+        @meteorMongodb = new MeteorMongodb(@childProcess.child.pid,=>
+          @emit "error"
+        )
+      else
+        @emit "error"
+
 
 
 
   hasReadyText: ( buffer )=>
     if buffer.lastIndexOf( @testPackagesOpts()["meteor-ready-text"] ) isnt -1
-      @meteorMongodb = new MeteorMongodb(@childProcess.child.pid)
-      @emit "ready"
+      if not @opts["mongo-url"] #This means that meteor used the internal mongodb
+        @meteorMongodb = new MeteorMongodb(@childProcess.child.pid,=>
+          @emit "ready"
+        )
+      else
+        @emit "ready"
 
 
   hasMongodb: ->

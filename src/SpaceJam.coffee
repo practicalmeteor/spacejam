@@ -14,6 +14,8 @@ class SpaceJam
 
   @phantomjs = null
 
+  @exitCode = null
+
   @ERR_CODE:
     TEST_SUCCESS: 0
     TEST_FAILED: 2
@@ -48,6 +50,8 @@ class SpaceJam
 
   testPackages = (opts)->
     log.debug "SpaceJam.testPackages()",arguments
+    expect(opts).to.be.an "object"
+
     SpaceJam.meteor = Meteor.exec()
 
     setTimeout(
@@ -83,29 +87,33 @@ class SpaceJam
 
   runPhantom=(url)->
     log.debug "SpaceJam.runPhantom()",arguments
+    expect(url).to.be.a "string"
+
     SpaceJam.phantomjs = new Phantomjs()
 
     SpaceJam.phantomjs.on "exit", (code,signal)=>
-      SpaceJam.meteor.kill()
+      #SpaceJam.meteor.kill()
       if code?
         exit code
-      else if signal?
-        exit SpaceJam.ERR_CODE.PHANTOM_ERROR
-      else
-        exit SpaceJam.ERR_CODE.PHANTOM_ERROR
+#      else if signal?
+#        exit SpaceJam.ERR_CODE.PHANTOM_ERROR
+#      else
+#        exit SpaceJam.ERR_CODE.PHANTOM_ERROR
     SpaceJam.phantomjs.run(url)
 
 
   onMeteorMongodbKillDone =->
     log.debug "SpaceJam.onMeteorMongodbKillDone()"
-    process.exit @exitCode
+    process.exit SpaceJam.exitCode
 
 
   exit=(code)->
     log.debug "SpaceJam.exit()",arguments
+    expect(code,"Invalid exit code").to.be.a "number"
+
     SpaceJam.waitForMeteorMongodbKillDone = SpaceJam.meteor.hasMongodb()
     process.exit code if not SpaceJam.waitForMeteorMongodbKillDone
-    @exitCode = code
+    SpaceJam.exitCode = code
     SpaceJam.meteor.meteorMongodb.kill()
 
 
@@ -113,6 +121,8 @@ class SpaceJam
   #Kill all running child_process instances
   killChildren=(code = 1)->
     log.debug "SpaceJam.killChildren()",arguments
+    expect(code,"Invalid exit code").to.be.a "number"
+
     SpaceJam.meteor?.kill()
     SpaceJam.phantomjs?.kill()
     exit(code)
