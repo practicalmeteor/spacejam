@@ -6,8 +6,10 @@ sinonChai = require("sinon-chai")
 chai.use(sinonChai)
 Meteor = require "../src/Meteor"
 ChildProcess = require "../src/ChildProcess"
+ps = require('ps-node')
 
-describe "Meteor class Test", ->
+
+describe.only "Meteor class Test", ->
   @timeout 30000
 
   meteor = null
@@ -18,7 +20,7 @@ describe "Meteor class Test", ->
 
   defaultTestPort = 4096
 
-  testPackage = "package"
+  testPackage = __dirname+"/leaderboard/packages/success"
 
   env = process.env
 
@@ -27,7 +29,7 @@ describe "Meteor class Test", ->
 
 
   before ->
-    log.setLevel "error"
+    log.setLevel "debug"
     delete process.env.PORT
     delete process.env.ROOT_URL
     delete process.env.MONGO_URL
@@ -213,4 +215,35 @@ describe "Meteor class Test", ->
     expectedSpawnOptions.env.ROOT_URL = rootUrl
     expectedSpawnOptions.env.MONGO_URL = mongoUrl
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+
+
+
+  it "Kills internal mongodb childs", (done)->
+    @timeout 30000
+    delete process.env.MONGO_URL
+    spawnStub.restore()
+    globPackagesStub.returns(testPackage)
+    meteor.testPackages({})
+
+    meteor.on "ready",->
+      pid = meteor.childProcess.child.pid
+      lookUpMongodChilds pid,(err, resultList )->
+        expect(err,"could not find mongod childs").not.to.be.ok
+        expect(resultList,"Found more than one mongod child").have.length.of 1
+        meteor.kill()
+        meteor.meteorMongodb.kill()
+        meteor.meteorMongodb.on "kill-done",->
+          lookUpMongodChilds pid,(err, resultList )->
+            expect(err,"found mongod childs").not.to.be.null
+            expect(resultList,"the mongod childs were not killed").not.to.be.ok
+            done()
+
+
+
+
+lookUpMongodChilds =(pid,cb)->
+    ps.lookup
+      command: 'mongod',
+      psargs: '--ppid '+pid
+    , cb
 
