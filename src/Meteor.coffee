@@ -207,24 +207,18 @@ class Meteor extends EventEmitter
 
   hasErrorText: ( buffer )=>
     if buffer.lastIndexOf( @testPackagesOpts()["meteor-error-text"] ) isnt -1
-      if not @opts["mongo-url"] #This means that meteor used the internal mongodb
-        @meteorMongodb = new MeteorMongodb(@childProcess.child.pid,=>
-          @emit "error"
-        )
-      else
+      @meteorMongodb = new MeteorMongodb(@childProcess.child.pid,=>
         @emit "error"
+      )
 
 
 
 
   hasReadyText: ( buffer )=>
     if buffer.lastIndexOf( @testPackagesOpts()["meteor-ready-text"] ) isnt -1
-      if not @opts["mongo-url"] #This means that meteor used the internal mongodb
-        @meteorMongodb = new MeteorMongodb(@childProcess.child.pid,=>
-          @emit "ready"
-        )
-      else
+      @meteorMongodb = new MeteorMongodb(@childProcess.child.pid,=>
         @emit "ready"
+      )
 
 
   hasMongodb: ->
@@ -235,6 +229,7 @@ class Meteor extends EventEmitter
   # TODO: Test
   kill: (signal="SIGINT")->
     log.debug "Meteor.kill()",arguments
+    @meteorMongodb?.kill()
     @childProcess?.kill(signal)
 
 

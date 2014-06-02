@@ -92,13 +92,9 @@ class SpaceJam
     SpaceJam.phantomjs = new Phantomjs()
 
     SpaceJam.phantomjs.on "exit", (code,signal)=>
-      #SpaceJam.meteor.kill()
+      SpaceJam.meteor.kill()
       if code?
         exit code
-#      else if signal?
-#        exit SpaceJam.ERR_CODE.PHANTOM_ERROR
-#      else
-#        exit SpaceJam.ERR_CODE.PHANTOM_ERROR
     SpaceJam.phantomjs.run(url)
 
 
@@ -114,7 +110,6 @@ class SpaceJam
     SpaceJam.waitForMeteorMongodbKillDone = SpaceJam.meteor.hasMongodb()
     process.exit code if not SpaceJam.waitForMeteorMongodbKillDone
     SpaceJam.exitCode = code
-    SpaceJam.meteor.meteorMongodb.kill()
 
 
 
