@@ -28,16 +28,16 @@ class MeteorMongodb extends EventEmitter
       command: 'mongod',
       psargs: '--ppid '+@meteorPid
     , (err, resultList )=>
+      @mongodChilds = resultList
       if (err)
-        throw new Error( err );
-        cb(err,null)
+        log.warn "Couldn't find any mongod child:\n",err
+        cb(err,false)
 
-      if resultList.length>1
+      else if resultList.length>1
         log.warn "Found more than one mongod child:\n",resultList
-        @mongodChilds = resultList
+        cb(null,false)
       else
-        @mongodChilds = resultList
-      cb(null,true)
+        cb(null,true)
 
 
 
