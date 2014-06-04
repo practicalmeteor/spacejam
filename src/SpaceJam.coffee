@@ -61,6 +61,9 @@ class SpaceJam
     ,opts["timeout"]
     )
 
+#    SpaceJam.meteor.on "exit", =>
+#      SpaceJam.meteor = null
+
     SpaceJam.meteor.on "ready", =>
       log.info "spacejam: meteor is ready"
       SpaceJam.waitForMeteorMongodbKillDone = SpaceJam.meteor.hasMongodb()
@@ -92,7 +95,7 @@ class SpaceJam
     SpaceJam.phantomjs = new Phantomjs()
 
     SpaceJam.phantomjs.on "exit", (code,signal)=>
-      SpaceJam.meteor.kill()
+      #SpaceJam.phantomjs = null
       if code?
         exit code
     SpaceJam.phantomjs.run(url)

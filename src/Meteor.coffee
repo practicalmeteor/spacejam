@@ -148,6 +148,9 @@ class Meteor extends EventEmitter
     @childProcess = new ChildProcess()
     @childProcess.spawn("meteor",args,options)
 
+    @childProcess.child.on "exit", (code,signal) =>
+      @emit "exit",code,signal
+
     @childProcess.child?.stdout.on "data", (data) =>
       @buffer.stdout += data
       @hasErrorText data
@@ -156,6 +159,8 @@ class Meteor extends EventEmitter
     @childProcess.child?.stderr.on "data", (data) =>
       @buffer.stderr += data
       @hasErrorText data
+
+
 
 
 
@@ -229,8 +234,7 @@ class Meteor extends EventEmitter
   # TODO: Test
   kill: (signal="SIGINT")->
     log.debug "Meteor.kill()",arguments
-    @meteorMongodb?.kill()
     @childProcess?.kill(signal)
-
+    @meteorMongodb?.kill()
 
 module.exports = Meteor

@@ -5,7 +5,7 @@ _exec = require("child_process").exec
 Pipe = require("./Pipe")
 
 class ChildProcess
-
+  #TODO: Remove
   @children: []
 
   child: null
@@ -69,26 +69,13 @@ class ChildProcess
         log.error "#{command} exited: #{args}"
 
 
-  @killAll: (signal="SIGINT")->
-    log.debug "ChildProcess.killAll()",arguments
-    childrenPids = []
-    ChildProcess.children.forEach (child,pid)->
-      childrenPids.push(pid)
-
-    for pid in childrenPids
-      log.debug "killing child with pid:",pid
-      process.kill pid,signal
-
-
   kill: (signal="SIGINT")->
     log.debug "ChildProcess.kill()",arguments
     log.info "Killing ", @command
-    @child.kill(signal)
-
-
-
-process.on 'exit', ->
-  ChildProcess.killAll()
+    try
+      @child.kill(signal)
+    catch err
+      log.warn "ChildProcess.kill(): ERROR killing #{@command} with pid #{@child.pid}:\n" + err
 
 
 module.exports = ChildProcess
