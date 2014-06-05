@@ -151,12 +151,12 @@ class Meteor extends EventEmitter
     @childProcess.child.on "exit", (code,signal) =>
       @emit "exit",code,signal
 
-    @childProcess.child?.stdout.on "data", (data) =>
+    @childProcess.child.stdout.on "data", (data) =>
       @buffer.stdout += data
       @hasErrorText data
       @hasReadyText data
 
-    @childProcess.child?.stderr.on "data", (data) =>
+    @childProcess.child.stderr.on "data", (data) =>
       @buffer.stderr += data
       @hasErrorText data
 
