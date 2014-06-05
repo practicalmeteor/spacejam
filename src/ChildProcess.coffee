@@ -5,8 +5,6 @@ _exec = require("child_process").exec
 Pipe = require("./Pipe")
 
 class ChildProcess
-  #TODO: Remove
-  @children: []
 
   child: null
 
@@ -52,7 +50,6 @@ class ChildProcess
     @command = command
 
     @child = _spawn(command,args,options)
-    ChildProcess.children[@child.pid] = @child
 
     if pipeClass
       @pipe = new pipeClass(@child.stdout,@child.stderr)
@@ -60,7 +57,6 @@ class ChildProcess
       @pipe = new Pipe(@child.stdout,@child.stderr)
 
     @child.on "exit", (code,signal)=>
-      delete ChildProcess.children[@child.pid]
       if code?
         log.info "#{command} exited with code: #{code}"
       else if signal?
