@@ -98,12 +98,10 @@ class Meteor extends EventEmitter
 
     packages = @opts._[1..] # Get packages from command line
 
-    if !packages.length > 0
-      log.error "No packages to test have been specified. See 'spacejam help' for more info."
-      process.exit 1
-
-
-    testPackages = @_globPackages(@opts["app"],packages)
+    if packages.length > 0
+      testPackages = @_globPackages(@opts["app"],packages)
+    else
+      testPackages = null
 
     args = [
       "--port"
@@ -119,7 +117,7 @@ class Meteor extends EventEmitter
 #      "--deploy" if @opts["deploy"]
 #      @opts["deploy"] if @opts["deploy"]
       "test-packages"
-      testPackages
+      testPackages if testPackages
     ]
     # Remove undefined values from args
     args = _.without(args,undefined)
