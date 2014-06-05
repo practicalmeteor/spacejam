@@ -26,6 +26,14 @@ describe "Meteor class Test", ->
 
   expectedSpawnOptions = null
 
+  childProcessMockObj = {
+    on:->
+    stdout:
+      on:->
+    stderr:
+      on:->
+  }
+
 
 
   before ->
@@ -41,6 +49,7 @@ describe "Meteor class Test", ->
     meteor = new Meteor()
     expectedSpawnOptions = { cwd: ".", detached: false, env: env }
     spawnStub = sinon.stub(ChildProcess.prototype,"spawn")
+    ChildProcess.prototype.child = childProcessMockObj
     globPackagesStub = sinon.stub(meteor,"_globPackages")
     globPackagesStub.returns [testPackage]
 
@@ -222,6 +231,7 @@ describe "Meteor class Test", ->
     @timeout 30000
     delete process.env.MONGO_URL
     spawnStub.restore()
+    ChildProcess.prototype.child = null
     globPackagesStub.returns(testPackage)
     meteor.testPackages({})
 
