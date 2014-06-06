@@ -6,6 +6,7 @@ EventEmitter = require('events').EventEmitter
 MeteorMongodb = require("./MeteorMongodb.coffee")
 glob = require("glob")
 fs = require("fs")
+path = require 'path'
 
 class Meteor extends EventEmitter
 
@@ -73,6 +74,7 @@ class Meteor extends EventEmitter
   # @parseCommandLine
   testPackages: (opts,parseCommandLine=true)=>
     log.debug "Meteor.testPackages()"
+    log.debug "process.argv=",process.argv
     log.info("Spawning meteor")
     expect(opts,"@opts should be an object.").to.be.an "object"
     expect(parseCommandLine,"@parseCommandLine should be a boolean.").to.be.a "boolean"
@@ -86,6 +88,8 @@ class Meteor extends EventEmitter
 
     # command line opts take even higher precedence
     if parseCommandLine
+      log.debug "before rc with parseCommandLine"
+      log.debug "process.argv=",process.argv
       @opts = require("rc")("spacejam",@opts)
     else
       @opts = require("rc")("spacejam",@opts,->)
@@ -96,19 +100,15 @@ class Meteor extends EventEmitter
 
     log.debug "meteor test-packages opts=\n",@opts
 
-#    if !@opts["app"]
-#      log.error "No meteor app has been specified. See 'spacejam help' for more info."
-#      process.exit 1
 
     packages = @opts._[1..] # Get packages from command line
+    log.debug "========packages=",packages
 
-    if !packages.length > 0
-      log.error "No packages to test have been specified. See 'spacejam help' for more info."
-      process.exit 1
+    _testPackages = null
+    if packages.length > 0
+      _testPackages = @_globPackages(@opts["app"],packages)
 
-
-    testPackages = @_globPackages(@opts["app"],packages)
-
+    log.debug "_testPackages=",_testPackages
     args = [
       "--port"
       @opts["port"]
@@ -123,8 +123,9 @@ class Meteor extends EventEmitter
 #      "--deploy" if @opts["deploy"]
 #      @opts["deploy"] if @opts["deploy"]
       "test-packages"
-      testPackages
+      _testPackages if _testPackages
     ]
+    log.debug "args",args
     # Remove undefined values from args
     args = _.without(args,undefined)
     args = _.without(args,null)
@@ -186,25 +187,31 @@ class Meteor extends EventEmitter
 
     matchedPackages = []
 
-    if fs.existsSync("#{app}/.meteor")
-      cwd = "#{app}/packages"
+    appPath = path.normalize("#{app}/.meteor")
+    log.debug "appPath=",appPath
+    if appPath
+      cwd = "#{appPath}/packages"
     else
-      cwd = app
+      cwd = appPath
+
+    log.debug "cwd=",cwd
 
     globOpts = {
       cwd: cwd
     }
     packages.forEach (globPkg)=>
+      log.debug "globPkg=",globPkg
       globedPackages = glob.sync(globPkg, globOpts)
-
-      if globedPackages.length is 0
-        log.error "No packages matching #{packages} have been found."
-        if app is "."
-          log.error "Please make sure you are running spacejam within a meteor app. Use --app otherwise."
-        process.exit 1
-
-      globedPackages.forEach (pkg)->
-        matchedPackages.push(pkg)
+      log.debug "globedPackages=",globedPackages
+      if globedPackages.length > 0
+        globedPackages.forEach (pkg)->
+          matchedPackages.push(pkg)
+####
+#      else
+#        log.warn "No packages matching #{packages} have been found."
+#        if app is "."
+#          log.warn "Make sure you are running spacejam from a meteor app folder. If not, use --app to specify app folder."
+####
 
     return matchedPackages
 

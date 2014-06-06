@@ -96,7 +96,7 @@ class SpaceJam
 
     SpaceJam.phantomjs.on "exit", (code,signal)=>
       SpaceJam.phantomjs = null
-      SpaceJam.meteor.kill()
+      SpaceJam.meteor?.kill()
       if code?
         exit code
     SpaceJam.phantomjs.run(url)
