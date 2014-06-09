@@ -6,7 +6,7 @@ EventEmitter = require('events').EventEmitter
 MeteorMongodb = require("./MeteorMongodb.coffee")
 glob = require("glob")
 fs = require("fs")
-path = require 'path'
+path = require "path"
 
 class Meteor extends EventEmitter
 
@@ -74,7 +74,6 @@ class Meteor extends EventEmitter
   # @parseCommandLine
   testPackages: (opts,parseCommandLine=true)=>
     log.debug "Meteor.testPackages()"
-    log.debug "process.argv=",process.argv
     log.info("Spawning meteor")
     expect(opts,"@opts should be an object.").to.be.an "object"
     expect(parseCommandLine,"@parseCommandLine should be a boolean.").to.be.a "boolean"
@@ -88,8 +87,6 @@ class Meteor extends EventEmitter
 
     # command line opts take even higher precedence
     if parseCommandLine
-      log.debug "before rc with parseCommandLine"
-      log.debug "process.argv=",process.argv
       @opts = require("rc")("spacejam",@opts)
     else
       @opts = require("rc")("spacejam",@opts,->)
@@ -98,47 +95,40 @@ class Meteor extends EventEmitter
 
     @opts["root-url"] ?= Meteor.getDefaultRootUrl(@opts["port"])
 
-    log.debug "meteor test-packages opts=\n",@opts
-
-
     packages = @opts._[1..] # Get packages from command line
-    log.debug "========packages=",packages
 
     _testPackages = null
     if packages.length > 0
       _testPackages = @_globPackages(@opts["app"],packages)
 
-    log.debug "_testPackages=",_testPackages
+      if !_testPackages.length > 0
+        log.warn "Package not found"
+        @emit "exit",1
+        return
+
     args = [
       "--port"
       @opts["port"]
       "--driver-package"
       @driverPackage
-      "--production" if @opts["production"]
-      "--once" if @opts["once"]
-      "--settings" if @opts["settings"]
-      @opts["settings"] if @opts["settings"]
-      "--release" if @opts["release"]
-      @opts["release"] if @opts["release"]
-#      "--deploy" if @opts["deploy"]
-#      @opts["deploy"] if @opts["deploy"]
       "test-packages"
-      _testPackages if _testPackages
     ]
-    log.debug "args",args
+    args.push(_testPackages) if _testPackages
+    args.push("--production") if @opts["production"]
+    args.push("--once") if @opts["once"]
+    args.push(["--settings",@opts["settings"]]) if @opts["settings"]
+    args.push(["--release",@opts["release"]]) if @opts["release"]
+    args.push(["--deploy",@opts["deploy"]]) if @opts["deploy"]
+
     # Remove undefined values from args
     args = _.without(args,undefined)
     args = _.without(args,null)
     # flatten nested testPackages array into args
     args = _.flatten(args)
 
-    log.debug "meteor test-packages args=\n",args
-
     env = process.env
     env.ROOT_URL = @opts["root-url"]
     env.MONGO_URL = @opts["mongo-url"] if @opts["mongo-url"]
-
-    log.debug "ROOT_URL=",env.ROOT_URL
 
     options = {
       cwd: @opts["app"],
@@ -187,22 +177,19 @@ class Meteor extends EventEmitter
 
     matchedPackages = []
 
-    appPath = path.normalize("#{app}/.meteor")
-    log.debug "appPath=",appPath
-    if appPath
+    appPath = path.resolve(app)
+    meteorPath = "#{appPath}/.meteor"
+
+    if fs.existsSync(meteorPath)
       cwd = "#{appPath}/packages"
     else
       cwd = appPath
-
-    log.debug "cwd=",cwd
 
     globOpts = {
       cwd: cwd
     }
     packages.forEach (globPkg)=>
-      log.debug "globPkg=",globPkg
       globedPackages = glob.sync(globPkg, globOpts)
-      log.debug "globedPackages=",globedPackages
       if globedPackages.length > 0
         globedPackages.forEach (pkg)->
           matchedPackages.push(pkg)

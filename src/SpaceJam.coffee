@@ -61,8 +61,11 @@ class SpaceJam
     ,opts["timeout"]
     )
 
-    SpaceJam.meteor.on "exit", =>
+    SpaceJam.meteor.on "exit", (code)=>
       SpaceJam.meteor = null
+      if code
+        killChildren code
+
 
     SpaceJam.meteor.on "ready", =>
       log.info "spacejam: meteor is ready"
