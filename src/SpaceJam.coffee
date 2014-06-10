@@ -114,7 +114,7 @@ class SpaceJam
     log.debug "SpaceJam.exit()",arguments
     expect(code,"Invalid exit code").to.be.a "number"
 
-    SpaceJam.waitForMeteorMongodbKillDone = SpaceJam.meteor.hasMongodb()
+    SpaceJam.waitForMeteorMongodbKillDone = SpaceJam.meteor?.hasMongodb()
     process.exit code if not SpaceJam.waitForMeteorMongodbKillDone
     SpaceJam.exitCode = code
 
