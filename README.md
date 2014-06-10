@@ -1,23 +1,38 @@
 SpaceJam
 ========
-
+	
 **spacejam** is a console test runner for [meteor](https://www.meteor.com/) packages. It wraps meteor test-packages with some enhancements, allowing you to easily run your package tinytests or [munit](https://atmospherejs.com/package/munit) tests from the command line. It's primary use is in continuous integration environments. It starts meteor test-packages, waits for it to be ready, and then runs the tinytests or [munit](https://atmospherejs.com/package/munit) tests in phantomjs. Support for more browsers is coming shortly.
 
-Supported Meteor Versions
--------------------------
+
+Table of Contents
+-------------------
+- [Supported  Meteor Versions](#supported-meteor-versions)
+- [Changelog](#changelog)
+- [Installation](#installation)
+- [Usage](#usage)
+	- [Running your package tests outside of a meteor app](#running-your-package-tests-outside-of-a-meteor-app)
+- [Environment Variables](#environment-variables)
+- [In case It doesn't work with your meteor version](#in-case-it-doesnt-work-with-your-meteor-version)
+- [Helper Scripts](#helper-scripts)
+- [Spacejam self tests](#spacejam-self-tests)
+- [Contributions](#contributions)
+
+
+
+## Supported Meteor Versions
+
 ```spacejam``` has only been tested with [```meteor 0.8.1```](https://github.com/meteor/meteor/tree/release/0.8.1/), but it should work with any recent meteor version.
 
-Changelog
----------
+## Changelog
+
 See [CHANGELOG.md](CHANGELOG.md)
 
-Installation
-------------
+## Installation
+
     npm install -g spacejam
 This will automatically add spacejam to your path.
 
-Usage
------
+## Usage
 
     spacejam test-packages [options] <packages-to-test>
 
@@ -83,16 +98,17 @@ The following options are meteor options and are passed through to meteor (all a
     
     spacejam help
 
+### Running your package tests outside of a meteor app
 
-Environment Variables
----------------------
+
+
+## Environment Variables
 
 ```spacejam``` uses the [rc](https://www.npmjs.org/package/rc) npm package 
 for runtime configuration, so every command line option can also be set by an environment variable of the same name, and a prefix of ```spacejam_```, i.e. ```spacejam_port```. Note that environment variables have to be lower case, due to the way rc reads them.
 
 
-In Case It Doesn't Work With Your Meteor Version
-------------------------------------------------
+## In Case It Doesn't Work With Your Meteor Version
 
 Different versions of Meteor may print out different texts to indicate your app is ready or that your app has errors, so if that's the case, you will be able to provide the appropiate text, using the `meteor-xxx-text` options. For meteor 0.8.1, we use:
 
@@ -110,8 +126,8 @@ Exit codes
 * ```3``` The meteor app has errors.
 * ```4``` The tests have timed out.
 
-Helper Scripts
---------------
+## Helper Scripts
+
 In the bin folder, in addition to spacejam, you will find the following scripts that you can copy and modify to suit your needs: 
 
 * [run.tests.sh](bin/run-tests.sh) - set / unset environment variables before running spacejam.
@@ -119,16 +135,16 @@ In the bin folder, in addition to spacejam, you will find the following scripts 
 * [unset-meteor-env.sh](bin/unset-meteor-env.sh) - unset meteor related environment variables.
 
 
-spacejam self tests
--------------------
+## spacejam self tests
+
 We use CoffeScript's cake for that so, clone the repository, run `npm install` in the repo root and then run: 
 
 `npm test`
 
 This will execute `cake test`.
 
-Contributions
--------------
+## Contributions
+
 Are more than welcome. Just create pull requests. Following are a list of enhancements we were thinking of:
 
 * Passing through to meteor all unrecognized options to make spacejam future proof. Currently, we don't support `--deploy` due to that.
