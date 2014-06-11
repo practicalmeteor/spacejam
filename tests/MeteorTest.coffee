@@ -253,12 +253,14 @@ describe "Meteor class Test", ->
         expect(err,"could not find mongod children").not.to.be.ok
         expect(resultList,"Found more than one mongod child").have.length.of 1
         meteor.kill()
-        meteor.meteorMongodb.kill()
-        meteor.meteorMongodb.once "kill-done",->
+        #meteor.meteorMongodb.kill()
+        #meteor.meteorMongodb.once "kill-done",->
+        setInterval ->
           lookUpMongodChilds pid,(err, resultList )->
-            expect(err,"found mongod children").not.to.be.null
-            expect(resultList,"the mongod children were not killed").not.to.be.ok
-            done()
+            if err
+              expect(resultList,"the mongod children were not killed").not.to.be.ok
+              done()
+        ,500
 
 
 
