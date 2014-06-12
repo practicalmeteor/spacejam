@@ -10,7 +10,7 @@ log.info spacejamBin
 describe "SpaceJam Test", ->
   @timeout 40000
 
-  spacejamChild = new ChildProcess()
+  spacejamChild = null
 
   testApp1 = "tests/leaderboard/"
 
@@ -22,14 +22,23 @@ describe "SpaceJam Test", ->
 
   before ->
     log.setLevel "debug"
+
+  beforeEach ->
     delete process.env.PORT
     delete process.env.ROOT_URL
     delete process.env.MONGO_URL
     delete process.env.PACKAGE_DIRS
 
+    spacejamChild = new ChildProcess()
+
+
 
   afterEach ->
-    spacejamChild?.kill()
+    try
+      spacejamChild?.kill()
+    finally
+      spacejamChild = null
+
 
 
   it "Run with with default options and no env, outside a Meteor app", (done)->

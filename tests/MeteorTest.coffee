@@ -36,14 +36,15 @@ describe "Meteor class Test", ->
 
   before ->
     log.setLevel "debug"
+
+
+
+  beforeEach ->
     delete process.env.PORT
     delete process.env.ROOT_URL
     delete process.env.MONGO_URL
     delete process.env.SPACEJAM_PORT
 
-
-
-  beforeEach ->
     meteor = new Meteor()
     expectedSpawnOptions = { cwd: ".", detached: false, env: env }
     spawnStub = sinon.stub(ChildProcess.prototype,"spawn")
@@ -54,11 +55,14 @@ describe "Meteor class Test", ->
 
 
   afterEach ->
+    ChildProcess.prototype.child = null
     spawnStub?.restore()
+    spawnStub = null
+
 
 
   after ->
-    ChildProcess.prototype.child = null
+
 
 
   it "exec()",->
@@ -243,6 +247,7 @@ describe "Meteor class Test", ->
     process.argv.push testPackage
     delete process.env.MONGO_URL
     spawnStub.restore()
+    spawnStub = null
     ChildProcess.prototype.child = null
 
     meteor.testPackages({})
@@ -253,12 +258,15 @@ describe "Meteor class Test", ->
         expect(err,"could not find mongod children").not.to.be.ok
         expect(resultList,"Found more than one mongod child").have.length.of 1
         meteor.kill()
+        # This should never be called from a test. meteor is responsible for calling this. why was it called again?
         #meteor.meteorMongodb.kill()
+        # BlackBook testing only, we dont care how mongoDB is killed only that its dead so no need to register to implementation type of events
         #meteor.meteorMongodb.once "kill-done",->
-        setInterval ->
+        timerId = setInterval ->
           lookUpMongodChilds pid,(err, resultList )->
             if err
               expect(resultList,"the mongod children were not killed").not.to.be.ok
+              clearInterval(timerId)
               done()
         ,500
 
