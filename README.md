@@ -1,6 +1,7 @@
+[![Build Status](https://travis-ci.org/spacejamio/spacejam.svg?branch=master)](https://travis-ci.org/spacejamio/spacejam)
 SpaceJam
 ========
-	
+
 **spacejam** is a console test runner for [meteor](https://www.meteor.com/) packages. It wraps meteor test-packages with some enhancements, allowing you to easily run your package tinytests or [munit](https://atmospherejs.com/package/munit) tests from the command line. It's primary use is in continuous integration environments. It starts meteor test-packages, waits for it to be ready, and then runs the tinytests or [munit](https://atmospherejs.com/package/munit) tests in phantomjs. Support for more browsers is coming shortly.
 
 
@@ -164,6 +165,5 @@ Are more than welcome. Just create pull requests. Following are a list of enhanc
 Note that we are about to include support for running tests in any browser from the command line so no need to work on that.
 
 ## License
---
-MIT, see [LICENSE.txt](LICENSE.txt) for more details.
 
+MIT, see [LICENSE.txt](LICENSE.txt) for more details.

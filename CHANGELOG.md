@@ -1,3 +1,8 @@
+## 0.2.10
+
+#### Changes
+* Internal: Fix npm-publish script so it stops in case of errors.
+
 ## 0.2.9
 
 #### Changes
