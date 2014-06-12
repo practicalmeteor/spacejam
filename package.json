@@ -1,6 +1,6 @@
 {
   "name": "spacejam",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "dependencies": {
     "underscore": "~1.6.0",
     "coffee-script": "~1.6.3",
