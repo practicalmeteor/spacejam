@@ -33,7 +33,6 @@ class SpaceJam
 
   @exec: ->
     log.debug "SpaceJam.exec()"
-    log.info "spacejam jamming"
 
     expect(SpaceJam.meteor,"Meteor is already running").to.be.null
 
@@ -134,15 +133,18 @@ class SpaceJam
   printHelp =->
     process.stdout.write(
       """
+
 Usage
 -----
 
-spacejam test-packages [options] <packages-to-test>
+spacejam test-packages [options] [packages-to-test]
 
-<packages-to-test> can be a list of packages with tinytests or munit tests.
+[packages-to-test] can be a list of packages with tinytests or munit tests.
 It enhances meteor test-packages, by supporting glob wildcards on package names
 that are matched against all package names in the meteor app packages 
 directory.
+
+If not specified, acts the same as meteor test-packages without arguments.
 
 The following options are specific to spacejam:
 
@@ -194,8 +196,15 @@ spacejam help - This help text.
 Environment Variables
 ---------------------
 
-Every command line option can also be set by an upper case environment 
-variable of the same name, and a prefix of SPACEJAM_, i.e. SPACEJAM_PORT
+Every command line option can also be set by an environment variable of the same name, and a prefix of spacejam_, i.e. spacejam_port.
+Note that environment variables have to be lower case, due to the way rc reads them.
+
+Running your package tests without a meteor app
+-----------------------------------------------
+
+From within your package folder, run:
+
+spacejam test-packages ./
 
 Exit codes
 ----------

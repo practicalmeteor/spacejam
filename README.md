@@ -10,7 +10,7 @@ Table of Contents
 - [Changelog](#changelog)
 - [Installation](#installation)
 - [Usage](#usage)
-	- [Running your package tests outside of a meteor app](#running-your-package-tests-outside-of-a-meteor-app)
+- [Running your package tests without a meteor app](#running-your-package-tests-without-a-meteor-app)
 - [Environment Variables](#environment-variables)
 - [In case It doesn't work with your meteor version](#in-case-it-doesnt-work-with-your-meteor-version)
 - [Helper Scripts](#helper-scripts)
@@ -34,11 +34,19 @@ This will automatically add spacejam to your path.
 
 ## Usage
 
-    spacejam test-packages [options] <packages-to-test>
+    spacejam test-packages [options] [packages-to-test]
 
-`<packages-to-test>` can be a list of packages with tinytests or [munit](https://atmospherejs.com/package/munit) tests.
+**packages-to-test** can be a list of packages with tinytests or [munit](https://atmospherejs.com/package/munit) tests.
 It enhances meteor test-packages, by supporting glob wildcards on package names that are matched against all package names in the meteor app packages directory. We added this because all of our package names start with the same prefix.
-    
+
+If not specified, will call meteor test-packages without arguments which will result in meteor testing all of the following packages:
+
+1. All of meteor's core packages
+
+2. All of your app's packages, if called from within an app folder or an app folder is specified.
+
+3. All of the packages meteor will find in all the folders specified in the PACKAGE_DIRS environment variable.
+
 The following options are specific to spacejam:
 
     --app <directory>             The directory of your meteor app (default is '.').
@@ -98,9 +106,13 @@ The following options are meteor options and are passed through to meteor (all a
     
     spacejam help
 
-### Running your package tests outside of a meteor app
+## Running your package tests without a meteor app
 
+From within your package folder, run:
 
+````
+spacejam test-packages ./
+```
 
 ## Environment Variables
 
@@ -151,6 +163,7 @@ Are more than welcome. Just create pull requests. Following are a list of enhanc
 
 Note that we are about to include support for running tests in any browser from the command line so no need to work on that.
 
-License
+## License
 --
 MIT, see [LICENSE.txt](LICENSE.txt) for more details.
+

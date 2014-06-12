@@ -1,8 +1,9 @@
-## v.NEXT
+## 0.2.9
 
-#### Features
-* Add support for running tests for standalone packages
-* Kills meteor internal mongodb cleanly. See #3
+#### Changes
+* Add support for running spacejam without packages specified, so it will do the same as meteor test-packages without arguments.
+* Add support for running tests for standalone packages, without a meteor app.
+* spacejam now kills meteor's internal mongodb cleanly. See #3
 
 ## 0.2.8
 
