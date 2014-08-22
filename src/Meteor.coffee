@@ -222,7 +222,8 @@ class Meteor extends EventEmitter
 
   hasMongodb: ->
     log.debug "Meteor.hasMongodb()"
-    return @meteorMongodb.hasMongodb()
+    return @meteorMongodb.hasMongodb() if @meteorMongodb
+    return false
 
 
   # TODO: Test
