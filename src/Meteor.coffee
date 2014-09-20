@@ -32,9 +32,7 @@ class Meteor extends EventEmitter
       "mongo-url"   : process.env.MONGO_URL || null
       "settings"    : null
       "production"  : false
-      "production"  : false
-      "production"  : false
-      "once"        : false
+      "release"     : null
     }
 
 
@@ -49,8 +47,6 @@ class Meteor extends EventEmitter
   # See baseOpts why it is a function an not an object.
   testPackagesOpts: ->
     {
-      "app": "."
-      "app-packages": true #TODO Add Support for testing all packages within an app that are not symlinks
       "timeout": 120000 # 2 minutes
       "meteor-ready-text": "=> App running at:"
       "meteor-error-text": "Waiting for file change."
@@ -91,20 +87,19 @@ class Meteor extends EventEmitter
     else
       @opts = require("rc")("spacejam",@opts,->)
 
+    if not fs.existsSync(process.cwd() + '/.meteor/packages')
+      #log.error "Error: spacejam needs to be run from within a meteor app folder. Exiting."
+      throw new Error("spacejam needs to be run from within a meteor app folder.")
+
     expect(+@opts["port"],"--port is not a number. See 'spacejam help' for more info.").to.be.ok
 
     @opts["root-url"] ?= Meteor.getDefaultRootUrl(@opts["port"])
 
     packages = @opts._[1..] # Get packages from command line
 
-    _testPackages = null
     if packages.length > 0
-      _testPackages = @_globPackages(@opts["app"],packages)
-
-      if !_testPackages.length > 0
-        log.warn "Package not found"
-        @emit "exit",1
-        return
+      _testPackages = @_globPackages(packages)
+      expect(_testPackages).to.have.length.above 0
 
     args = [
       "--port"
@@ -114,11 +109,9 @@ class Meteor extends EventEmitter
       "test-packages"
     ]
     args.push(_testPackages) if _testPackages
-    args.push("--production") if @opts["production"]
-    args.push("--once") if @opts["once"]
-    args.push(["--settings",@opts["settings"]]) if @opts["settings"]
-    args.push(["--release",@opts["release"]]) if @opts["release"]
-    args.push(["--deploy",@opts["deploy"]]) if @opts["deploy"]
+    args.push("--production") if @opts.production
+    args.push(["--settings", @opts.settings]) if @opts.settings
+    args.push(["--release", @opts.release]) if @opts.release
 
     # Remove undefined values from args
     args = _.without(args,undefined)
@@ -131,7 +124,7 @@ class Meteor extends EventEmitter
     env.MONGO_URL = @opts["mongo-url"] if @opts["mongo-url"]
 
     options = {
-      cwd: @opts["app"],
+      cwd: process.cwd(),
       env: env,
       detached:false
     }
@@ -170,35 +163,37 @@ class Meteor extends EventEmitter
 
 
   # TODO: Test
-  _globPackages: (app,packages)-> # Use glob to get packages that match the packages arg
+  _globPackages: (packages)-> # Use glob to get packages that match the packages arg
     log.debug "Meteor._globPackages()",arguments
-    expect(app,"@app should be a string").to.be.a "string"
     expect(packages,"@packages should be and array").to.be.an "array"
+
+    pkgsFolder = process.cwd() + '/packages'
+
+    globOpts = {
+      cwd: pkgsFolder
+    }
 
     matchedPackages = []
 
-    appPath = path.resolve(app)
-    meteorPath = "#{appPath}/.meteor"
-
-    if fs.existsSync(meteorPath)
-      cwd = "#{appPath}/packages"
-    else
-      cwd = appPath
-
-    globOpts = {
-      cwd: cwd
-    }
-    packages.forEach (globPkg)=>
-      globedPackages = glob.sync(globPkg, globOpts)
-      if globedPackages.length > 0
-        globedPackages.forEach (pkg)->
-          matchedPackages.push(pkg)
-####
-#      else
-#        log.warn "No packages matching #{packages} have been found."
-#        if app is "."
-#          log.warn "Make sure you are running spacejam from a meteor app folder. If not, use --app to specify app folder."
-####
+    packages.forEach (pkgArg)=>
+      if pkgArg.indexOf(':') > 0
+        # It's a package name in the new format, we'll add it as is
+        # TODO: Support globs for this too, by looking up package names inside package.js
+        matchedPackages.push(pkgArg)
+      else if pkgArg.indexOf('/') >= 0
+        # It's a path to a package, we'll add it as is too
+        # TODO: Support globs for this too
+        matchedPackages.push(pkgArg)
+      else
+        # It's a package name, let's find matching package names, if it includes wildcards
+        globedPackages = glob.sync(pkgArg, globOpts)
+        if globedPackages.length > 0
+          globedPackages.forEach (pkg)->
+            matchedPackages.push(pkg)
+        else
+          log.warn "Warning: No packages matching #{pkgArg} have been found. Will add it to the meteor command line anyway, in case it's in PACKAGE_DIRS."
+          # TODO: Support globs in PACKAGE_DIRS too.
+          matchedPackages.push(pkgArg)
 
     return matchedPackages
 
