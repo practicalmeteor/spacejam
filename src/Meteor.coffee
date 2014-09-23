@@ -37,13 +37,6 @@ class Meteor extends EventEmitter
 
 
 
-  runOpts: ->
-  {
-
-  }
-
-
-
   # See baseOpts why it is a function an not an object.
   testPackagesOpts: ->
     {
@@ -57,12 +50,6 @@ class Meteor extends EventEmitter
   @exec: ->
     log.debug "Meteor.exec()",arguments
     return new Meteor()
-
-
-
-  run: ->
-    log.debug "Meteor.run()",arguments
-    log.info("Spawning meteor")
 
 
 
@@ -87,13 +74,12 @@ class Meteor extends EventEmitter
     else
       @opts = require("rc")("spacejam",@opts,->)
 
-    if not fs.existsSync(process.cwd() + '/.meteor/packages')
-      #log.error "Error: spacejam needs to be run from within a meteor app folder. Exiting."
-      throw new Error("spacejam needs to be run from within a meteor app folder.")
+    if not fs.existsSync(process.cwd() + '/.meteor/packages') and not fs.existsSync('package.js')
+      throw new Error("spacejam needs to be run from within a meteor app or package folder.")
 
-    expect(+@opts["port"],"--port is not a number. See 'spacejam help' for more info.").to.be.ok
+    expect(+@opts.port, "--port is not a number. See 'spacejam help' for more info.").to.be.ok
 
-    @opts["root-url"] ?= Meteor.getDefaultRootUrl(@opts["port"])
+    @opts["root-url"] ?= Meteor.getDefaultRootUrl(@opts.port)
 
     packages = @opts._[1..] # Get packages from command line
 
@@ -102,20 +88,16 @@ class Meteor extends EventEmitter
       expect(_testPackages).to.have.length.above 0
 
     args = [
-      "--port"
-      @opts["port"]
-      "--driver-package"
+      'test-packages'
+      '--driver-package'
       @driverPackage
-      "test-packages"
     ]
-    args.push(_testPackages) if _testPackages
+    args.push(["--release", @opts.release]) if @opts.release
+    args.push(["--port", @opts.port])
     args.push("--production") if @opts.production
     args.push(["--settings", @opts.settings]) if @opts.settings
-    args.push(["--release", @opts.release]) if @opts.release
+    args.push(_testPackages) if _testPackages
 
-    # Remove undefined values from args
-    args = _.without(args,undefined)
-    args = _.without(args,null)
     # flatten nested testPackages array into args
     args = _.flatten(args)
 
@@ -124,9 +106,9 @@ class Meteor extends EventEmitter
     env.MONGO_URL = @opts["mongo-url"] if @opts["mongo-url"]
 
     options = {
-      cwd: process.cwd(),
+      cwd: ".",
       env: env,
-      detached:false
+      detached: false
     }
 
     @childProcess = new ChildProcess()

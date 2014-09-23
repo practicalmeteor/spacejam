@@ -60,10 +60,11 @@ class SpaceJam
     ,opts["timeout"]
     )
 
+
     SpaceJam.meteor.on "exit", (code)=>
       SpaceJam.meteor = null
       if code
-        killChildren code
+        killChildren SpaceJam.ERR_CODE.METEOR_ERROR
 
 
     SpaceJam.meteor.on "ready", =>

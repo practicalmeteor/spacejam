@@ -7,23 +7,24 @@ spacejamBin = require.resolve("../bin/spacejam")
 log.info spacejamBin
 
 
-describe "SpaceJam Test", ->
-  @timeout 40000
+describe "spacejam test-packages", ->
+  @timeout 60000
 
   spacejamChild = null
 
-  testApp1 = "tests/leaderboard/"
+  testApp1 = "leaderboard"
 
-  testApp2 = "tests/todos/"
+  testApp2 = "todos"
 
-  standAlonePackage = "tests/standalone-package"
+  standAlonePackage = "packages/standalone-package"
 
 
 
   before ->
-    log.setLevel "debug"
+    log.setLevel "info"
 
   beforeEach ->
+    process.chdir(__dirname + "/leaderboard")
     delete process.env.PORT
     delete process.env.ROOT_URL
     delete process.env.MONGO_URL
@@ -40,184 +41,81 @@ describe "SpaceJam Test", ->
       spacejamChild = null
 
 
-
-  it "Run with with default options and no env, outside a Meteor app", (done)->
-    @timeout 30000
+  it "should exit with 0 if tests pass for a meteor app package", (done)->
     spacejamChild = new ChildProcess()
-    args = [
-      "test-packages"
-      "success"
-    ]
+    args = ["test-packages", "success"]
+    spacejamChild.spawn(spacejamBin,args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
+      done()
+
+
+  it "should exit with 0 if tests pass for a standalone package", (done)->
+    process.chdir(__dirname + "/standalone-package")
+    process.env.PACKAGE_DIRS = __dirname
+    spacejamChild = new ChildProcess()
+    args = ["test-packages", "./"]
+    spacejamChild.spawn(spacejamBin,args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
+      done()
+
+
+  it "should exit with 1, if not in a meteor app or package folder", (done)->
+    process.chdir(__dirname)
+    spacejamChild = new ChildProcess()
+    args = ["test-packages", "success"]
     spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal 1
       done()
 
 
-
-  it "Run with with default options and no env, outside a Meteor app with --app arg", (done)->
-    @timeout 30000
+  it "should exit with 3, if package could not be found", (done)->
     spacejamChild = new ChildProcess()
-    args = [
-      "test-packages"
-      "success"
-      "--app"
-      testApp1
-    ]
-    spacejamChild.spawn(spacejamBin,args)
-    spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
-      done()
-
-
-
-  it "Run with with an standalone packages as option (fails if deps are not found)", (done)->
-    @timeout 30000
-    spacejamChild = new ChildProcess()
-    args = [
-      "test-packages"
-      standAlonePackage
-    ]
+    args = ["test-packages", standAlonePackage]
     spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.METEOR_ERROR
       done()
 
 
-
-  it "Run with with an standalone packages as option", (done)->
-    @timeout 30000
-    process.env.PACKAGE_DIRS = __dirname
+  it "should exit with 2, if tests failed", (done)->
     spacejamChild = new ChildProcess()
-    args = [
-      "test-packages"
-      standAlonePackage
-    ]
+    testPort = "6096"
+    args = ["test-packages", "--port", testPort, "failure"]
     spacejamChild.spawn(spacejamBin,args)
-    spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
-      done()
-
-
-
-  it "Run with with default options and no env, inside a Meteor app", (done)->
-    @timeout 30000
-    spacejamChild = new ChildProcess()
-    args = [
-      "test-packages"
-      "success"
-    ]
-    spacejamChild.spawn(spacejamBin,args,{cwd:testApp1})
-    spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
-      done()
-
-
-  it "Run with a successful test and a settings file", (done)->
-    @timeout 30000
-    spacejamChild = new ChildProcess()
-    testPort = "7040"
-    args = [
-      "test-packages"
-      "settings"
-      "--settings"
-      "settings.json"
-      "--port"
-      testPort
-    ]
-    spacejamChild.spawn(spacejamBin,args,{cwd:testApp1})
-    spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
-      done()
-
-
-
-  it "Run with a failing test", (done)->
-    @timeout 30000
-    spacejamChild = new ChildProcess()
-    testPort = "7050"
-    args = [
-      "test-packages"
-      "failure"
-      "--port"
-      testPort
-    ]
-    spacejamChild.spawn(spacejamBin,args,{cwd:testApp1})
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_FAILED
       done()
 
 
-
-  it "Run with a test that never ends", (done)->
-    @timeout 15000
+  it "should exit with 4, if --timeout has passed", (done)->
     spacejamChild = new ChildProcess()
-    testPort = "7060"
-    args = [
-      "test-packages"
-      "timeout"
-      "--timeout"
-      "10000"
-      "--port"
-      testPort
-    ]
-    spacejamChild.spawn(spacejamBin,args,{cwd:testApp1})
+    testPort = "7096"
+    args = ["test-packages", "--timeout", "10000", "--port", testPort, 'timeout']
+    spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
       expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_TIMEOUT
       done()
 
 
-
-  it "Send more than one package (With * wildcard)", (done)->
-    @timeout 30000
+  it "should exit with 2, if the meteor app crashes", (done)->
+    process.chdir(__dirname + "/todos")
     spacejamChild = new ChildProcess()
-    testPort = "7070"
-    args = [
-      "test-packages"
-      "success*"
-      "--settings"
-      "settings.json"
-      "--port"
-      testPort
-    ]
-    spacejamChild.spawn(spacejamBin,args,{cwd:testApp1})
-    spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
-      done()
-
-
-
-  it "Send more than one package (separated by an space)", (done)->
-    @timeout 30000
-    spacejamChild = new ChildProcess()
-    testPort = "7080"
-    args = [
-      "test-packages"
-      "success"
-      "settings"
-      "--settings"
-      "settings.json"
-      "--port"
-      testPort
-    ]
-    spacejamChild.spawn(spacejamBin,args,{cwd:testApp1})
-    spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
-      done()
-
-
-
-  it "Run with a failing meteor app", (done)->
-    @timeout 30000
-    spacejamChild = new ChildProcess()
-    testPort = "7090"
-    args = [
-      "test-packages"
-      "appfails"
-      "--port"
-      testPort
-    ]
-    spacejamChild.spawn(spacejamBin,args,{cwd:testApp2})
+    testPort = "8096"
+    args = ["test-packages", "--port", testPort, 'appfails']
+    spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
       expect(code).to.equal SpaceJam.ERR_CODE.METEOR_ERROR
+      done()
+
+
+  it "should exit with 0, in case of a complete test, with a settings file, multiple packages, including wildcards in package names", (done)->
+    spacejamChild = new ChildProcess()
+    testPort = "10096"
+    args = ["test-packages", "--settings", "settings.json", "--port", testPort, 'packages/settings', 'success*']
+    spacejamChild.spawn(spacejamBin,args)
+    spacejamChild.child.on "exit", (code) =>
+      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
       done()

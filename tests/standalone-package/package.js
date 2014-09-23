@@ -2,7 +2,9 @@ Package.describe({
   summary: "success"
 });
 
-Package.on_use(function (api, where) {
+Package.on_use(function (api) {
+  api.versionsFrom('0.9.0');
+
   api.use(['coffeescript','standalone-package-dep']);
   api.add_files(['success.coffee'])
 });
