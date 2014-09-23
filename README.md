@@ -22,7 +22,7 @@ Table of Contents
 
 ## Supported Meteor Versions
 
-```spacejam``` has only been tested with [```meteor 0.8.1```](https://github.com/meteor/meteor/tree/release/0.8.1/), but it should work with any recent meteor version.
+```spacejam``` has only been tested with meteor 0.8.1 and 0.9.2.2, but it should work with any recent meteor version.
 
 ## Changelog
 
@@ -30,7 +30,9 @@ See [CHANGELOG.md](CHANGELOG.md)
 
 ## Installation
 
+    npm install -g coffee-script
     npm install -g spacejam
+
 This will automatically add spacejam to your path.
 
 ## Usage
@@ -50,8 +52,6 @@ If not specified, will call meteor test-packages without arguments which will re
 
 The following options are specific to spacejam:
 
-    --app <directory>             The directory of your meteor app (default is '.').
-    
     --log-level <level>           spacejam log level. One of TRACE|DEBUG|INFO|WARN|ERROR.
 
     --root-url <url>              The meteor app ROOT_URL 
@@ -64,10 +64,6 @@ The following options are specific to spacejam:
                                   
     --timeout  <milliseconds>     Total timeout for all tests (defaults to 120000
                                   milliseconds, i.e. 2 minutes).
-                                  
-    --tinytest                    The browser to run the tests in automatically.
-                                  Currently, only phantomjs is supported and is
-                                  the default.
                                   
     --meteor-ready-text <text>    The meteor output text that indicates that the app
                                   is ready. If not provided, defaults to the text
@@ -89,21 +85,7 @@ The following options are meteor options and are passed through to meteor (all a
 
     --release <version>           Specify the release of Meteor to use.
                                   
-    --once                        If true, do not wait for file changes if meteor 
-                                  has errors, exit immediately. We recommend 
-                                  setting this to true in your continuous integration 
-                                  environment, and setting it to false in your development 
-                                  environment defaults to false).
-                                  
-    --driver-package <driver>     One of "test-in-console" (default) or
-                                  "test-in-browser".
-                                  "test-in-console" will print test results to the
-                                  console.
-                                  "test-in-browser" will allow you to open any browser on
-                                  the ROOT_URL, run the tests in that browser,
-                                  and get the results in html.
- 
- To get help, just:
+To get help, just:
     
     spacejam help
 
@@ -158,9 +140,7 @@ This will execute `cake test`.
 
 ## Contributions
 
-Are more than welcome. Just create pull requests. Following are a list of enhancements we were thinking of:
-
-* Passing through to meteor all unrecognized options to make spacejam future proof. Currently, we don't support `--deploy` due to that.
+Are more than welcome. Just create pull requests.
 
 Note that we are about to include support for running tests in any browser from the command line so no need to work on that.
 

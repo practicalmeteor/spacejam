@@ -1,12 +1,14 @@
 language: node_js
 node_js:
-  - "0.10"
+  - "0.10.29"
+
+branches:
+  only:
+    - master
+    - devel
+
 before_install:
   - "curl https://install.meteor.com | /bin/sh"
   - "meteor --version"
   - "npm install -g coffee-script"
   - "phantomjs -v"
-branches:
-  only:
-    - master
-    - devel

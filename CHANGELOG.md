@@ -1,3 +1,11 @@
+## 1.0.0
+
+#### Changes
+* Remove support for the --app option. spacejam needs to be run from within a meteor app or package folder.
+* Remove support for the --once option, since we need the meteor proxy to start and launch a mongodb, if needed. With --once, the meteor proxy will not launch a mongodb.
+* Remove support for the --driver-package option. It will always be test-in-console, since spacejam should only be used to test your packages from the command line or in ci environments.
+* Internal: Update tests to meteor 0.9.2.2
+
 ## 0.2.10
 
 #### Changes

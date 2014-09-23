@@ -26,7 +26,6 @@ class SpaceJam
   @defaultOpts =->
     {
       "timeout"   : 120000
-      "tinytest"  : "phantomjs" #TODO: For now only phantomjs is supported
       "crash-spacejam-after": 0
     }
 
@@ -149,24 +148,17 @@ If not specified, acts the same as meteor test-packages without arguments.
 
 The following options are specific to spacejam:
 
- --app <directory>           The directory of your meteor app (required, for
-                              now).
-
  --log-level <level>         spacejam log level. One of
                               TRACE|DEBUG|INFO|WARN|ERROR.
 
  --root-url <url>            The meteor app ROOT_URL (defaults to the
-                              ROOT_URL env var or http://localhost:3000/).
+                              ROOT_URL env var or http://localhost:4096/).
 
  --mongo-url <url>           The meteor app MONGO_URL (defaults to
                               the MONGO_URL env var, if exists).
 
  --timeout  <milliseconds>   Total timeout for all tests (defaults to
                               120000 milliseconds, i.e. 2 minutes).
-
- --tinytest                  The browser to run the tests in automatically.
-                              Currently, only phantomjs is supported and is
-                              the default.
 
  --meteor-ready-text <text>  The meteor output text that indicates that the
                               app is ready.
@@ -178,6 +170,8 @@ The following options are specific to spacejam:
 The following options are meteor options and are passed through to meteor (all
 are optional):
 
+ --release <release>   The release of Meteor to use.
+
  --port <port>         The port in which to run your meteor app
                        (defaults to the PORT env var or 4096).
 
@@ -185,9 +179,6 @@ are optional):
 
  --production          Simulate meteor production mode. Minify and bundle CSS
                        and JS files (defaults to false).
-
- --once                If true, do not wait for file changes if meteor has
-                       errors, exit immediately.
 
 
 Other commands:
@@ -213,7 +204,7 @@ Exit codes
 0 - All the tests have passed in all packages.
 1 - spacejam usage error.
 2 - At least one test has failed.
-3 - The meteor app has errors.
+3 - The meteor app exited with an error or is crashing.
 4 - The tests have timed out.
 
 For additional usage info, please visit https://github.com/spacejamio/spacejam
