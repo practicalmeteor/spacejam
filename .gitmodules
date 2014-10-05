@@ -4,3 +4,6 @@
 [submodule "packages/html-reporter"]
 	path = packages/html-reporter
 	url = git@github.com:meteor-velocity/html-reporter.git
+[submodule "packages/test-in-velocity"]
+	path = packages/test-in-velocity
+	url = git@github.com:spacejamio/test-in-velocity.git
