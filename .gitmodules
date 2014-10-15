@@ -7,3 +7,6 @@
 [submodule "packages/test-in-velocity"]
 	path = packages/test-in-velocity
 	url = git@github.com:spacejamio/test-in-velocity.git
+[submodule "packages/tinytest-velocity"]
+	path = packages/tinytest-velocity
+	url = git@github.com:spacejamio/tinytest-velocity.git
