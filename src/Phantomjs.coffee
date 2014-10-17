@@ -30,8 +30,8 @@ class Phantomjs extends EventEmitter
     @childProcess = new ChildProcess()
     @childProcess.spawn("phantomjs",args,options)
 
-    @childProcess.child.on "exit", (code,signal) =>
-      @emit "exit",code,signal
+    @childProcess.child.on "exit", (code, signal) =>
+      @emit "exit", code, signal
 
   kill: (signal="SIGINT")->
     log.debug "Phantomjs.kill()"
