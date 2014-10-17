@@ -3,7 +3,7 @@ ChildProcess = require '../src/ChildProcess'
 SpaceJam = require '../src/SpaceJam'
 
 path = require 'path'
-spacejamBin = require.resolve("../bin/spacejam")
+spacejamBin = require.resolve("../bin/spacejam.coffee")
 log.info spacejamBin
 
 
