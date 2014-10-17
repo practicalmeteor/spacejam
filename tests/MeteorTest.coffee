@@ -151,10 +151,11 @@ describe "Meteor.coffee", ->
 
 
   it "kill() - should kill internal mongodb child processes", (done)->
-    @timeout 30000
+    @timeout 60000
     process.argv.push packageToTest
     spawnStub.restore()
     spawnStub = null
+    delete process.env.MONGO_URL if process.env.MONGO_URL
     ChildProcess.prototype.child = null
 
     meteor.testPackages({})
