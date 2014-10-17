@@ -32,7 +32,7 @@ class SpaceJam extends EventEmitter
 
 
   testPackages: (opts = {})->
-    log.debug "SpaceJam.testPackages()",arguments
+    log.debug "SpaceJam.testPackages()", arguments
     expect(opts).to.be.an "object"
     expect(@meteor,"Meteor is already running").to.be.null
 
@@ -64,7 +64,7 @@ class SpaceJam extends EventEmitter
       log.error "spacejam: meteor has errors, exiting"
       @waitForMeteorMongodbKillDone = @meteor.hasMongodb()
       if @waitForMeteorMongodbKillDone
-        @meteor.meteorMongodb.on "kill-done", @onMeteorMongodbKillDone
+        @meteor.mongodb.on "kill-done", @onMeteorMongodbKillDone
       @killChildren(SpaceJam.DONE.METEOR_ERROR)
 
     try

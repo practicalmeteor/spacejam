@@ -42,13 +42,8 @@ describe "Meteor.coffee", ->
 
   beforeEach ->
     process.chdir(__dirname + "/leaderboard")
-    delete process.env.PORT
-    delete process.env.ROOT_URL
-    delete process.env.MONGO_URL
-    delete process.env.SPACEJAM_PORT
 
     meteor = new Meteor()
-    expectedSpawnOptions = { cwd: ".", detached: false, env: env }
     expectedSpawnArgs = ['test-packages', "--driver-package", meteor.driverPackage]
     spawnStub = sinon.stub(ChildProcess.prototype, "spawn")
     ChildProcess.prototype.child = childProcessMockObj
@@ -66,87 +61,89 @@ describe "Meteor.coffee", ->
 
   after ->
 
+  getExpectedSpawnOptions = (port, rootUrl, mongoUrl)->
+    expectedSpawnOptions = { cwd: ".", detached: false, env: env }
+    rootUrl ?= "http://localhost:#{port}/"
+    expectedSpawnOptions.env.ROOT_URL = rootUrl
+    expectedSpawnOptions.env.MONGO_URL = mongoUrl if mongoUrl?
+    return expectedSpawnOptions
 
 
-  it "exec()",->
-    meteorInstance = Meteor.exec()
-    expect(meteorInstance,"exec() did not return a Meteor instance").to.be.an.instanceOf(Meteor)
-
-
-
-  it "getDefaultRootUrl()",->
-    returnedRootUrl = Meteor.getDefaultRootUrl()
-    expect(returnedRootUrl,"Returned root url should be the default").to.equal("http://localhost:#{defaultTestPort}/")
-
-    process.env.SPACEJAM_PORT = 5000
-    returnedRootUrl = Meteor.getDefaultRootUrl()
-    expect(returnedRootUrl,"Returned root url should use the $SPACEJAM_PORT env var").to.equal("http://localhost:#{process.env.SPACEJAM_PORT}/")
-    delete process.env.SPACEJAM_PORT
-
-    process.env.PORT = 6000
-    returnedRootUrl = Meteor.getDefaultRootUrl()
-    expect(returnedRootUrl,"Returned root url should use the $PORT env var").to.equal("http://localhost:#{process.env.PORT}/")
-    delete process.env.PORT
-
-    returnedRootUrl = Meteor.getDefaultRootUrl(8000)
-    expect(returnedRootUrl,"Returned root url should use the @port param if any").to.equal("http://localhost:8000/")
-
+  testPackages = ()->
+    for arg in arguments
+      process.argv.push arg
+    opts = require("rc")("spacejam", {})
+    meteor.testPackages(opts)
 
 
   it "testPackages() - should spawn meteor with no package arguments",->
-    meteor.testPackages({})
+    testPackages()
     expectedSpawnArgs.push("--port", defaultTestPort)
-    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
 
   it "testPackages() - should spawn meteor with a package name argument",->
-    process.argv.push packageToTest
-    meteor.testPackages({})
+    testPackages(packageToTest)
     expectedSpawnArgs.push("--port", defaultTestPort, packageToTest)
-    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
+
+  it "testPackages() - should spawn meteor with a ROOT_URL set to http://localhost:--port/",->
+    rootUrl = "http://localhost:5000/"
+    testPackages "--port", "5000"
+    expectedSpawnArgs.push("--port", 5000)
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(5000, rootUrl)])
+
+
+  it "testPackages() - should ignore env ROOT_URL",->
+    process.env.ROOT_URL = "http://localhost:5000/"
+    testPackages()
+    expectedSpawnArgs.push("--port", defaultTestPort)
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(defaultTestPort)])
 
 
   it "testPackages() - should spawn meteor with a --settings argument",->
-    process.argv.push "--settings", "settings.json", packageToTest
-    meteor.testPackages({})
+    testPackages "--settings", "settings.json", packageToTest
     expectedSpawnArgs.push("--port", defaultTestPort, "--settings", "settings.json", packageToTest)
-    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
 
 
   it "testPackages() - should spawn meteor with a --production argument",->
-    process.argv.push packageToTest, "--production"
-    meteor.testPackages({})
+    testPackages packageToTest, "--production"
     expectedSpawnArgs.push("--port", defaultTestPort, "--production", packageToTest)
-    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
 
 
   it "testPackages() - should spawn meteor with a --release argument",->
     releaseToTest = '0.9.0'
-    process.argv.push "--release", releaseToTest, packageToTest
-    meteor.testPackages({})
+    testPackages "--release", releaseToTest, packageToTest
     expectedSpawnArgs.push "--release", releaseToTest, "--port", defaultTestPort, packageToTest
-    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
-    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
 
   it "testPackages() - should spawn meteor with ROOT_URL set to --root-url",->
-    rootUrl = "http://localhost:5000/"
-    process.argv.push "--root-url", rootUrl, packageToTest
-    meteor.testPackages({})
+    rootUrl = "http://test.meteor.com/"
+    testPackages "--root-url", rootUrl, packageToTest
     expectedSpawnArgs.push "--port", defaultTestPort, packageToTest
-    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096, rootUrl)])
     expect(spawnStub.args[0][2].env.ROOT_URL).to.equal rootUrl
+
+
+  it "testPackages() - should ignore env MONGO_URL",->
+    process.env.MONGO_URL = "mongodb://localhost/mydb"
+    testPackages()
+    delete process.env.MONGO_URL
+    expectedSpawnArgs.push "--port", defaultTestPort
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
 
   it "testPackages() - should spawn meteor with MONGO_URL set to --mongo-url",->
     mongoUrl = "mongodb://localhost/mydb"
-    process.argv.push "--mongo-url", mongoUrl, packageToTest
-    meteor.testPackages({})
+    testPackages "--mongo-url", mongoUrl, packageToTest
     expectedSpawnArgs.push "--port", defaultTestPort, packageToTest
-    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,expectedSpawnOptions])
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096, null, mongoUrl)])
     expect(spawnStub.args[0][2].env.MONGO_URL).to.equal mongoUrl
 
 
@@ -155,10 +152,9 @@ describe "Meteor.coffee", ->
     process.argv.push packageToTest
     spawnStub.restore()
     spawnStub = null
-    delete process.env.MONGO_URL if process.env.MONGO_URL
     ChildProcess.prototype.child = null
 
-    meteor.testPackages({})
+    testPackages()
 
     meteor.on "ready",->
       pid = meteor.childProcess.child.pid

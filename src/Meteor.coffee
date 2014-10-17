@@ -27,9 +27,9 @@ class Meteor extends EventEmitter
   # It is a function not an object because of design for testability, so we can modify process.env before each tests.
   baseOpts: ->
     {
-      "port"        : process.env.PORT || 4096
-      "root-url"    : process.env.ROOT_URL || null
-      "mongo-url"   : process.env.MONGO_URL || null
+      "port"        : 4096
+      "root-url"    : null
+      "mongo-url"   : null
       "settings"    : null
       "production"  : false
       "release"     : null
@@ -49,10 +49,9 @@ class Meteor extends EventEmitter
 
   # @opts
   # @parseCommandLine
-  testPackages: (opts, parseCommandLine = true)=>
-    log.debug "Meteor.testPackages()"
+  testPackages: (opts)=>
+    log.debug "Meteor.testPackages()", arguments
     expect(opts,"@opts should be an object.").to.be.an "object"
-    expect(parseCommandLine,"@parseCommandLine should be a boolean.").to.be.a "boolean"
     expect(@childProcess, "Meteor's child process is already running").to.be.null
 
     # @testPackagesOpts overwrite @baseOpts
@@ -61,18 +60,12 @@ class Meteor extends EventEmitter
     # input opts take higher precedence
     @opts = _.extend(@opts, opts)
 
-    # command line opts take even higher precedence
-    if parseCommandLine
-      @opts = require("rc")("spacejam",@opts)
-    else
-      @opts = require("rc")("spacejam",@opts,->)
-
     if not fs.existsSync(process.cwd() + '/.meteor/packages') and not fs.existsSync('package.js')
       throw new Error("spacejam needs to be run from within a meteor app or package folder.")
 
-    expect(+@opts.port, "--port is not a number. See 'spacejam help' for more info.").to.be.ok
+    expect(+@opts.port, "options.port is not a number.").to.be.ok
 
-    @opts["root-url"] ?= Meteor.getDefaultRootUrl(@opts.port)
+    @opts["root-url"] ?= "http://localhost:#{@opts.port}/"
 
     packages = @opts._[1..] # Get packages from command line
 
@@ -94,9 +87,12 @@ class Meteor extends EventEmitter
     # flatten nested testPackages array into args
     args = _.flatten(args)
 
-    env = process.env
+    env = _.clone(process.env)
     env.ROOT_URL = @opts["root-url"]
-    env.MONGO_URL = @opts["mongo-url"] if @opts["mongo-url"]
+    if @opts["mongo-url"]
+      env.MONGO_URL = @opts["mongo-url"]
+    else
+      delete env.MONGO_URL if env.MONGO_URL?
 
     options = {
       cwd: ".",
@@ -120,23 +116,6 @@ class Meteor extends EventEmitter
     @childProcess.child.stderr.on "data", (data) =>
       @buffer.stderr += data
       @hasErrorText data
-
-
-
-
-
-  @getDefaultRootUrl: (port)->
-    log.debug "Meteor.getDefaultRootUrl()",arguments
-    if port
-      expect(+port,"--port is not a number. See 'spacejam help' for more info.").to.be.ok
-
-    port = port ||
-      process.env.SPACEJAM_PORT ||
-      process.env.PORT ||
-      4096
-    rootUrl = "http://localhost:#{port}/"
-    return rootUrl
-
 
 
   # TODO: Test

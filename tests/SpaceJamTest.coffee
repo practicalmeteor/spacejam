@@ -90,7 +90,7 @@ describe "spacejam test-packages", ->
       done()
 
 
-  it.only "should exit with 4, if --timeout has passed", (done)->
+  it "should exit with 4, if --timeout has passed", (done)->
     spacejamChild = new ChildProcess()
     testPort = "7096"
     args = ["test-packages", "--timeout", "30000", "--port", testPort, 'timeout']
