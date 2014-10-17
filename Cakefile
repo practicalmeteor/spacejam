@@ -4,7 +4,7 @@ mochaCmdLine = "mocha --colors --compilers coffee:coffee-script/register --repor
 
 task "compile", "Compile coffee-script library sources", ->
   child = new ChildProcess()
-  child.exec "coffee -o lib -c src"
+  child.exec "coffee -o lib -c src", "coffee"
 
 
 task "test", "Run tests", ->
