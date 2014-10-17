@@ -47,21 +47,14 @@ class Meteor extends EventEmitter
 
 
 
-  @exec: ->
-    log.debug "Meteor.exec()",arguments
-    return new Meteor()
-
-
-
   # @opts
   # @parseCommandLine
-  testPackages: (opts,parseCommandLine=true)=>
+  testPackages: (opts, parseCommandLine = true)=>
     log.debug "Meteor.testPackages()"
-    log.info("Spawning meteor")
     expect(opts,"@opts should be an object.").to.be.an "object"
     expect(parseCommandLine,"@parseCommandLine should be a boolean.").to.be.a "boolean"
+    expect(@childProcess, "Meteor's child process is already running").to.be.null
 
-    expect(@childProcess,"Meteor's child process is already running").to.be.null
     # @testPackagesOpts overwrite @baseOpts
     @opts = _.extend(@baseOpts(), @testPackagesOpts())
 
@@ -112,6 +105,7 @@ class Meteor extends EventEmitter
     }
 
     @childProcess = new ChildProcess()
+    log.info("Spawning meteor")
     @childProcess.spawn("meteor",args,options)
 
     @childProcess.child.on "exit", (code,signal) =>
