@@ -1,5 +1,5 @@
-#!/usr/bin/env coffee
+#!/usr/bin/env node
 
-require('../src/log')
+require('../lib/log');
 
-require('../src/SpaceJam').exec()
+require('../lib/SpaceJam').exec();
