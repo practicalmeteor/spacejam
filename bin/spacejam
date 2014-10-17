@@ -2,4 +2,4 @@
 
 require('../lib/log');
 
-require('../lib/SpaceJam').exec();
+require('../lib/SpaceJam').get().exec();

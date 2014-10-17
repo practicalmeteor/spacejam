@@ -1,20 +1,26 @@
 require('./log')
 expect = require("chai").expect
 _ = require("underscore")
+EventEmitter = require('events').EventEmitter
 Meteor = require("./Meteor")
 Phantomjs = require("./Phantomjs")
 
-class SpaceJam
 
-  @opts = null;
+class SpaceJam extends EventEmitter
 
-  @meteor = null
+  instance = null
+  @get: ->
+    instance ?= new SpaceJam()
 
-  @waitForMeteorMongodbKillDone = false
+  opts: null
 
-  @phantomjs = null
+  meteor: null
 
-  @exitCode = null
+  waitForMeteorMongodbKillDone: false
+
+  phantomjs: null
+
+  exitCode: null
 
   @ERR_CODE:
     TEST_SUCCESS: 0
@@ -22,6 +28,10 @@ class SpaceJam
     METEOR_ERROR: 3
     TEST_TIMEOUT: 4
 
+  @commands: {
+    "test-packages" : "testPackages"
+    "help"          : "printHelp"
+  }
 
   @defaultOpts =->
     {
@@ -30,58 +40,63 @@ class SpaceJam
     }
 
 
-  @exec: ->
+  exec: ->
     log.debug "SpaceJam.exec()"
 
-    expect(SpaceJam.meteor,"Meteor is already running").to.be.null
+    @opts = require("rc")("spacejam",SpaceJam.defaultOpts())
 
-    SpaceJam.opts = require("rc")("spacejam",SpaceJam.defaultOpts())
-
-    command = SpaceJam.opts._[0]
-    if _.has(runCommands,command)
-      runCommands[command](SpaceJam.opts)
+    command = @opts._[0]
+    if _.has(SpaceJam.commands,command)
+      @[SpaceJam.commands[command]](@opts)
     else
       log.error "\n'#{command}' is not a spacejam command\n" if command
-      runCommands.help()
+      @printHelp()
 
 
 
-  testPackages = (opts)->
+  testPackages: (opts)->
     log.debug "SpaceJam.testPackages()",arguments
     expect(opts).to.be.an "object"
+    expect(@meteor,"Meteor is already running").to.be.null
 
-    SpaceJam.meteor = Meteor.exec()
+    try
+      @meteor = new Meteor()
+    catch err
+      console.trace err
+      process.exit 1
+
+    @meteor.on "exit", (code)=>
+      @meteor = null
+      if code
+        @killChildren SpaceJam.ERR_CODE.METEOR_ERROR
+
+    @meteor.on "ready", =>
+      log.info "spacejam: meteor is ready"
+      @waitForMeteorMongodbKillDone = @meteor.hasMongodb()
+      if @waitForMeteorMongodbKillDone
+        @meteor.meteorMongodb.on "kill-done", @onMeteorMongodbKillDone
+
+      @runPhantom(@meteor.opts["root-url"])
+
+    @meteor.on "error", =>
+      log.error "spacejam: meteor has errors, exiting"
+      @waitForMeteorMongodbKillDone = @meteor.hasMongodb()
+      if @waitForMeteorMongodbKillDone
+        @meteor.meteorMongodb.on "kill-done", @onMeteorMongodbKillDone
+      @killChildren(SpaceJam.ERR_CODE.METEOR_ERROR)
+
+    try
+      @meteor.testPackages(opts)
+    catch err
+      console.trace err
+      process.exit 1
 
     setTimeout(
       =>
         log.error "Tests timed out after #{opts['timeout']} milliseconds."
-        killChildren( SpaceJam.ERR_CODE.TEST_TIMEOUT )
+        @killChildren( SpaceJam.ERR_CODE.TEST_TIMEOUT )
     ,opts["timeout"]
     )
-
-
-    SpaceJam.meteor.on "exit", (code)=>
-      SpaceJam.meteor = null
-      if code
-        killChildren SpaceJam.ERR_CODE.METEOR_ERROR
-
-
-    SpaceJam.meteor.on "ready", =>
-      log.info "spacejam: meteor is ready"
-      SpaceJam.waitForMeteorMongodbKillDone = SpaceJam.meteor.hasMongodb()
-      if SpaceJam.waitForMeteorMongodbKillDone
-        SpaceJam.meteor.meteorMongodb.on "kill-done", onMeteorMongodbKillDone
-
-      runPhantom(SpaceJam.meteor.opts["root-url"])
-
-    SpaceJam.meteor.on "error", =>
-      log.error "spacejam: meteor has errors, exiting"
-      SpaceJam.waitForMeteorMongodbKillDone = SpaceJam.meteor.hasMongodb()
-      if SpaceJam.waitForMeteorMongodbKillDone
-        SpaceJam.meteor.meteorMongodb.on "kill-done", onMeteorMongodbKillDone
-      killChildren(SpaceJam.ERR_CODE.METEOR_ERROR)
-
-    SpaceJam.meteor.testPackages(opts)
 
     if +opts["crash-spacejam-after"] > 0
       setTimeout(->
@@ -89,51 +104,48 @@ class SpaceJam
       ,+opts["crash-spacejam-after"])
 
 
-
-  runPhantom=(url)->
+  runPhantom: (url)->
     log.debug "SpaceJam.runPhantom()",arguments
     expect(url).to.be.a "string"
 
-    SpaceJam.phantomjs = new Phantomjs()
+    @phantomjs = new Phantomjs()
 
-    SpaceJam.phantomjs.on "exit", (code,signal)=>
-      SpaceJam.phantomjs = null
-      SpaceJam.meteor?.kill()
+    @phantomjs.on "exit", (code, signal)=>
+      @phantomjs = null
+      @meteor?.kill()
       if code?
-        exit code
-    SpaceJam.phantomjs.run(url)
+        @exit code
+
+    @phantomjs.run(url)
 
 
-  onMeteorMongodbKillDone =->
-    log.debug "SpaceJam.onMeteorMongodbKillDone()"
-    process.exit SpaceJam.exitCode
-
-
-  exit=(code)->
-    log.debug "SpaceJam.exit()",arguments
-    expect(code,"Invalid exit code").to.be.a "number"
-
-    SpaceJam.waitForMeteorMongodbKillDone = SpaceJam.meteor?.hasMongodb()
-    process.exit code if not SpaceJam.waitForMeteorMongodbKillDone
-    SpaceJam.exitCode = code
-
+  onMeteorMongodbKillDone: =>
+    log.debug "SpaceJam.onMeteorMongodbKillDone()", @exitCode
+    process.exit @exitCode
 
 
   #Kill all running child_process instances
-  killChildren=(code = 1)->
+  killChildren: (code = 1)->
     log.debug "SpaceJam.killChildren()",arguments
     expect(code,"Invalid exit code").to.be.a "number"
 
-    SpaceJam.meteor?.kill()
-    SpaceJam.phantomjs?.kill()
-    exit(code)
+    @meteor?.kill()
+    @phantomjs?.kill()
+    @exit(code)
 
 
-  
-  printHelp =->
-    process.stdout.write(
-      """
+  exit: (code)->
+    log.debug "SpaceJam.exit()", arguments
+    expect(code, "Invalid exit code").to.be.a "number"
 
+    @waitForMeteorMongodbKillDone = @meteor?.hasMongodb()
+    process.exit code if not @waitForMeteorMongodbKillDone
+    @exitCode = code
+
+
+
+  printHelp: ->
+    process.stdout.write """
 Usage
 -----
 
@@ -208,14 +220,7 @@ Exit codes
 4 - The tests have timed out.
 
 For additional usage info, please visit https://github.com/spacejamio/spacejam
+"""
 
-""")
-
-
-
-  runCommands = {
-    "test-packages" : testPackages
-    "help"          : printHelp
-  }
 
 module.exports = SpaceJam
