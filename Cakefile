@@ -1,19 +1,17 @@
 ChildProcess = require './src/ChildProcess'
 
-mochaCmdLine = "mocha --colors --compilers coffee:coffee-script --reporter spec tests/*Test.coffee"
+mochaCmdLine = "mocha --colors --compilers coffee:coffee-script/register --reporter spec tests/*Test.coffee"
 
 task "compile", "Compile coffee-script library sources", ->
-  child = exec "coffee -o lib -c src/*.coffee"
-  console.log child.pid
+  child = new ChildProcess()
+  child.exec "coffee -o lib -c src"
 
 
 task "test", "Run tests", ->
-  childProcess = new ChildProcess()
-  childProcess.exec mochaCmdLine, "mocha"
-  console.log "mocha pid: " + childProcess.child.pid
+  child = new ChildProcess()
+  child.exec mochaCmdLine, "mocha"
 
 
 task "test-wait", "Run tests and wait for file changes", ->
-  childProcess = new ChildProcess()
-  childProcess.exec mochaCmdLine + " -w", "mocha"
-  console.log "mocha pid: " + childProcess.child.pid
+  child = new ChildProcess()
+  child.exec mochaCmdLine + " -w", "mocha"
