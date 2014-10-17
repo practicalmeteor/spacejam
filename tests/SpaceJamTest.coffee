@@ -46,7 +46,7 @@ describe "spacejam test-packages", ->
     args = ["test-packages", "success"]
     spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
+      expect(code,"spacejam exited with errors").to.equal SpaceJam.DONE.TEST_SUCCESS
       done()
 
 
@@ -57,7 +57,7 @@ describe "spacejam test-packages", ->
     args = ["test-packages", "./"]
     spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
+      expect(code,"spacejam exited with errors").to.equal SpaceJam.DONE.TEST_SUCCESS
       done()
 
 
@@ -76,7 +76,7 @@ describe "spacejam test-packages", ->
     args = ["test-packages", standAlonePackage]
     spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.METEOR_ERROR
+      expect(code,"spacejam exited with errors").to.equal SpaceJam.DONE.METEOR_ERROR
       done()
 
 
@@ -86,17 +86,17 @@ describe "spacejam test-packages", ->
     args = ["test-packages", "--port", testPort, "failure"]
     spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_FAILED
+      expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.DONE.TEST_FAILED
       done()
 
 
-  it "should exit with 4, if --timeout has passed", (done)->
+  it.only "should exit with 4, if --timeout has passed", (done)->
     spacejamChild = new ChildProcess()
     testPort = "7096"
-    args = ["test-packages", "--timeout", "10000", "--port", testPort, 'timeout']
+    args = ["test-packages", "--timeout", "30000", "--port", testPort, 'timeout']
     spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.ERR_CODE.TEST_TIMEOUT
+      expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.DONE.TEST_TIMEOUT
       done()
 
 
@@ -107,7 +107,7 @@ describe "spacejam test-packages", ->
     args = ["test-packages", "--port", testPort, 'appfails']
     spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
-      expect(code).to.equal SpaceJam.ERR_CODE.METEOR_ERROR
+      expect(code).to.equal SpaceJam.DONE.METEOR_ERROR
       done()
 
 
@@ -117,5 +117,5 @@ describe "spacejam test-packages", ->
     args = ["test-packages", "--settings", "settings.json", "--port", testPort, 'packages/settings', 'success*']
     spacejamChild.spawn(spacejamBin,args)
     spacejamChild.child.on "exit", (code) =>
-      expect(code,"spacejam exited with errors").to.equal SpaceJam.ERR_CODE.TEST_SUCCESS
+      expect(code,"spacejam exited with errors").to.equal SpaceJam.DONE.TEST_SUCCESS
       done()

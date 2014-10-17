@@ -21,7 +21,7 @@ class Meteor extends EventEmitter
 
   opts: null
 
-  meteorMongodb: null
+  mongodb: null
 
 
   # It is a function not an object because of design for testability, so we can modify process.env before each tests.
@@ -113,6 +113,7 @@ class Meteor extends EventEmitter
 
     @childProcess.child.stdout.on "data", (data) =>
       @buffer.stdout += data
+      @hasStartedMongoDBText data
       @hasErrorText data
       @hasReadyText data
 
@@ -174,33 +175,33 @@ class Meteor extends EventEmitter
     return matchedPackages
 
 
+  hasStartedMongoDBText: (buffer)=>
+    if buffer.lastIndexOf('Started MongoDB') isnt -1
+      @mongodb = new MeteorMongodb(@childProcess.child.pid)
 
-  hasErrorText: ( buffer )=>
+
+  hasErrorText: (buffer)=>
     if buffer.lastIndexOf( @testPackagesOpts()["meteor-error-text"] ) isnt -1
-      @meteorMongodb = new MeteorMongodb(@childProcess.child.pid,=>
-        @emit "error"
-      )
+      @emit "error"
 
 
-
-
-  hasReadyText: ( buffer )=>
+  hasReadyText: (buffer)=>
     if buffer.lastIndexOf( @testPackagesOpts()["meteor-ready-text"] ) isnt -1
-      @meteorMongodb = new MeteorMongodb(@childProcess.child.pid,=>
-        @emit "ready"
-      )
+      @emit "ready"
 
 
   hasMongodb: ->
     log.debug "Meteor.hasMongodb()"
-    return @meteorMongodb.hasMongodb() if @meteorMongodb
+    return @mongodb.hasMongodb() if @mongodb
     return false
 
 
   # TODO: Test
   kill: (signal="SIGINT")->
-    log.debug "Meteor.kill()",arguments
+    log.debug "Meteor.kill()", arguments
+    log.debug "Meteor.kill() @childProcess?=", @childProcess?
+    log.debug "Meteor.kill() @mongodb?=", @mongodb?
     @childProcess?.kill(signal)
-    @meteorMongodb?.kill()
+    @mongodb?.kill()
 
 module.exports = Meteor

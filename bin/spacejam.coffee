@@ -2,4 +2,4 @@
 
 require('../src/log')
 
-require('../src/SpaceJam').get().exec()
+require('../src/CLI').exec()

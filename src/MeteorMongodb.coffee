@@ -4,15 +4,11 @@ ps = require('ps-node')
 
 class MeteorMongodb extends EventEmitter
 
-  mongodChilds:[]
+  mongodChilds: []
 
-  meteorPid = null
-
-  constructor: (@meteorPid,cb)->
-    log.debug "MeteorMongodb.constructor()",arguments
-    expect(cb).to.be.a "function"
-    @findAllChildren(cb)
-
+  constructor: (@meteorPid)->
+    log.debug "MeteorMongodb.constructor()", arguments
+    @findAllChildren()
 
 
   hasMongodb: ->
@@ -20,26 +16,20 @@ class MeteorMongodb extends EventEmitter
     @mongodChilds.length > 0
 
 
-  findAllChildren: (cb)->
-    log.debug "MeteorMongodb.findAllChildren()",arguments
-    expect(cb).to.be.a "function"
-    log.debug "@meteorPid",@meteorPid
+  findAllChildren: ->
+    log.debug "MeteorMongodb.findAllChildren()", arguments
+    log.debug "@meteorPid", @meteorPid
     ps.lookup
       command: 'mongod',
-      psargs: '--ppid '+@meteorPid
+      psargs: '--ppid ' + @meteorPid
     , (err, resultList )=>
       @mongodChilds = resultList
       if (err)
-        log.warn "Couldn't find any mongod child:\n",err
-        cb(err,false)
-
-      else if resultList.length>1
-        log.warn "Found more than one mongod child:\n",resultList
-        cb(null,false)
+        log.warn "Couldn't find any mongod child:\n", err
+      else if resultList.length > 1
+        log.warn "Found more than one mongod child:\n", resultList
       else
-        cb(null,true)
-
-
+        log.info "Found meteor mongod child with pid: ", resultList[0].pid
 
 
   kill: ->

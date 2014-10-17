@@ -1,0 +1,75 @@
+
+Usage
+-----
+
+spacejam test-packages [options] [packages-to-test]
+
+[packages-to-test] can be a list of packages with tinytests or munit tests.
+It enhances meteor test-packages, by supporting glob wildcards on package names
+that are matched against all package names in the meteor app packages
+directory.
+
+If not specified, acts the same as meteor test-packages without arguments.
+
+The following options are specific to spacejam:
+
+ --log-level <level>         spacejam log level. One of
+                              TRACE|DEBUG|INFO|WARN|ERROR.
+
+ --root-url <url>            The meteor app ROOT_URL (defaults to the
+                              ROOT_URL env var or http://localhost:4096/).
+
+ --mongo-url <url>           The meteor app MONGO_URL (defaults to
+                              the MONGO_URL env var, if exists).
+
+ --timeout  <milliseconds>   Total timeout for all tests (defaults to
+                              120000 milliseconds, i.e. 2 minutes).
+
+ --meteor-ready-text <text>  The meteor output text that indicates that the
+                              app is ready.
+
+ --meteor-error-text <text>  The meteor output text that indicates that the
+                              app has errors.
+
+
+The following options are meteor options and are passed through to meteor (all
+are optional):
+
+ --release <release>   The release of Meteor to use.
+
+ --port <port>         The port in which to run your meteor app
+                       (defaults to the PORT env var or 4096).
+
+ --settings <file>     Path to a meteor settings file.
+
+ --production          Simulate meteor production mode. Minify and bundle CSS
+                       and JS files (defaults to false).
+
+
+Other commands:
+
+spacejam help - This help text.
+
+Environment Variables
+---------------------
+
+Every command line option can also be set by an environment variable of the same name, and a prefix of spacejam_, i.e. spacejam_port.
+Note that environment variables have to be lower case, due to the way rc reads them.
+
+Running your package tests without a meteor app
+-----------------------------------------------
+
+From within your package folder, run:
+
+spacejam test-packages ./
+
+Exit codes
+----------
+
+0 - All the tests have passed in all packages.
+1 - spacejam usage error.
+2 - At least one test has failed.
+3 - The meteor app exited with an error or is crashing.
+4 - The tests have timed out.
+
+For additional usage info, please visit https://github.com/spacejamio/spacejam
