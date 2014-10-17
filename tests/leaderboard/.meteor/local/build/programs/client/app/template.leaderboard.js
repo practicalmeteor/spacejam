@@ -1,4 +1,0 @@
-(function(){Meteor.startup(function(){document.body.appendChild(Spark.render(Template.__define__(null,Package.handlebars.Handlebars.json_ast_to_func(["<div id=\"outer\">\n    ",[">","leaderboard"],"\n  </div>"]))));});Template.__define__("leaderboard",Package.handlebars.Handlebars.json_ast_to_func(["<div class=\"leaderboard\">\n    ",["#",[[0,"each"],[0,"players"]],["\n      ",[">","player"],"\n    "]],"\n  </div>\n\n  ",["#",[[0,"if"],[0,"selected_name"]],["\n  <div class=\"details\">\n    <div class=\"name\">",["{",[[0,"selected_name"]]],"</div>\n    <input type=\"button\" class=\"inc\" value=\"Give 5 points\" />\n  </div>\n  "],["\n  <div class=\"none\">Click a player to select</div>\n  "]]]));
-Template.__define__("player",Package.handlebars.Handlebars.json_ast_to_func(["<div class=\"player ",["{",[[0,"selected"]]],"\">\n    <span class=\"name\">",["{",[[0,"name"]]],"</span>\n    <span class=\"score\">",["{",[[0,"score"]]],"</span>\n  </div>"]));
-
-})();
