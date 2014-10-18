@@ -1,9 +1,16 @@
 expect = require("chai").expect
-ChildProcess = require '../../src/ChildProcess'
-SpaceJam = require '../../src/SpaceJam'
-
+isCoffee = require './isCoffee'
+if isCoffee
+  ChildProcess = require '../../src/ChildProcess'
+  SpaceJam = require '../../src/SpaceJam'
+else
+  ChildProcess = require '../../lib/ChildProcess'
+  SpaceJam = require '../../lib/SpaceJam'
 path = require 'path'
-spacejamBin = require.resolve("../../bin/spacejam.coffee")
+if isCoffee
+  spacejamBin = require.resolve("../../bin/spacejam.coffee")
+else
+  spacejamBin = require.resolve("../../bin/spacejam")
 log.info spacejamBin
 
 

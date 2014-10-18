@@ -4,8 +4,13 @@ sinon = require("sinon")
 _ = require("underscore")
 sinonChai = require("sinon-chai")
 chai.use(sinonChai)
-Meteor = require "../../src/Meteor"
-ChildProcess = require "../../src/ChildProcess"
+isCoffee = require './isCoffee'
+if isCoffee
+  Meteor = require "../../src/Meteor"
+  ChildProcess = require "../../src/ChildProcess"
+else
+  Meteor = require "../../lib/Meteor"
+  ChildProcess = require "../../lib/ChildProcess"
 ps = require('ps-node')
 path = require "path"
 
@@ -53,7 +58,10 @@ describe "Meteor.coffee", ->
     spawnStub = sinon.stub(ChildProcess.prototype, "spawn")
     ChildProcess.prototype.child = childProcessMockObj
 
-    process.argv = ['coffee', path.normalize __dirname + "/../../bin/spacejam.coffee"]
+    if isCoffee
+      process.argv = ['coffee', path.normalize __dirname + "/../../bin/spacejam.coffee"]
+    else
+      process.argv = ['node', path.normalize __dirname + "/../../bin/spacejam"]
     process.argv.push "test-packages"
 
 

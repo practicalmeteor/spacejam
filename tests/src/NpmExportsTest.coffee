@@ -1,10 +1,13 @@
 chai = require("chai")
 expect = chai.expect
-
+isCoffee = require './isCoffee'
 
 describe "main.coffee", ->
   it "should export all public classes",->
-    npmExports = require "../../src/main"
+    if isCoffee
+      npmExports = require "../../src/main"
+    else
+      npmExports = require "../../lib/main"
     expect(npmExports).to.be.an 'object'
     expect(npmExports.SpaceJam).to.be.a 'function'
     expect(npmExports.Meteor).to.be.a 'function'
