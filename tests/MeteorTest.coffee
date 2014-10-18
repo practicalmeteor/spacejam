@@ -182,5 +182,6 @@ describe "Meteor.coffee", ->
 lookUpMongodChilds =(pid,cb)->
     ps.lookup
       command: 'mongod',
-      psargs: '--ppid '+pid
+      psargs: '-l',
+      ppid: pid
     , cb
