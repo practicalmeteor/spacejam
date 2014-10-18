@@ -15,9 +15,16 @@ class CLI
 
   commands: {
     "test-packages" : "testPackages"
+    "test-in-velocity" : "testInVelocity"
   }
 
   spacejam: null
+
+  constructor: ->
+    log.debug "CLI.constructor()"
+    process.on 'SIGTERM', (code)=>
+      log.info "spacejam: exiting with code #{code}"
+      @spacejam?.killChildren()
 
   exec: ->
     log.debug "CLI.exec()"
@@ -31,11 +38,11 @@ class CLI
       return
 
     if not _.has(@commands, command)
-      log.error "\n'#{command}' is not a spacejam command\n" if command
+      log.error "spacejam: Error: \n'#{command}' is not a recognized command\n" if command
       @printHelp()
 
     @spacejam = new SpaceJam()
-    @spacejam.on 'done', (code)->
+    @spacejam.on 'done', (code)=>
       process.exit code
 
     try

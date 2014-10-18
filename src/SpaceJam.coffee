@@ -12,7 +12,7 @@ class SpaceJam extends EventEmitter
   @get: ->
     instance ?= new SpaceJam()
 
-  opts:
+  testPackagesOptions:
     "timeout"   : 120000
     "crash-spacejam-after": 0
 
@@ -24,6 +24,8 @@ class SpaceJam extends EventEmitter
 
   doneCode: null
 
+  childrenKilled: false
+
   @DONE:
     TEST_SUCCESS: 0
     TEST_FAILED: 2
@@ -31,13 +33,13 @@ class SpaceJam extends EventEmitter
     TEST_TIMEOUT: 4
 
 
-  testPackages: (opts = {})->
-    log.debug "SpaceJam.testPackages()", arguments
-    expect(opts).to.be.an "object"
-    expect(@meteor,"Meteor is already running").to.be.null
+  testPackages: (options = {}, once = true, phantomScript = "")->
+    log.debug "SpaceJam.testPackages()", options
+    expect(options).to.be.an "object"
+    expect(@meteor, "Meteor is already running").to.be.null
 
-    opts = _.extend @opts, opts
-    log.debug opts
+    options = _.extend @testPackagesOptions, options
+    log.debug options
 
     try
       @meteor = new Meteor()
@@ -52,38 +54,50 @@ class SpaceJam extends EventEmitter
       if code
         @killChildren SpaceJam.DONE.METEOR_ERROR
 
+    @meteor.on "mongodb ready", =>
+      log.info "spacejam: meteor mongodb is ready"
+      @waitForMeteorMongodbKillDone = true
+      @meteor.mongodb.on "kill-done", @onMeteorMongodbKillDone
+
     @meteor.on "ready", =>
       log.info "spacejam: meteor is ready"
-      @waitForMeteorMongodbKillDone = @meteor.hasMongodb()
-      if @waitForMeteorMongodbKillDone
-        @meteor.mongodb.on "kill-done", @onMeteorMongodbKillDone
 
-      @runPhantom(@meteor.opts["root-url"])
+      @runPhantom(@meteor.options["root-url"], phantomScript)
 
     @meteor.on "error", =>
-      log.error "spacejam: meteor has errors, exiting"
-      @waitForMeteorMongodbKillDone = @meteor.hasMongodb()
-      if @waitForMeteorMongodbKillDone
-        @meteor.mongodb.on "kill-done", @onMeteorMongodbKillDone
-      @killChildren(SpaceJam.DONE.METEOR_ERROR)
+      log.error "spacejam: meteor has errors"
+
+      @killChildren(SpaceJam.DONE.METEOR_ERROR) if once
 
     try
-      @meteor.testPackages(opts)
+      @meteor.testPackages(options)
     catch err
       console.trace err
       @emit "done", 1
       return
 
-    setTimeout =>
-      log.error "Tests timed out after #{opts.timeout} milliseconds."
-      @killChildren( SpaceJam.DONE.TEST_TIMEOUT )
-    , opts["timeout"]
+    if +options.timeout > 0
+      setTimeout =>
+        log.error "spacejam: Error: tests timed out after #{options.timeout} milliseconds."
+        @killChildren( SpaceJam.DONE.TEST_TIMEOUT )
+      , +options.timeout
 
-
-    if +opts["crash-spacejam-after"] > 0
-      setTimeout(->
+    if +options["crash-spacejam-after"] > 0
+      setTimeout =>
         throw new Error("Testing spacejam crash")
-      ,+opts["crash-spacejam-after"])
+      , +options["crash-spacejam-after"]
+
+
+  testInVelocity: (options = {})->
+    log.debug "SpaceJam.testInVelocity()", options
+    expect(options).to.be.an "object"
+    expect(@meteor, "Meteor is already running").to.be.null
+
+    process.env.VELOCITY_URL = options['velocity-url'] || process.env.ROOT_URL || "http://localhost:3000/"
+    options['driver-package'] = "spacejamio:test-in-velocity"
+    options.timeout = 0
+
+    @testPackages(options, false, 'phantomjs-test-in-velocity');
 
 
   runPhantom: (url)->
@@ -111,8 +125,10 @@ class SpaceJam extends EventEmitter
     log.debug "SpaceJam.killChildren()",arguments
     expect(code,"Invalid exit code").to.be.a "number"
 
-    @meteor?.kill()
-    @phantomjs?.kill()
+    if not @childrenKilled
+      @meteor?.kill()
+      @phantomjs?.kill()
+    @childrenKilled = true
     @done(code)
 
 

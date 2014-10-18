@@ -25,11 +25,11 @@ class MeteorMongodb extends EventEmitter
     , (err, resultList )=>
       @mongodChilds = resultList
       if (err)
-        log.warn "Couldn't find any mongod child:\n", err
+        log.warn "spacjam: Warning: Couldn't find any mongod children:\n", err
       else if resultList.length > 1
-        log.warn "Found more than one mongod child:\n", resultList
+        log.warn "spacjam: Warning: Found more than one mongod child:\n", resultList
       else
-        log.info "Found meteor mongod child with pid: ", resultList[0].pid
+        log.debug "Found meteor mongod child with pid: ", resultList[0].pid
 
 
   kill: ->
@@ -37,11 +37,12 @@ class MeteorMongodb extends EventEmitter
     attempts = 1
 
     interval = null
-    interval = setInterval(=>
+
+    onInterval = =>
       if attempts <= 40
         signal = 0
         if attempts is 1
-          signal = "SIGINT"
+          signal = "SIGTERM"
         else if attempts is 20 #or attempts is 30
           signal = "SIGKILL"
         try
@@ -63,9 +64,11 @@ class MeteorMongodb extends EventEmitter
         attempts++
       else
         clearInterval(interval)
-        log.error "Error: Unable to kill all mongodb childs, even after 40 attempts"
-        @emit "kill-done", new Error("Unable to kill all mongodb childs, even after 40 attempts"), @mongodChilds
+        log.error "spacejam: Error: Unable to kill all mongodb children, even after 40 attempts"
+        @emit "kill-done", new Error("Unable to kill all mongodb children, even after 40 attempts"), @mongodChilds
 
-    ,100)
+    onInterval()
+    interval = setInterval onInterval, 100
+
 
 module.exports = MeteorMongodb

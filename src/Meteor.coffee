@@ -17,57 +17,37 @@ class Meteor extends EventEmitter
     stderr:""
   }
 
-  driverPackage: "test-in-console"
-
-  opts: null
+  options: null
 
   mongodb: null
 
-
-  # It is a function not an object because of design for testability, so we can modify process.env before each tests.
-  baseOpts: ->
+  defaultOptions: ->
     {
-      "port"        : 4096
-      "root-url"    : null
-      "mongo-url"   : null
-      "settings"    : null
-      "production"  : false
-      "release"     : null
-    }
-
-
-
-  # See baseOpts why it is a function an not an object.
-  testPackagesOpts: ->
-    {
-      "timeout": 120000 # 2 minutes
+      "port": 4096
+      "driver-package": "test-in-console"
       "meteor-ready-text": "=> App running at:"
       "meteor-error-text": "Waiting for file change."
     }
 
-
-
-  # @opts
+  # @options
   # @parseCommandLine
-  testPackages: (opts)=>
+  testPackages: (options)=>
     log.debug "Meteor.testPackages()", arguments
-    expect(opts,"@opts should be an object.").to.be.an "object"
+    expect(options,"@options should be an object.").to.be.an "object"
     expect(@childProcess, "Meteor's child process is already running").to.be.null
 
-    # @testPackagesOpts overwrite @baseOpts
-    @opts = _.extend(@baseOpts(), @testPackagesOpts())
-
-    # input opts take higher precedence
-    @opts = _.extend(@opts, opts)
+    @options = _.extend(@defaultOptions(), options)
 
     if not fs.existsSync(process.cwd() + '/.meteor/packages') and not fs.existsSync('package.js')
       throw new Error("spacejam needs to be run from within a meteor app or package folder.")
 
-    expect(+@opts.port, "options.port is not a number.").to.be.ok
+    expect(@options['driver-package'], "options.driver-package is missing").to.be.ok
 
-    @opts["root-url"] ?= "http://localhost:#{@opts.port}/"
+    expect(+@options.port, "options.port is not a number.").to.be.ok
 
-    packages = @opts._[1..] # Get packages from command line
+    @options["root-url"] ?= "http://localhost:#{@options.port}/"
+
+    packages = @options._[1..] # Get packages from command line
 
     if packages.length > 0
       _testPackages = @_globPackages(packages)
@@ -76,21 +56,21 @@ class Meteor extends EventEmitter
     args = [
       'test-packages'
       '--driver-package'
-      @driverPackage
+      @options['driver-package']
     ]
-    args.push(["--release", @opts.release]) if @opts.release
-    args.push(["--port", @opts.port])
-    args.push("--production") if @opts.production
-    args.push(["--settings", @opts.settings]) if @opts.settings
+    args.push(["--release", @options.release]) if @options.release
+    args.push(["--port", @options.port])
+    args.push("--production") if @options.production
+    args.push(["--settings", @options.settings]) if @options.settings
     args.push(_testPackages) if _testPackages
 
     # flatten nested testPackages array into args
     args = _.flatten(args)
 
     env = _.clone(process.env)
-    env.ROOT_URL = @opts["root-url"]
-    if @opts["mongo-url"]
-      env.MONGO_URL = @opts["mongo-url"]
+    env.ROOT_URL = @options["root-url"]
+    if @options["mongo-url"]
+      env.MONGO_URL = @options["mongo-url"]
     else
       delete env.MONGO_URL if env.MONGO_URL?
 
@@ -101,7 +81,6 @@ class Meteor extends EventEmitter
     }
 
     @childProcess = new ChildProcess()
-    log.info("Spawning meteor")
     @childProcess.spawn("meteor",args,options)
 
     @childProcess.child.on "exit", (code,signal) =>
@@ -147,7 +126,7 @@ class Meteor extends EventEmitter
           globedPackages.forEach (pkg)->
             matchedPackages.push(pkg)
         else
-          log.warn "Warning: No packages matching #{pkgArg} have been found. Will add it to the meteor command line anyway, in case it's in PACKAGE_DIRS."
+          log.warn "spacjam: Warning: No packages matching #{pkgArg} have been found. Will add it to the meteor command line anyway, in case it's in PACKAGE_DIRS."
           # TODO: Support globs in PACKAGE_DIRS too.
           matchedPackages.push(pkgArg)
 
@@ -157,15 +136,16 @@ class Meteor extends EventEmitter
   hasStartedMongoDBText: (buffer)=>
     if buffer.lastIndexOf('Started MongoDB') isnt -1
       @mongodb = new MeteorMongodb(@childProcess.child.pid)
+      @emit "mongodb ready"
 
 
   hasErrorText: (buffer)=>
-    if buffer.lastIndexOf( @testPackagesOpts()["meteor-error-text"] ) isnt -1
+    if buffer.lastIndexOf( @defaultOptions()["meteor-error-text"] ) isnt -1
       @emit "error"
 
 
   hasReadyText: (buffer)=>
-    if buffer.lastIndexOf( @testPackagesOpts()["meteor-ready-text"] ) isnt -1
+    if buffer.lastIndexOf( @defaultOptions()["meteor-ready-text"] ) isnt -1
       @emit "ready"
 
 
@@ -176,7 +156,7 @@ class Meteor extends EventEmitter
 
 
   # TODO: Test
-  kill: (signal="SIGINT")->
+  kill: (signal="SIGTERM")->
     log.debug "Meteor.kill()", arguments
     log.debug "Meteor.kill() @childProcess?=", @childProcess?
     log.debug "Meteor.kill() @mongodb?=", @mongodb?

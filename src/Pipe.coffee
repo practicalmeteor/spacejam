@@ -1,6 +1,6 @@
 class Pipe
 
-  constructor: (@stdout,@stderr)->
+  constructor: (@stdout, @stderr)->
     @stdout.setEncoding "utf8"
     @stderr.setEncoding "utf8"
 

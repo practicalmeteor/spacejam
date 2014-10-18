@@ -54,7 +54,7 @@ describe "Meteor.coffee", ->
     env = _.clone process.env
 
     meteor = new Meteor()
-    expectedSpawnArgs = ['test-packages', "--driver-package", meteor.driverPackage]
+    expectedSpawnArgs = ['test-packages', '--driver-package', 'test-in-console']
     spawnStub = sinon.stub(ChildProcess.prototype, "spawn")
     ChildProcess.prototype.child = childProcessMockObj
 
