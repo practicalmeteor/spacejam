@@ -128,7 +128,7 @@ describe "spacejam", ->
 
   describe "test-in-velocity", ->
 
-    it "should never exit", (done)->
+    it.only "should never exit", (done)->
       process.env.PACKAGE_DIRS = path.normalize __dirname + '/../../packages'
       log.debug "PACKAGE_DIRS=#{process.env.PACKAGE_DIRS}"
       spacejamChild = new ChildProcess()

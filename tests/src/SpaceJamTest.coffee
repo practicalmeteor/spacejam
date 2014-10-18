@@ -30,10 +30,11 @@ describe "SapceJam.coffee", ->
     it "should call testPackages with package-driver=test-in-velocity", ()->
       stub = sinon.stub(spacejam, 'testPackages')
       expectedOptions =
-        "driver-package": "spacejamio:test-in-velocity"
+        'driver-package': "spacejamio:test-in-velocity"
         timeout:  0
+        'phantomjs-script': 'phantomjs-test-in-velocity'
       spacejam.testInVelocity()
-      expect(stub).to.have.been.calledWithExactly(expectedOptions, false, 'phantomjs-test-in-velocity')
+      expect(stub).to.have.been.calledWithExactly(expectedOptions)
 
     it "should set VELOCITY_URL to http://localhost:3000/ by default", ()->
       stub = sinon.stub(spacejam, 'testPackages')

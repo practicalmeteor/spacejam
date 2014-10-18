@@ -33,7 +33,7 @@ class SpaceJam extends EventEmitter
     TEST_TIMEOUT: 4
 
 
-  testPackages: (options = {}, once = true, phantomScript = "")->
+  testPackages: (options = {})->
     log.debug "SpaceJam.testPackages()", options
     expect(options).to.be.an "object"
     expect(@meteor, "Meteor is already running").to.be.null
@@ -62,12 +62,13 @@ class SpaceJam extends EventEmitter
     @meteor.on "ready", =>
       log.info "spacejam: meteor is ready"
 
-      @runPhantom(@meteor.options["root-url"], phantomScript)
+      @runPhantom(@meteor.options["root-url"], options['phantomjs-script'])
 
     @meteor.on "error", =>
       log.error "spacejam: meteor has errors"
 
-      @killChildren(SpaceJam.DONE.METEOR_ERROR) if once
+      # If timeout > 0 it means we should run the tests only once
+      @killChildren(SpaceJam.DONE.METEOR_ERROR) if options.timeout > 0
 
     try
       @meteor.testPackages(options)
@@ -96,8 +97,9 @@ class SpaceJam extends EventEmitter
     process.env.VELOCITY_URL = options['velocity-url'] || process.env.ROOT_URL || "http://localhost:3000/"
     options['driver-package'] = "spacejamio:test-in-velocity"
     options.timeout = 0
+    options['phantomjs-script'] = 'phantomjs-test-in-velocity'
 
-    @testPackages(options, false, 'phantomjs-test-in-velocity');
+    @testPackages(options);
 
 
   runPhantom: (url)->
