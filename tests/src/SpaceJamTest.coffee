@@ -1,9 +1,9 @@
 expect = require("chai").expect
-ChildProcess = require '../src/ChildProcess'
-SpaceJam = require '../src/SpaceJam'
+ChildProcess = require '../../src/ChildProcess'
+SpaceJam = require '../../src/SpaceJam'
 
 path = require 'path'
-spacejamBin = require.resolve("../bin/spacejam.coffee")
+spacejamBin = require.resolve("../../bin/spacejam.coffee")
 log.info spacejamBin
 
 
@@ -16,7 +16,7 @@ describe "spacejam test-packages", ->
 
   testApp2 = "todos"
 
-  standAlonePackage = "packages/standalone-package"
+  standAlonePackage = "../packages/standalone-package"
 
 
 
@@ -24,7 +24,7 @@ describe "spacejam test-packages", ->
     log.setLevel "info"
 
   beforeEach ->
-    process.chdir(__dirname + "/leaderboard")
+    process.chdir(__dirname + "/../apps/leaderboard")
     delete process.env.PORT
     delete process.env.ROOT_URL
     delete process.env.MONGO_URL
@@ -51,8 +51,8 @@ describe "spacejam test-packages", ->
 
 
   it "should exit with 0 if tests pass for a standalone package", (done)->
-    process.chdir(__dirname + "/standalone-package")
-    process.env.PACKAGE_DIRS = __dirname
+    process.chdir(__dirname + "/../packages/standalone-package")
+    process.env.PACKAGE_DIRS = path.normalize __dirname + '/../packages'
     spacejamChild = new ChildProcess()
     args = ["test-packages", "./"]
     spacejamChild.spawn(spacejamBin,args)
@@ -101,7 +101,7 @@ describe "spacejam test-packages", ->
 
 
   it "should exit with 2, if the meteor app crashes", (done)->
-    process.chdir(__dirname + "/todos")
+    process.chdir(__dirname + "/../apps/todos")
     spacejamChild = new ChildProcess()
     testPort = "8096"
     args = ["test-packages", "--port", testPort, 'appfails']

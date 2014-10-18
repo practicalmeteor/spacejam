@@ -4,8 +4,8 @@ sinon = require("sinon")
 _ = require("underscore")
 sinonChai = require("sinon-chai")
 chai.use(sinonChai)
-Meteor = require "../src/Meteor"
-ChildProcess = require "../src/ChildProcess"
+Meteor = require "../../src/Meteor"
+ChildProcess = require "../../src/ChildProcess"
 ps = require('ps-node')
 path = require "path"
 
@@ -19,7 +19,7 @@ describe "Meteor.coffee", ->
 
   defaultTestPort = 4096
 
-  env = process.env
+  env = null
 
   packageToTest = 'success'
 
@@ -38,17 +38,22 @@ describe "Meteor.coffee", ->
 
   before ->
     log.setLevel "info"
+    delete process.env.PORT
+    delete process.env.ROOT_URL
+    delete process.env.MONGO_URL
 
 
   beforeEach ->
-    process.chdir(__dirname + "/leaderboard")
+    process.chdir(__dirname + "/../apps/leaderboard")
+
+    env = _.clone process.env
 
     meteor = new Meteor()
     expectedSpawnArgs = ['test-packages', "--driver-package", meteor.driverPackage]
     spawnStub = sinon.stub(ChildProcess.prototype, "spawn")
     ChildProcess.prototype.child = childProcessMockObj
 
-    process.argv = ['coffee', path.normalize __dirname + "/../bin/spacejam"]
+    process.argv = ['coffee', path.normalize __dirname + "/../../bin/spacejam.coffee"]
     process.argv.push "test-packages"
 
 
@@ -57,9 +62,6 @@ describe "Meteor.coffee", ->
     spawnStub?.restore()
     spawnStub = null
 
-
-
-  after ->
 
   getExpectedSpawnOptions = (port, rootUrl, mongoUrl)->
     expectedSpawnOptions = { cwd: ".", detached: false, env: env }
