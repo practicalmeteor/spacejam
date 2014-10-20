@@ -2,10 +2,10 @@ expect = require("chai").expect
 isCoffee = require './isCoffee'
 if isCoffee
   ChildProcess = require '../../src/ChildProcess'
-  SpaceJam = require '../../src/SpaceJam'
+  Spacejam = require '../../src/Spacejam'
 else
   ChildProcess = require '../../lib/ChildProcess'
-  SpaceJam = require '../../lib/SpaceJam'
+  Spacejam = require '../../lib/Spacejam'
 path = require 'path'
 if isCoffee
   spacejamBin = require.resolve("../../bin/spacejam.coffee")
@@ -52,7 +52,7 @@ describe "spacejam", ->
       args = ["test-packages", "success"]
       spacejamChild.spawn(spacejamBin,args)
       spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with errors").to.equal SpaceJam.DONE.TEST_SUCCESS
+        expect(code,"spacejam exited with errors").to.equal Spacejam.DONE.TEST_SUCCESS
         done()
 
 
@@ -63,7 +63,7 @@ describe "spacejam", ->
       args = ["test-packages", "./"]
       spacejamChild.spawn(spacejamBin,args)
       spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with errors").to.equal SpaceJam.DONE.TEST_SUCCESS
+        expect(code,"spacejam exited with errors").to.equal Spacejam.DONE.TEST_SUCCESS
         done()
 
 
@@ -82,7 +82,7 @@ describe "spacejam", ->
       args = ["test-packages", standAlonePackage]
       spacejamChild.spawn(spacejamBin,args)
       spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with errors").to.equal SpaceJam.DONE.METEOR_ERROR
+        expect(code,"spacejam exited with errors").to.equal Spacejam.DONE.METEOR_ERROR
         done()
 
 
@@ -92,7 +92,7 @@ describe "spacejam", ->
       args = ["test-packages", "--port", testPort, "failure"]
       spacejamChild.spawn(spacejamBin,args)
       spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.DONE.TEST_FAILED
+        expect(code,"spacejam exited with the wrong code").to.equal Spacejam.DONE.TEST_FAILED
         done()
 
 
@@ -102,7 +102,7 @@ describe "spacejam", ->
       args = ["test-packages", "--timeout", "30000", "--port", testPort, 'timeout']
       spacejamChild.spawn(spacejamBin,args)
       spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with the wrong code").to.equal SpaceJam.DONE.TEST_TIMEOUT
+        expect(code,"spacejam exited with the wrong code").to.equal Spacejam.DONE.TEST_TIMEOUT
         done()
 
 
@@ -113,7 +113,7 @@ describe "spacejam", ->
       args = ["test-packages", "--port", testPort, 'appfails']
       spacejamChild.spawn(spacejamBin,args)
       spacejamChild.child.on "exit", (code) =>
-        expect(code).to.equal SpaceJam.DONE.METEOR_ERROR
+        expect(code).to.equal Spacejam.DONE.METEOR_ERROR
         done()
 
 
@@ -123,12 +123,12 @@ describe "spacejam", ->
       args = ["test-packages", "--settings", "settings.json", "--port", testPort, 'packages/settings', 'success*']
       spacejamChild.spawn(spacejamBin,args)
       spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with errors").to.equal SpaceJam.DONE.TEST_SUCCESS
+        expect(code,"spacejam exited with errors").to.equal Spacejam.DONE.TEST_SUCCESS
         done()
 
   describe "test-in-velocity", ->
 
-    it.only "should never exit", (done)->
+    it "should never exit", (done)->
       process.env.PACKAGE_DIRS = path.normalize __dirname + '/../../packages'
       log.debug "PACKAGE_DIRS=#{process.env.PACKAGE_DIRS}"
       spacejamChild = new ChildProcess()

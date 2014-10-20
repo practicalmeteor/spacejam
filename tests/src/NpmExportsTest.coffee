@@ -9,6 +9,6 @@ describe "main.coffee", ->
     else
       npmExports = require "../../lib/main"
     expect(npmExports).to.be.an 'object'
-    expect(npmExports.SpaceJam).to.be.a 'function'
+    expect(npmExports.Spacejam).to.be.a 'function'
     expect(npmExports.Meteor).to.be.a 'function'
     expect(npmExports.Phantomjs).to.be.a 'function'

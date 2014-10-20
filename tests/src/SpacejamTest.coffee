@@ -5,12 +5,12 @@ sinonChai = require("sinon-chai")
 chai.use(sinonChai)
 isCoffee = require './isCoffee'
 if isCoffee
-  SpaceJam = require '../../src/SpaceJam'
+  Spacejam = require '../../src/Spacejam'
 else
-  SpaceJam = require '../../lib/SpaceJam'
+  Spacejam = require '../../lib/Spacejam'
 
 
-describe "SapceJam.coffee", ->
+describe "Sapcejam.coffee", ->
   @timeout 60000
 
   spacejam = null
@@ -23,7 +23,7 @@ describe "SapceJam.coffee", ->
     delete process.env.MONGO_URL
     delete process.env.PACKAGE_DIRS
 
-    spacejam = new SpaceJam()
+    spacejam = new Spacejam()
 
   describe "testInVelocity", ->
 

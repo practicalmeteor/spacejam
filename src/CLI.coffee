@@ -1,6 +1,6 @@
 fs = require("fs")
 _ = require("underscore")
-SpaceJam = require './SpaceJam'
+Spacejam = require './Spacejam'
 
 require.extensions['.txt'] = (module, filename)->
   module.exports = fs.readFileSync(filename, 'utf8')
@@ -41,7 +41,7 @@ class CLI
       log.error "spacejam: Error: \n'#{command}' is not a recognized command\n" if command
       @printHelp()
 
-    @spacejam = new SpaceJam()
+    @spacejam = new Spacejam()
     @spacejam.on 'done', (code)=>
       process.exit code
 
