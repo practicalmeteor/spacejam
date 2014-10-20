@@ -30,8 +30,9 @@ See [CHANGELOG.md](CHANGELOG.md)
 
 ## Installation
 
-    npm install -g coffee-script
-    npm install -g spacejam
+```bash
+npm install -g spacejam
+```
 
 This will automatically add spacejam to your path.
 
@@ -40,54 +41,55 @@ This will automatically add spacejam to your path.
     spacejam test-packages [options] [packages-to-test]
 
 **packages-to-test** can be a list of packages with tinytests or [munit](https://atmospherejs.com/package/munit) tests.
-It enhances meteor test-packages, by supporting glob wildcards on package names that are matched against all package names in the meteor app packages directory. We added this because all of our package names start with the same prefix.
+It enhances meteor test-packages, by supporting glob wildcards on package names that are matched against all package names in the meteor app packages folder. We added this because all of our package names start with the same prefix.
 
 If not specified, will call meteor test-packages without arguments which will result in meteor testing all of the following packages:
 
-1. All of meteor's core packages
-
-2. All of your app's packages, if called from within an app folder or an app folder is specified.
+1. All of your app's packages, if run from within a meteor app folder.
 
 3. All of the packages meteor will find in all the folders specified in the PACKAGE_DIRS environment variable.
 
 The following options are specific to spacejam:
 
-    --log-level <level>           spacejam log level. One of TRACE|DEBUG|INFO|WARN|ERROR.
+`--log-level <level>`
 
-    --root-url <url>              The meteor app ROOT_URL 
-                                  (defaults to the ROOT_URL env var or 
-                                  http://localhost:3000/).
-                                  
-    --mongo-url <url>             The meteor app MONGO_URL
-                                  (defaults to the MONGO_URL env var or the 
-                                  internal meteor mongodb).
-                                  
-    --timeout  <milliseconds>     Total timeout for all tests (defaults to 120000
-                                  milliseconds, i.e. 2 minutes).
-                                  
-    --meteor-ready-text <text>    The meteor output text that indicates that the app
-                                  is ready. If not provided, defaults to the text
-                                  meteor 0.8.1 prints out when the app is ready.
-                                    
-    --meteor-error-text <text>    The meteor output text that indicates that the app
-                                  has errors. If not provided, defaults to the text
-                                  meteor 0.8.1 prints out when the app is crashing.
+spacejam log level. One of TRACE|DEBUG|INFO|WARN|ERROR. Defaults to INFO.
 
+`--root-url <url>`
+
+The meteor ROOT_URL. Defaults to http://localhost:--port/, and not ROOT_URL, to avoid conflicts with your meteor app ROOT_URL.
+
+`--mongo-url <url>`
+
+The meteor MONGO_URL. Defaults to none, and not MONGO_URL, to avoid conflicts with your meteor app MONGO_URL.
+
+`--timeout  <milliseconds>`
+     
+Total timeout for all tests. Defaults to 120000 milliseconds, i.e. 2 minutes.
+                                  
 The following options are meteor options and are passed through to meteor (all are optional):
 
-    --port <port>                 The port in which to run your meteor app
-                                  (defaults to the PORT env var or 4096).
+`--port <port>`
+                 
+The meteor port. Defaults to 4096, and not PORT, to avoid conflicts with your meteor app PORT.
 
-    --settings <file>             Path to a meteor settings file.
-    
-    --production                  Simulate meteor production mode. Minify and bundle 
-                                  CSS and JS files (defaults to false).
+`--settings <file>`
 
-    --release <version>           Specify the release of Meteor to use.
+Path to a meteor settings file.
+
+`--production`
+
+Simulate meteor production mode. Minify and bundle CSS and JS files.
+
+`--release <version>`
+
+Specify the release of Meteor to use.
                                   
 To get help, just:
-    
-    spacejam help
+
+```
+spacejam help
+```
 
 ## Running your package tests without a meteor app
 
@@ -103,20 +105,13 @@ spacejam test-packages ./
 for runtime configuration, so every command line option can also be set by an environment variable of the same name, and a prefix of ```spacejam_```, i.e. ```spacejam_port```. Note that environment variables have to be lower case, due to the way rc reads them.
 
 
-## In Case It Doesn't Work With Your Meteor Version
-
-Different versions of Meteor may print out different texts to indicate your app is ready or that your app has errors, so if that's the case, you will be able to provide the appropiate text, using the `meteor-xxx-text` options. For meteor 0.8.1, we use:
-
-      meteor_ready_text: "=> App running at:",
-      meteor_error_text: "Waiting for file change."
-
 Exit codes
 ----------
 
 ```spacejam``` will return the following exit codes:
 
 * ```0``` All the tests have passed in all packages.
-* ```1``` ```spacejam``` usage error.
+* ```1``` ```spacejam``` usage or internal error.
 * ```2``` At least one test has failed.
 * ```3``` The meteor app has errors.
 * ```4``` The tests have timed out.

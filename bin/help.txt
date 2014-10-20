@@ -13,38 +13,40 @@ If not specified, acts the same as meteor test-packages without arguments.
 
 The following options are specific to spacejam:
 
- --log-level <level>         spacejam log level. One of
-                              TRACE|DEBUG|INFO|WARN|ERROR.
+--log-level <level>
 
- --root-url <url>            The meteor app ROOT_URL (defaults to the
-                              ROOT_URL env var or http://localhost:4096/).
+spacejam log level. One of trace|debug|info|warn|error. Defaults to info.
 
- --mongo-url <url>           The meteor app MONGO_URL (defaults to
-                              the MONGO_URL env var, if exists).
+--root-url <url>
 
- --timeout  <milliseconds>   Total timeout for all tests (defaults to
+The meteor ROOT_URL. Defaults to http://localhost:--port/, and not ROOT_URL,
+to avoid conflicts with your app ROOT_URL.
+
+--mongo-url <url>
+
+The meteor MONGO_URL. Defaults to none, and not MONGO_URL,
+to avoid conflicts with your app MONGO_URL.
+
+--timeout  <milliseconds>   Total timeout for all tests (defaults to
                               120000 milliseconds, i.e. 2 minutes).
 
- --meteor-ready-text <text>  The meteor output text that indicates that the
-                              app is ready.
+The following options are meteor options and are passed through to meteor (all are optional):
 
- --meteor-error-text <text>  The meteor output text that indicates that the
-                              app has errors.
+--port <port>
 
+The meteor port. Defaults to 4096, and not PORT, to avoid conflicts with your meteor app PORT.
 
-The following options are meteor options and are passed through to meteor (all
-are optional):
+--release <release>
 
- --release <release>   The release of Meteor to use.
+The release of Meteor to use.
 
- --port <port>         The port in which to run your meteor app
-                       (defaults to the PORT env var or 4096).
+--settings <file>
 
- --settings <file>     Path to a meteor settings file.
+Path to a meteor settings file.
 
- --production          Simulate meteor production mode. Minify and bundle CSS
-                       and JS files (defaults to false).
+--production
 
+Simulate meteor production mode. Minify and bundle CSS and JS files.
 
 Other commands:
 
@@ -67,7 +69,7 @@ Exit codes
 ----------
 
 0 - All the tests have passed in all packages.
-1 - spacejam usage error.
+1 - spacejam usage or internal error.
 2 - At least one test has failed.
 3 - The meteor app exited with an error or is crashing.
 4 - The tests have timed out.
