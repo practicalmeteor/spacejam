@@ -7,22 +7,22 @@ SpaceJam
 
 Table of Contents
 -------------------
-- [Supported  Meteor Versions](#supported-meteor-versions)
-- [Changelog](#changelog)
-- [Installation](#installation)
+- [Supported  Meteor Versions](##supported-meteor-versions)
+- [Changelog](##changelog)
+- [Installation](##installation)
 - [Usage](#usage)
-- [Running your package tests without a meteor app](#running-your-package-tests-without-a-meteor-app)
-- [Environment Variables](#environment-variables)
-- [In case It doesn't work with your meteor version](#in-case-it-doesnt-work-with-your-meteor-version)
-- [Helper Scripts](#helper-scripts)
-- [Spacejam self tests](#spacejam-self-tests)
-- [Contributions](#contributions)
-
+- [Running your package tests without a meteor app](##running-your-package-tests-without-a-meteor-app)
+- [Environment Variables](##environment-variables)
+- [In case It doesn't work with your meteor version](##in-case-it-doesnt-work-with-your-meteor-version)
+- [Helper Scripts](##helper-scripts)
+- [Spacejam self tests](##spacejam-self-tests)
+- [Contributions](##contributions)
+- [License](##license)
 
 
 ## Supported Meteor Versions
 
-```spacejam``` has only been tested with meteor 0.8.1 and 0.9.2.2, but it should work with any recent meteor version.
+```spacejam``` has only been tested with meteor 0.8.1, 0.9.2.2, and 0.9.4, but it should work with any recent meteor version.
 
 ## Changelog
 
