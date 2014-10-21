@@ -15,10 +15,11 @@
     "mocha": "1.21.5",
     "sinon-chai": "2.6.0"
   },
-  "main": "src/main.coffee",
+  "main": "lib/main.js",
   "scripts": {
-    "test": "cake test",
-    "compile": "cake compile"
+    "test": "cake test-js",
+    "compile": "cake compile",
+    "prepublish": "cake compile"
   },
   "bin": {
     "spacejam": "bin/spacejam",
@@ -30,10 +31,12 @@
   "keywords": [
     "spacejam",
     "meteor",
-    "meteor packages",
-    "meteor test runner",
-    "meteor console test runner",
+    "velocity",
+    "test-packages",
+    "test-in-console",
+    "test-in-velocity",
     "meteor test-packages",
+    "meteor velocity",
     "meteor ci",
     "meteor continuous integration",
     "meteor cd",
