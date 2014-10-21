@@ -29,6 +29,14 @@ class Meteor extends EventEmitter
       "meteor-error-text": "Waiting for file change."
     }
 
+  # => Exited with code:
+  # => Your application has errors. Waiting for file change.
+  # => Your application is crashing. Waiting for file change.
+  # => Modified -- restarting.
+  # => App running at: http://ronenvm:3000/
+  # => Meteor server restarted
+  # => Errors prevented startup:
+
   # @options
   # @parseCommandLine
   testPackages: (options)=>
