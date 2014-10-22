@@ -1,1 +1,3 @@
 *.coffee
+/packages
+/tests
