@@ -23,6 +23,7 @@ class Meteor extends EventEmitter
 
   defaultOptions: ->
     {
+      "dir": "."
       "port": 4096
       "driver-package": "test-in-console"
       "meteor-ready-text": "=> App running at:"
@@ -46,7 +47,11 @@ class Meteor extends EventEmitter
 
     @options = _.extend(@defaultOptions(), options)
 
-    if not fs.existsSync(process.cwd() + '/.meteor/packages') and not fs.existsSync('package.js')
+    cwd = path.resolve(@options.dir);
+
+    log.debug "meteor cwd=#{cwd}"
+
+    if not fs.existsSync(cwd + '/.meteor/packages') and not fs.existsSync(cwd + '/package.js')
       throw new Error("spacejam needs to be run from within a meteor app or package folder.")
 
     expect(@options['driver-package'], "options.driver-package is missing").to.be.ok
@@ -55,7 +60,8 @@ class Meteor extends EventEmitter
 
     @options["root-url"] ?= "http://localhost:#{@options.port}/"
 
-    packages = @options._[1..] # Get packages from command line
+    # Get packages from command line
+    packages = if @options._? then @options._[1..] else []
 
     if packages.length > 0
       _testPackages = @_globPackages(packages)
@@ -83,7 +89,7 @@ class Meteor extends EventEmitter
       delete env.MONGO_URL if env.MONGO_URL?
 
     options = {
-      cwd: ".",
+      cwd: cwd,
       env: env,
       detached: false
     }

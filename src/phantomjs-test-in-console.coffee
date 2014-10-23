@@ -2,7 +2,7 @@ page = require('webpage').create()
 system = require('system')
 platform = system.args[1] || "local"
 
-console.log("PhantomJS: Running tests at #{system.env.ROOT_URL} using test-in-console")
+console.log("phantomjs: Running tests at #{system.env.ROOT_URL} using test-in-console")
 
 page.onConsoleMessage = (message) ->
   console.log(message)

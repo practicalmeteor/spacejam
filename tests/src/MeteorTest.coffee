@@ -42,7 +42,6 @@ describe "Meteor.coffee", ->
 
 
   before ->
-    log.setLevel "info"
     delete process.env.PORT
     delete process.env.ROOT_URL
     delete process.env.MONGO_URL
@@ -71,8 +70,8 @@ describe "Meteor.coffee", ->
     spawnStub = null
 
 
-  getExpectedSpawnOptions = (port, rootUrl, mongoUrl)->
-    expectedSpawnOptions = { cwd: ".", detached: false, env: env }
+  getExpectedSpawnOptions = (port, rootUrl, mongoUrl, cwd = process.cwd())->
+    expectedSpawnOptions = {cwd: cwd, detached: false, env: env}
     rootUrl ?= "http://localhost:#{port}/"
     expectedSpawnOptions.env.ROOT_URL = rootUrl
     expectedSpawnOptions.env.MONGO_URL = mongoUrl if mongoUrl?
@@ -97,6 +96,16 @@ describe "Meteor.coffee", ->
     expectedSpawnArgs.push("--port", defaultTestPort, packageToTest)
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
+
+  it "testPackages() - should spawn meteor with an absolute path to a --dir relative path",->
+    testPackages '--dir', '../todos'
+    expectedSpawnArgs.push("--port", defaultTestPort)
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096, null, null, path.resolve("../todos"))])
+
+  it.only "testPackages() - should spawn meteor with an absolute path to a --dir absolute path",->
+    testPackages '--dir', path.resolve("../todos")
+    expectedSpawnArgs.push("--port", defaultTestPort)
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096, null, null, path.resolve("../todos"))])
 
   it "testPackages() - should spawn meteor with a ROOT_URL set to http://localhost:--port/",->
     rootUrl = "http://localhost:5000/"

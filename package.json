@@ -1,6 +1,6 @@
 {
   "name": "spacejam",
-  "version": "1.1.0-rc0",
+  "version": "1.1.0-rc6",
   "dependencies": {
     "underscore": "1.7.0",
     "rc": "0.5.1",
@@ -23,8 +23,7 @@
     "prepublish": "cake compile"
   },
   "bin": {
-    "spacejam": "bin/spacejam",
-    "spacejam.coffee": "bin/spacejam.coffee"
+    "spacejam": "bin/spacejam"
   },
   "description": "Wrapper for meteor test-packages for use in continuous integration environments.",
   "homepage": "https://github.com/spacejamio/spacejam",

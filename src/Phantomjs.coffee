@@ -12,7 +12,7 @@ class Phantomjs extends EventEmitter
 
   childProcess: null
 
-  run: (url, script = "phantom-test-in-console")=>
+  run: (url, script = "phantomjs-test-in-console")=>
     log.debug "Phantomjs.run()"
     expect(url,"Invalid @url").to.be.a 'string'
     expect(@childProcess,"ChildProcess is already running").to.be.null

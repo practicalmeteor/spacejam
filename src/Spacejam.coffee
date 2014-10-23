@@ -12,9 +12,10 @@ class Spacejam extends EventEmitter
   @get: ->
     instance ?= new Spacejam()
 
-  testPackagesOptions:
-    "timeout"   : 120000
-    "crash-spacejam-after": 0
+  defaultOptions:
+    'phantomjs-script': 'phantomjs-test-in-console'
+    'timeout'   : 120000
+    'crash-spacejam-after': 0
 
   meteor: null
 
@@ -38,7 +39,7 @@ class Spacejam extends EventEmitter
     expect(options).to.be.an "object"
     expect(@meteor, "Meteor is already running").to.be.null
 
-    options = _.extend @testPackagesOptions, options
+    options = _.extend @defaultOptions, options
     log.debug options
 
     try
@@ -102,7 +103,7 @@ class Spacejam extends EventEmitter
     @testPackages(options);
 
 
-  runPhantom: (url)->
+  runPhantom: (url, script)->
     log.debug "Spacejam.runPhantom()",arguments
     expect(url).to.be.a "string"
 
@@ -114,7 +115,7 @@ class Spacejam extends EventEmitter
       if code?
         @done code
 
-    @phantomjs.run(url)
+    @phantomjs.run(url, script)
 
 
   onMeteorMongodbKillDone: =>

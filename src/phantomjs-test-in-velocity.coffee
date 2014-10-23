@@ -1,7 +1,7 @@
 page = require('webpage').create()
 system = require('system')
 
-console.log("PhantomJS: Running tests at #{system.env.ROOT_URL} using test-in-velocity")
+console.log("phantomjs: Running tests at #{system.env.ROOT_URL} using test-in-velocity")
 
 page.onConsoleMessage = (message) ->
   console.log(message)
