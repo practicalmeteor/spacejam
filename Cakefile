@@ -1,8 +1,8 @@
 ChildProcess = require './src/ChildProcess'
 
-jsMochaCmdLine = "mocha --colors --reporter spec tests/lib/*Test.js"
+jsMochaCmdLine = "mocha --colors --reporter spec tests/lib/*Test*.js"
 
-mochaCmdLine = "mocha --colors --compilers coffee:coffee-script/register --reporter spec tests/src/*Test.coffee"
+mochaCmdLine = "mocha --colors --compilers coffee:coffee-script/register --reporter spec tests/src/*Test*.coffee"
 
 task "compile", "Compile coffee-script library sources", ->
   child = new ChildProcess()

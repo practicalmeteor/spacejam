@@ -25,6 +25,7 @@ class Meteor extends EventEmitter
     {
       "dir": "."
       "port": 4096
+      "packages": []
       "driver-package": "test-in-console"
       "meteor-ready-text": "=> App running at:"
       "meteor-error-text": "Waiting for file change."
@@ -40,12 +41,14 @@ class Meteor extends EventEmitter
 
   # @options
   # @parseCommandLine
-  testPackages: (options)=>
+  testPackages: (options = {})=>
     log.debug "Meteor.testPackages()", arguments
-    expect(options,"@options should be an object.").to.be.an "object"
+    expect(options, "options should be an object.").to.be.an "object"
     expect(@childProcess, "Meteor's child process is already running").to.be.null
 
     @options = _.extend(@defaultOptions(), options)
+
+    log.debug 'meteor options:', @options
 
     cwd = path.resolve(@options.dir);
 
@@ -60,12 +63,11 @@ class Meteor extends EventEmitter
 
     @options["root-url"] ?= "http://localhost:#{@options.port}/"
 
-    # Get packages from command line
-    packages = if @options._? then @options._[1..] else []
+    expect(@options.packages, "options.packages is not an array of package names").to.be.an 'array'
 
-    if packages.length > 0
-      _testPackages = @_globPackages(packages)
-      expect(_testPackages).to.have.length.above 0
+    if @options.packages.length > 0
+      packagesToTest = @_globPackages(@options.packages)
+      expect(packagesToTest).to.have.length.above 0
 
     args = [
       'test-packages'
@@ -76,10 +78,12 @@ class Meteor extends EventEmitter
     args.push(["--port", @options.port])
     args.push("--production") if @options.production
     args.push(["--settings", @options.settings]) if @options.settings
-    args.push(_testPackages) if _testPackages
+    args.push(packagesToTest) if packagesToTest?.length > 0
 
     # flatten nested testPackages array into args
     args = _.flatten(args)
+
+    log.debug 'meteor args=', args
 
     env = _.clone(process.env)
     env.ROOT_URL = @options["root-url"]
@@ -171,9 +175,7 @@ class Meteor extends EventEmitter
 
   # TODO: Test
   kill: (signal="SIGTERM")->
-    log.debug "Meteor.kill()", arguments
-    log.debug "Meteor.kill() @childProcess?=", @childProcess?
-    log.debug "Meteor.kill() @mongodb?=", @mongodb?
+    log.debug "Meteor.kill()", arguments, "@childProcess?=", @childProcess?, "@mongodb?=", @mongodb?
     @childProcess?.kill(signal)
     @mongodb?.kill()
 

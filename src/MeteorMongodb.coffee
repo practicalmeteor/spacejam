@@ -6,8 +6,13 @@ class MeteorMongodb extends EventEmitter
 
   mongodChilds: []
 
+  killed: false
+
   constructor: (@meteorPid)->
     log.debug "MeteorMongodb.constructor()", arguments
+    process.on 'exit', (code)=>
+      log.debug "MeteorMongodb.process.on 'exit': code=#{code}"
+      @kill()
     @findAllChildren()
 
 
@@ -33,7 +38,11 @@ class MeteorMongodb extends EventEmitter
 
 
   kill: ->
-    log.debug "MeteorMongodb.kill()"
+    log.debug "MeteorMongodb.kill() killed=", @killed
+
+    return if @killed
+    @killed = true
+
     attempts = 1
 
     interval = null

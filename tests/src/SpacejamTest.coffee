@@ -3,6 +3,7 @@ expect = chai.expect
 sinon = require("sinon")
 sinonChai = require("sinon-chai")
 chai.use(sinonChai)
+path = require "path"
 isCoffee = require './isCoffee'
 if isCoffee
   Spacejam = require '../../src/Spacejam'
@@ -27,7 +28,7 @@ describe "Sapcejam.coffee", ->
 
   describe "testInVelocity", ->
 
-    it "should call testPackages with package-driver=test-in-velocity", ()->
+    it "should call testPackages with the correct options", ()->
       stub = sinon.stub(spacejam, 'testPackages')
       expectedOptions =
         'driver-package': "spacejamio:test-in-velocity"
@@ -51,3 +52,18 @@ describe "Sapcejam.coffee", ->
       stub = sinon.stub(spacejam, 'testPackages')
       spacejam.testInVelocity({"velocity-url": "http://vm:3000"})
       expect(process.env.VELOCITY_URL).to.equal "http://vm:3000"
+
+    it "should run Phantomjs with the correct arguments", (done)->
+      # cd to spacejam root
+      process.env.PACKAGE_DIRS = path.resolve(__dirname, '../../packages')
+      process.chdir(path.resolve(__dirname, '../apps/leaderboard'))
+      options = {packages: ['success']}
+      spacejam.testInVelocity(options)
+      spy = sinon.spy(spacejam.phantomjs, 'run')
+      spacejam.meteor.on "ready", =>
+        try
+          log.debug 'SpacejamTest on meteor ready'
+          expect(spy).to.have.been.calledWith('http://localhost:4096/', 'phantomjs-test-in-velocity')
+          done()
+        catch err
+          done(err)

@@ -2,4 +2,4 @@
 
 require('../src/log')
 
-require('../src/CLI').exec()
+require('../src/CLI').get().exec()

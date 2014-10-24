@@ -34,6 +34,10 @@ class Spacejam extends EventEmitter
     TEST_TIMEOUT: 4
 
 
+  constructor: ->
+    log.debug "Spacejam.constructor()"
+
+
   testPackages: (options = {})->
     log.debug "Spacejam.testPackages()", options
     expect(options).to.be.an "object"
@@ -44,6 +48,7 @@ class Spacejam extends EventEmitter
 
     try
       @meteor = new Meteor()
+      @phantomjs = new Phantomjs()
     catch err
       console.trace err
       @emit "done", 1
@@ -51,6 +56,7 @@ class Spacejam extends EventEmitter
 
 
     @meteor.on "exit", (code)=>
+      log.debug "Spacejam.meteor.on 'exit':", arguments
       @meteor = null
       if code
         @killChildren Spacejam.DONE.METEOR_ERROR
@@ -106,8 +112,7 @@ class Spacejam extends EventEmitter
   runPhantom: (url, script)->
     log.debug "Spacejam.runPhantom()",arguments
     expect(url).to.be.a "string"
-
-    @phantomjs = new Phantomjs()
+    expect(@phantomjs).to.be.ok
 
     @phantomjs.on "exit", (code, signal)=>
       @phantomjs = null

@@ -15,10 +15,10 @@ class ChildProcess
 
   command: null
 
+  killed: false
+
   constructor:->
-    log.debug "ChildProcess.constructor()", arguments
-
-
+    log.debug "ChildProcess.constructor()"
 
   # TODO: Check if is used (least important)
   exec: (command, taskName)->
@@ -41,7 +41,7 @@ class ChildProcess
 
 
   spawn: (command, args=[], options={}, pipeClass = null)->
-    log.debug "ChildProcess.spawn()",command
+    log.debug "ChildProcess.spawn()", arguments
 
     expect(@child,"ChildProcess is already running").to.be.null
     expect(command,"Invalid @command argument").to.be.a "string"
@@ -52,31 +52,39 @@ class ChildProcess
 
     log.info("spacejam: spawning #{@command}")
 
-    @child = _spawn(command,args,options)
+    process.on 'exit', (code)=>
+      log.debug "ChildProcess.process.on 'exit': @command=#{@command} @killed=#{@killed} code=#{code}"
+      @kill()
+
+    @child = _spawn(command, args, options)
 
     if pipeClass
       @pipe = new pipeClass(@child.stdout, @child.stderr)
     else
       @pipe = new Pipe(@child.stdout, @child.stderr)
 
-    @child.on "exit", (code,signal)=>
+    @child.on "exit", (code, signal)=>
+      log.debug "ChildProcess.process.on 'exit': @command=#{@command} @killed=#{@killed} code=#{code} singal=#{signal}"
+      @killed = true
       if code?
         log.info "spacejam: #{command} exited with code: #{code}"
       else if signal?
         log.info "spacejam: #{command} killed with signal: #{signal}"
       else
-        log.error "spacejam: #{command} exited: #{args}"
+        log.error "spacejam: #{command} exited with arguments: #{arguments}"
 
 
   kill: (signal = "SIGTERM")->
-    log.debug "ChildProcess.kill()", signal
+    log.debug "ChildProcess.kill() signal=#{signal} @command=#{@command} @killed=#{@killed}"
+    return if @killed
     log.info "spacejam: killing", @command
+    @killed = true
     try
       # Providing a negative pid will kill the entire process group,
       # i.e. the process and all it's children
       # See man kill for more info
       #process.kill(-@child.pid, signal)
-      @child.kill(signal)
+      @child?.kill(signal)
 
     catch err
       log.warn "spacejam: Error: While killing #{@command} with pid #{@child.pid}:\n", err

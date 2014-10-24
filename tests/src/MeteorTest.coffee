@@ -1,7 +1,7 @@
+_ = require("underscore")
 chai = require("chai")
 expect = chai.expect
 sinon = require("sinon")
-_ = require("underscore")
 sinonChai = require("sinon-chai")
 chai.use(sinonChai)
 isCoffee = require './isCoffee'
@@ -57,18 +57,11 @@ describe "Meteor.coffee", ->
     spawnStub = sinon.stub(ChildProcess.prototype, "spawn")
     ChildProcess.prototype.child = childProcessMockObj
 
-    if isCoffee
-      process.argv = ['coffee', path.normalize __dirname + "/../../bin/spacejam.coffee"]
-    else
-      process.argv = ['node', path.normalize __dirname + "/../../bin/spacejam"]
-    process.argv.push "test-packages"
-
 
   afterEach ->
     ChildProcess.prototype.child = null
     spawnStub?.restore()
     spawnStub = null
-
 
   getExpectedSpawnOptions = (port, rootUrl, mongoUrl, cwd = process.cwd())->
     expectedSpawnOptions = {cwd: cwd, detached: false, env: env}
@@ -78,58 +71,51 @@ describe "Meteor.coffee", ->
     return expectedSpawnOptions
 
 
-  testPackages = ()->
-    for arg in arguments
-      process.argv.push arg
-    opts = require("rc")("spacejam", {})
-    meteor.testPackages(opts)
-
-
   it "testPackages() - should spawn meteor with no package arguments",->
-    testPackages()
+    meteor.testPackages()
     expectedSpawnArgs.push("--port", defaultTestPort)
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
 
   it "testPackages() - should spawn meteor with a package name argument",->
-    testPackages(packageToTest)
+    meteor.testPackages({packages: [packageToTest]})
     expectedSpawnArgs.push("--port", defaultTestPort, packageToTest)
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
 
   it "testPackages() - should spawn meteor with an absolute path to a --dir relative path",->
-    testPackages '--dir', '../todos'
+    meteor.testPackages({dir: '../todos'})
     expectedSpawnArgs.push("--port", defaultTestPort)
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096, null, null, path.resolve("../todos"))])
 
-  it.only "testPackages() - should spawn meteor with an absolute path to a --dir absolute path",->
-    testPackages '--dir', path.resolve("../todos")
+  it "testPackages() - should spawn meteor with an absolute path to a --dir absolute path",->
+    meteor.testPackages({dir: path.resolve("../todos")})
     expectedSpawnArgs.push("--port", defaultTestPort)
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096, null, null, path.resolve("../todos"))])
 
   it "testPackages() - should spawn meteor with a ROOT_URL set to http://localhost:--port/",->
     rootUrl = "http://localhost:5000/"
-    testPackages "--port", "5000"
+    meteor.testPackages({port: 5000})
     expectedSpawnArgs.push("--port", 5000)
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(5000, rootUrl)])
 
 
   it "testPackages() - should ignore env ROOT_URL",->
     process.env.ROOT_URL = "http://localhost:5000/"
-    testPackages()
+    meteor.testPackages()
     expectedSpawnArgs.push("--port", defaultTestPort)
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(defaultTestPort)])
 
 
   it "testPackages() - should spawn meteor with a --settings argument",->
-    testPackages "--settings", "settings.json", packageToTest
+    meteor.testPackages({settings: "settings.json", packages: [packageToTest]})
     expectedSpawnArgs.push("--port", defaultTestPort, "--settings", "settings.json", packageToTest)
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
 
 
   it "testPackages() - should spawn meteor with a --production argument",->
-    testPackages packageToTest, "--production"
+    meteor.testPackages({packages: [packageToTest], production: true})
     expectedSpawnArgs.push("--port", defaultTestPort, "--production", packageToTest)
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
@@ -137,14 +123,14 @@ describe "Meteor.coffee", ->
 
   it "testPackages() - should spawn meteor with a --release argument",->
     releaseToTest = '0.9.0'
-    testPackages "--release", releaseToTest, packageToTest
+    meteor.testPackages({release: releaseToTest, packages: [packageToTest]})
     expectedSpawnArgs.push "--release", releaseToTest, "--port", defaultTestPort, packageToTest
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
 
 
   it "testPackages() - should spawn meteor with ROOT_URL set to --root-url",->
     rootUrl = "http://test.meteor.com/"
-    testPackages "--root-url", rootUrl, packageToTest
+    meteor.testPackages({"root-url": rootUrl, packages: [packageToTest]})
     expectedSpawnArgs.push "--port", defaultTestPort, packageToTest
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096, rootUrl)])
     expect(spawnStub.args[0][2].env.ROOT_URL).to.equal rootUrl
@@ -152,7 +138,7 @@ describe "Meteor.coffee", ->
 
   it "testPackages() - should ignore env MONGO_URL",->
     process.env.MONGO_URL = "mongodb://localhost/mydb"
-    testPackages()
+    meteor.testPackages()
     delete process.env.MONGO_URL
     expectedSpawnArgs.push "--port", defaultTestPort
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
@@ -160,7 +146,7 @@ describe "Meteor.coffee", ->
 
   it "testPackages() - should spawn meteor with MONGO_URL set to --mongo-url",->
     mongoUrl = "mongodb://localhost/mydb"
-    testPackages "--mongo-url", mongoUrl, packageToTest
+    meteor.testPackages({"mongo-url": mongoUrl, packages: [packageToTest]})
     expectedSpawnArgs.push "--port", defaultTestPort, packageToTest
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096, null, mongoUrl)])
     expect(spawnStub.args[0][2].env.MONGO_URL).to.equal mongoUrl
@@ -168,12 +154,11 @@ describe "Meteor.coffee", ->
 
   it "kill() - should kill internal mongodb child processes", (done)->
     @timeout 60000
-    process.argv.push packageToTest
     spawnStub.restore()
     spawnStub = null
     ChildProcess.prototype.child = null
 
-    testPackages()
+    meteor.testPackages({packages: [packageToTest]})
 
     meteor.on "ready",->
       pid = meteor.childProcess.child.pid

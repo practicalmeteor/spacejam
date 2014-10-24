@@ -1,148 +1,51 @@
-expect = require("chai").expect
+path = require 'path'
+chai = require("chai")
+expect = chai.expect
+sinon = require("sinon")
+sinonChai = require("sinon-chai")
+chai.use(sinonChai)
 isCoffee = require './isCoffee'
 if isCoffee
-  ChildProcess = require '../../src/ChildProcess'
+  CLI = require '../../src/CLI'
   Spacejam = require '../../src/Spacejam'
 else
-  ChildProcess = require '../../lib/ChildProcess'
+  CLI = require '../../lib/CLI'
   Spacejam = require '../../lib/Spacejam'
-path = require 'path'
-if isCoffee
-  spacejamBin = require.resolve("../../bin/spacejam.coffee")
-else
-  spacejamBin = require.resolve("../../bin/spacejam")
-log.info spacejamBin
 
 
-describe "spacejam", ->
-  @timeout 60000
+describe "CLI", ->
+  @timeout 30000
 
-  spacejamChild = null
+  processArgv = null
 
-  testApp1 = "leaderboard"
+  cli = null
 
-  testApp2 = "todos"
-
-  standAlonePackage = "../packages/standalone-package"
+  testPackagesStub = null
 
   before ->
-    log.debug "spacejam.before"
+    processArgv = process.argv
+
+  after ->
+    process.argv = processArgv
 
   beforeEach ->
-    log.debug "spacejam.beforeEach"
     process.chdir(__dirname + "/../apps/leaderboard")
     delete process.env.PORT
     delete process.env.ROOT_URL
     delete process.env.MONGO_URL
     delete process.env.PACKAGE_DIRS
 
-    spacejamChild = new ChildProcess()
+    process.argv = ['coffee', path.normalize __dirname + "/../bin/spacejam"]
+    cli = new CLI()
+    spacejam = cli.spacejam
+    testPackagesStub = sinon.stub(spacejam, 'testPackages')
 
-  afterEach ->
-    log.debug "spacejam.afterEach"
-    try
-      spacejamChild?.kill()
-    finally
-      spacejamChild = null
+  it "should call Spacejam.testPackages() with an empty options.packages array, if no packages where provided on the command line", ->
+    process.argv.push "test-packages"
+    cli.exec()
+    expect(testPackagesStub).to.have.been.calledWith({packages: []})
 
-  describe "test-packages", ->
-
-    it "should exit with 0 if tests pass for a meteor app package", (done)->
-      spacejamChild = new ChildProcess()
-      args = ["test-packages", "success"]
-      spacejamChild.spawn(spacejamBin,args)
-      spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with errors").to.equal Spacejam.DONE.TEST_SUCCESS
-        done()
-
-
-    it "should exit with 0 if tests pass for a standalone package", (done)->
-      process.chdir(__dirname + "/../packages/standalone-package")
-      process.env.PACKAGE_DIRS = path.normalize __dirname + '/../packages'
-      spacejamChild = new ChildProcess()
-      args = ["test-packages", "./"]
-      spacejamChild.spawn(spacejamBin,args)
-      spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with errors").to.equal Spacejam.DONE.TEST_SUCCESS
-        done()
-
-
-    it "should exit with 1, if not in a meteor app or package folder", (done)->
-      process.chdir(__dirname)
-      spacejamChild = new ChildProcess()
-      args = ["test-packages", "success"]
-      spacejamChild.spawn(spacejamBin,args)
-      spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with the wrong code").to.equal 1
-        done()
-
-
-    it "should exit with 3, if package could not be found", (done)->
-      spacejamChild = new ChildProcess()
-      args = ["test-packages", standAlonePackage]
-      spacejamChild.spawn(spacejamBin,args)
-      spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with errors").to.equal Spacejam.DONE.METEOR_ERROR
-        done()
-
-
-    it "should exit with 2, if tests failed", (done)->
-      spacejamChild = new ChildProcess()
-      testPort = "6096"
-      args = ["test-packages", "--port", testPort, "failure"]
-      spacejamChild.spawn(spacejamBin,args)
-      spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with the wrong code").to.equal Spacejam.DONE.TEST_FAILED
-        done()
-
-
-    it "should exit with 4, if --timeout has passed", (done)->
-      spacejamChild = new ChildProcess()
-      testPort = "7096"
-      args = ["test-packages", "--timeout", "30000", "--port", testPort, 'timeout']
-      spacejamChild.spawn(spacejamBin,args)
-      spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with the wrong code").to.equal Spacejam.DONE.TEST_TIMEOUT
-        done()
-
-
-    it "should exit with 2, if the meteor app crashes", (done)->
-      process.chdir(__dirname + "/../apps/todos")
-      spacejamChild = new ChildProcess()
-      testPort = "8096"
-      args = ["test-packages", "--port", testPort, 'appfails']
-      spacejamChild.spawn(spacejamBin,args)
-      spacejamChild.child.on "exit", (code) =>
-        expect(code).to.equal Spacejam.DONE.METEOR_ERROR
-        done()
-
-
-    it "should exit with 0, in case of a complete test, with a settings file, multiple packages, including wildcards in package names", (done)->
-      spacejamChild = new ChildProcess()
-      testPort = "10096"
-      args = ["test-packages", "--settings", "settings.json", "--port", testPort, 'packages/settings', 'success*']
-      spacejamChild.spawn(spacejamBin,args)
-      spacejamChild.child.on "exit", (code) =>
-        expect(code,"spacejam exited with errors").to.equal Spacejam.DONE.TEST_SUCCESS
-        done()
-
-  describe "test-in-velocity", ->
-
-    it "should never exit", (done)->
-      process.env.PACKAGE_DIRS = path.normalize __dirname + '/../../packages'
-      log.debug "PACKAGE_DIRS=#{process.env.PACKAGE_DIRS}"
-      spacejamChild = new ChildProcess()
-      testPort = "11096"
-      args = ["test-in-velocity", 'success']
-      spacejamChild.spawn(spacejamBin,args)
-
-      spacejamChild.child.on "exit", (code) =>
-        done("spacejam test-in-velocity should never exit")
-
-      setTimeout ->
-        try
-          spacejamChild.kill()
-          done()
-        catch err
-          done(err)
-      , 45000
+  it "should call Spacejam.testPackages() with options.packages set to the packages provided on the command line", ->
+    process.argv.push 'test-packages', '--settings', 'settings.json', 'package1', 'package2'
+    cli.exec()
+    expect(testPackagesStub).to.have.been.calledWith({settings: 'settings.json', packages: ['package1', 'package2']})
