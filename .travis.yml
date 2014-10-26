@@ -5,11 +5,6 @@ node_js:
 git:
   submodules: false
 
-branches:
-  only:
-    - master
-    - devel
-
 before_install:
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
