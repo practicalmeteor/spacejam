@@ -1,6 +1,6 @@
 {
   "name": "spacejam",
-  "version": "1.1.0-rc8",
+  "version": "1.1.0-rc9",
   "dependencies": {
     "underscore": "1.7.0",
     "rc": "0.5.1",
