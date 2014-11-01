@@ -23,7 +23,11 @@
     "prepublish": "cake compile"
   },
   "bin": {
-    "spacejam": "bin/spacejam"
+    "spacejam": "bin/spacejam",
+    "spacejam.coffee": "bin/spacejam.coffee",
+    "mrun": "bin/meteor-run.sh",
+    "mtp": "bin/meteor-test-packages.sh",
+    "mpublish": "bin/meteor-publish.sh"
   },
   "description": "Wrapper for meteor test-packages for use in continuous integration environments.",
   "homepage": "https://github.com/spacejamio/spacejam",
