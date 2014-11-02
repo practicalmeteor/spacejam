@@ -20,7 +20,7 @@ class ChildProcess
   constructor:->
     log.debug "ChildProcess.constructor()"
 
-  exec: (command, taskName)->
+  exec: (command, taskName, cb)->
     log.debug "ChildProcess.exec()", arguments
     expect(@child).to.be.null
     expect(command).to.be.a 'string'
@@ -29,12 +29,12 @@ class ChildProcess
     @command = taskName
 
     @child = _exec command, (err, stdout, stderr) =>
-      if err?.code? and err.code isnt 0
-        log.error "child_process.exec: Error: #{taskName} exit code: #{err.code}"
-        process.exit(err.code)
-      if err?.signal? and err.signal isnt 0
-        log.error "child_process.exec: Error: #{taskName} kill signal: #{err.signal}"
-        process.exit(1)
+      @killed = true
+      if err?.code?
+          log.error "child_process.exec: Error: #{taskName} exit code: #{err.code}"
+      if err?.signal?
+        log.error "child_process.exec: Error: #{taskName} termination signal: #{err.signal}"
+      cb(err, stdout, stderr) if cb?
 
     @child.stdout.pipe(process.stdout)
     @child.stderr.pipe(process.stderr)
