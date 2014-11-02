@@ -198,7 +198,6 @@
     return describe("package-version", function() {
       return it.only("should print the package version", function(done) {
         process.chdir(__dirname + "/../packages/standalone-package");
-        log.info(process.cwd());
         spacejamChild = new ChildProcess();
         return spacejamChild.exec("" + spacejamBin + " package-version", 'spacejam', (function(_this) {
           return function(err, stdout, stderr) {

@@ -159,9 +159,7 @@ describe "spacejam", ->
   describe "package-version", ->
 
     it "should print the package version", (done)->
-
       process.chdir(__dirname + "/../packages/standalone-package")
-      log.info(process.cwd())
       spacejamChild = new ChildProcess()
       spacejamChild.exec "#{spacejamBin} package-version", 'spacejam', (err, stdout, stderr)=>
         try
