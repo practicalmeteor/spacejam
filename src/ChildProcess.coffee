@@ -20,7 +20,6 @@ class ChildProcess
   constructor:->
     log.debug "ChildProcess.constructor()"
 
-  # TODO: Check if is used (least important)
   exec: (command, taskName)->
     log.debug "ChildProcess.exec()", arguments
     expect(@child).to.be.null
@@ -31,17 +30,18 @@ class ChildProcess
 
     @child = _exec command, (err, stdout, stderr) =>
       if err?.code? and err.code isnt 0
-        log.error "spacjam: Error: #{taskName} exit code: "+err.code
-#        process.exit(err.code)
+        log.error "child_process.exec: Error: #{taskName} exit code: #{err.code}"
+        process.exit(err.code)
       if err?.signal? and err.signal isnt 0
-        log.error "spacjam: Error: #{taskName} termination signal: "+err.signal
-#        process.exit(1)
+        log.error "child_process.exec: Error: #{taskName} kill signal: #{err.signal}"
+        process.exit(1)
 
-    @pipe = new Pipe(@child.stdout,@child.stderr)
+    @child.stdout.pipe(process.stdout)
+    @child.stderr.pipe(process.stderr)
 
 
   spawn: (command, args=[], options={}, pipeClass = null)->
-    log.debug "ChildProcess.spawn()", arguments
+    log.debug "ChildProcess.spawn()", command, args
 
     expect(@child,"ChildProcess is already running").to.be.null
     expect(command,"Invalid @command argument").to.be.a "string"
