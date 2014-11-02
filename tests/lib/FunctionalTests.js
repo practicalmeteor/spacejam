@@ -196,7 +196,7 @@
       });
     });
     return describe("package-version", function() {
-      return it.only("should print the package version", function(done) {
+      return it("should print the package version", function(done) {
         process.chdir(__dirname + "/../packages/standalone-package");
         spacejamChild = new ChildProcess();
         return spacejamChild.exec("" + spacejamBin + " package-version", 'spacejam', (function(_this) {

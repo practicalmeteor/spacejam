@@ -1,6 +1,6 @@
 Package.describe({
-  name: "success",
-  summary: "spacejam test - package with passing tests",
+  name: "standalone-package",
+  summary: "spacejam test - standalone package with passing tests",
   version: "0.9.5"
 });
 
