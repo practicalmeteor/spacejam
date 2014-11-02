@@ -3,3 +3,4 @@ node_modules/
 .meteor/local
 *.log
 *.pid
+versions.json
