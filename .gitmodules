@@ -13,3 +13,9 @@
 [submodule "packages/loglevel"]
 	path = packages/loglevel
 	url = git@github.com:spacejamio/meteor-loglevel.git
+[submodule "packages/mconfig"]
+	path = packages/mconfig
+	url = git@github.com:practicalmeteor/meteor-mconfig.git
+[submodule "packages/underscore-deep"]
+	path = packages/underscore-deep
+	url = git@github.com:practicalmeteor/meteor-underscore-deep.git
