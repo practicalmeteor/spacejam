@@ -2,9 +2,14 @@
 Usage
 -----
 
-spacejam test-packages [options] [packages-to-test]
+spacejam test-packages [options] [package...]
+spacejam package-version
+spacejam help
 
-[packages-to-test] can be a list of packages with tinytests or munit tests.
+spacejam test-packages [options] [package...]
+---------------------------------------------
+
+[package...] can be a list of packages with tinytests or munit tests.
 It enhances meteor test-packages, by supporting glob wildcards on package names
 that are matched against all package names in the meteor app packages
 directory.
@@ -20,12 +25,12 @@ spacejam log level. One of trace|debug|info|warn|error. Defaults to info.
 --root-url <url>
 
 The meteor ROOT_URL. Defaults to http://localhost:--port/, and not ROOT_URL,
-to avoid conflicts with your app ROOT_URL.
+to avoid conflicts with your app's ROOT_URL.
 
 --mongo-url <url>
 
 The meteor MONGO_URL. Defaults to none, and not MONGO_URL,
-to avoid conflicts with your app MONGO_URL.
+to avoid conflicts with your app's MONGO_URL.
 
 --timeout  <milliseconds>   Total timeout for all tests (defaults to
                               120000 milliseconds, i.e. 2 minutes).
@@ -48,16 +53,6 @@ Path to a meteor settings file.
 
 Simulate meteor production mode. Minify and bundle CSS and JS files.
 
-Other commands:
-
-spacejam help - This help text.
-
-Environment Variables
----------------------
-
-Every command line option can also be set by an environment variable of the same name, and a prefix of spacejam_, i.e. spacejam_port.
-Note that environment variables have to be lower case, due to the way rc reads them.
-
 Running your package tests without a meteor app
 -----------------------------------------------
 
@@ -73,5 +68,10 @@ Exit codes
 2 - At least one test has failed.
 3 - The meteor app exited with an error or is crashing.
 4 - The tests have timed out.
+
+spacejam package-version
+------------------------
+
+Prints the package version in the current working directory's package.js
 
 For additional usage info, please visit https://github.com/spacejamio/spacejam

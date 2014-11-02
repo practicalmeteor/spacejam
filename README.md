@@ -1,59 +1,58 @@
 [![Build Status](https://travis-ci.org/spacejamio/spacejam.svg?branch=master)](https://travis-ci.org/spacejamio/spacejam)
-SpaceJam
-========
 
-**spacejam** is a console test runner for [meteor](https://www.meteor.com/) packages. It wraps meteor test-packages with some enhancements, allowing you to easily run your package tinytests or [munit](https://atmospherejs.com/package/munit) tests from the command line. It's primary use is in continuous integration environments. It starts meteor test-packages, waits for it to be ready, and then runs the tinytests or [munit](https://atmospherejs.com/package/munit) tests in phantomjs. Support for more browsers is coming shortly.
+## SpaceJam
 
+**spacejam** is a console test runner for [meteor](https://www.meteor.com/) packages. It wraps meteor test-packages with some enhancements, allowing you to easily run your package tinytests or [munit](https://atmospherejs.com/package/munit) tests from the command line. It's primary use is in continuous integration environments. It starts meteor test-packages, waits for it to be ready, and then runs the tinytests or [munit](https://atmospherejs.com/package/munit) tests in phantomjs. The npm package also includes helper scripts to easily run meteor and test meteor packages in parallel, tag package builds in Travis CI and publish packages from Travis CI build tags.
 
-Table of Contents
--------------------
-- [Supported  Meteor Versions](##supported-meteor-versions)
-- [Changelog](##changelog)
-- [Installation](##installation)
-- [Usage](#usage)
-- [Running your package tests without a meteor app](##running-your-package-tests-without-a-meteor-app)
-- [Environment Variables](##environment-variables)
-- [In case It doesn't work with your meteor version](##in-case-it-doesnt-work-with-your-meteor-version)
-- [Helper Scripts](##helper-scripts)
-- [Spacejam self tests](##spacejam-self-tests)
-- [Contributions](##contributions)
-- [License](##license)
+## Table of Contents
 
-
-## Supported Meteor Versions
-
-```spacejam``` has only been tested with meteor 0.8.1, 0.9.2.2, and 0.9.4, but it should work with any recent meteor version.
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md)
+1. [Installation](##installation)
+2. [Commands](##commands)
+2.1. [spacjam test-packages](##spacjam-test-packages)
+2.1.1. [Running your package tests without a meteor app](####running-your-package-tests-without-a-meteor-app)
+2.1.2. [Exit codes](####exit-codes)
+2.2. [spacjam package-version](##spacjam-package-version)
+3. [Contributions](##contributions)
+4. [Changelog](##changelog)
+5. [License](##license)
 
 ## Installation
+
+For current user:
 
 ```bash
 npm install -g spacejam
 ```
 
-This will automatically add spacejam to your path.
+For all users:
 
-## Usage
+```bash
+# The -H is required
+sudo -H npm install -g spacejam
+```
 
-    spacejam test-packages [options] [packages-to-test]
+This will automatically add spacejam and all the scripts it includes to your path.
 
-**packages-to-test** can be a list of packages with tinytests or [munit](https://atmospherejs.com/package/munit) tests.
-It enhances meteor test-packages, by supporting glob wildcards on package names that are matched against all package names in the meteor app packages folder. We added this because all of our package names start with the same prefix.
+## Commands
+
+### spacejam test-packages
+
+`spacejam test-packages [options] [package...]`
+
+**package...** can be a list of packages with tinytests or [munit](https://atmospherejs.com/package/munit) tests.
+It enhances meteor test-packages, by supporting glob wildcards on package names that are matched against all package names in the meteor app packages folder. Useful if all your package names start with the same prefix.
 
 If not specified, will call meteor test-packages without arguments which will result in meteor testing all of the following packages:
 
 1. All of your app's packages, if run from within a meteor app folder.
 
-3. All of the packages meteor will find in all the folders specified in the PACKAGE_DIRS environment variable.
+2. All of the packages meteor will find in all the folders specified in the PACKAGE_DIRS environment variable.
 
 The following options are specific to spacejam:
 
 `--log-level <level>`
 
-spacejam log level. One of TRACE|DEBUG|INFO|WARN|ERROR. Defaults to INFO.
+spacejam log level. One of trace|debug|info|warn|error. Defaults to info.
 
 `--root-url <url>`
 
@@ -91,7 +90,7 @@ To get help, just:
 spacejam help
 ```
 
-## Running your package tests without a meteor app
+#### Running your package tests without a meteor app
 
 From within your package folder, run:
 
@@ -99,14 +98,7 @@ From within your package folder, run:
 spacejam test-packages ./
 ```
 
-## Environment Variables
-
-```spacejam``` uses the [rc](https://www.npmjs.org/package/rc) npm package 
-for runtime configuration, so every command line option can also be set by an environment variable of the same name, and a prefix of ```spacejam_```, i.e. ```spacejam_port```. Note that environment variables have to be lower case, due to the way rc reads them.
-
-
-Exit codes
-----------
+#### Exit codes
 
 ```spacejam``` will return the following exit codes:
 
@@ -116,29 +108,20 @@ Exit codes
 * ```3``` The meteor app has errors.
 * ```4``` The tests have timed out.
 
-## Helper Scripts
+### spacejam package-version
 
-In the bin folder, in addition to spacejam, you will find the following scripts that you can copy and modify to suit your needs: 
+Prints the package version in the current working directory's package.js
 
-* [run.tests.sh](bin/run-tests.sh) - set / unset environment variables before running spacejam.
-* [run.app.sh](bin/run-app.sh) - set / unset environment variables before running your meteor app.
-* [unset-meteor-env.sh](bin/unset-meteor-env.sh) - unset meteor related environment variables.
+## Changelog
 
+See [CHANGELOG.md](CHANGELOG.md)
 
-## spacejam self tests
+## Contributing
 
-We use CoffeScript's cake for that so, clone the repository, run `npm install` in the repo root and then run: 
+Contributions are more than welcome. Just create pull requests and make sure to include proper test coverage. We use mocha.js for tests and run our tests using CoffeScript's cake, so `npm test` will run `cake test`.
 
-`npm test`
-
-This will execute `cake test`.
-
-## Contributions
-
-Are more than welcome. Just create pull requests.
-
-Note that we are about to include support for running tests in any browser from the command line so no need to work on that.
+Note that we plan to include support for running tests in any browser and in sauce from the command line so if you plan to add this, check with us if we already started working on it.
 
 ## License
 
-MIT, see [LICENSE.txt](LICENSE.txt) for more details.
+[MIT](LICENSE.txt)
