@@ -36,7 +36,7 @@ class Meteor extends EventEmitter
     log.debug "Meteor.getPackageVersion()"
     if not fs.existsSync('package.js')
       throw new Error("Missing package.js in current working directory.")
-    require './PackageJSStubs.coffee'
+    require './PackageJSStubs'
     require "#{process.cwd()}/package.js"
     expect(Package.description?.version).to.be.a('string').that.is.ok
     return Package.description.version

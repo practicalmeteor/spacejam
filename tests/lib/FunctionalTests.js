@@ -164,7 +164,7 @@
         })(this));
       });
     });
-    return describe("test-in-velocity", function() {
+    describe("test-in-velocity", function() {
       return it("should never exit", function(done) {
         var args, onExit, testPort, timeoutId;
         process.env.PACKAGE_DIRS = path.normalize(__dirname + '/../../packages');
@@ -193,6 +193,25 @@
             }
           };
         })(this), 45000);
+      });
+    });
+    return describe("package-version", function() {
+      return it.only("should print the package version", function(done) {
+        process.chdir(__dirname + "/../packages/standalone-package");
+        log.info(process.cwd());
+        spacejamChild = new ChildProcess();
+        return spacejamChild.exec('spacejam package-version', 'spacejam', (function(_this) {
+          return function(err, stdout, stderr) {
+            try {
+              expect(err).to.be["null"];
+              expect(stdout.toString()).to.contain('0.9.5');
+              return done();
+            } catch (_error) {
+              err = _error;
+              return done(err);
+            }
+          };
+        })(this));
       });
     });
   });
