@@ -1,3 +1,4 @@
 #!/bin/bash -e
 
-cake test-js
+cake compile
+cake test
