@@ -4,3 +4,4 @@ node_modules/
 *.log
 *.pid
 versions.json
+.meteor/versions
