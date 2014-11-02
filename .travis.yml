@@ -12,3 +12,4 @@ before_install:
   - "meteor --version"
   - "npm install -g coffee-script@1.8.0"
   - "phantomjs -v"
+  - grep '\.only' tests/src/*.coffee
