@@ -152,7 +152,7 @@ describe "spacejam", ->
           done(err)
       , 45000
 
-    it.only "should create a pid-file or exit if it already exists and pid is running", (done)->
+    it "should create a pid-file or exit if it already exists and pid is running", (done)->
       process.env.PACKAGE_DIRS = path.normalize __dirname + '/../../packages'
       log.debug "PACKAGE_DIRS=#{process.env.PACKAGE_DIRS}"
       spacejamChild = new ChildProcess()
