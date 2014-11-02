@@ -2,7 +2,7 @@
 
 ## SpaceJam
 
-**spacejam** is a console test runner for [meteor](https://www.meteor.com/) packages. It wraps meteor test-packages with some enhancements, allowing you to easily run your package tinytests or [munit](https://atmospherejs.com/package/munit) tests from the command line. It's primary use is in continuous integration environments. It starts meteor test-packages, waits for it to be ready, and then runs the tinytests or [munit](https://atmospherejs.com/package/munit) tests in phantomjs. The npm package also includes helper scripts to easily run meteor and test meteor packages in parallel, tag package builds in Travis CI and publish packages from Travis CI build tags.
+spacejam is a console test runner for [meteor](https://www.meteor.com/) packages. It wraps meteor test-packages with some enhancements, allowing you to easily run your package tinytests or [munit](https://atmospherejs.com/package/munit) tests from the command line. It's primary use is in continuous integration environments. It starts meteor test-packages, waits for it to be ready, and then runs the tinytests or [munit](https://atmospherejs.com/package/munit) tests in phantomjs. The npm package also includes helper scripts to easily run meteor and test meteor packages in parallel, tag package builds in Travis CI and publish packages from Travis CI build tags.
 
 ## Table of Contents
 
@@ -36,7 +36,7 @@ This will automatically add spacejam and all the scripts it includes to your pat
 
 `spacejam test-packages [options] [package...]`
 
-**package...** can be a list of packages with tinytests or [munit](https://atmospherejs.com/package/munit) tests.
+`package...` can be a list of packages with tinytests or [munit](https://atmospherejs.com/package/munit) tests.
 It enhances meteor test-packages, by supporting glob wildcards on package names that are matched against all package names in the meteor app packages folder. Useful if all your package names start with the same prefix.
 
 If not specified, will call meteor test-packages without arguments which will result in meteor testing all of the following packages:
