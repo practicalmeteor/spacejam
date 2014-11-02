@@ -200,7 +200,7 @@
         process.chdir(__dirname + "/../packages/standalone-package");
         log.info(process.cwd());
         spacejamChild = new ChildProcess();
-        return spacejamChild.exec('spacejam package-version', 'spacejam', (function(_this) {
+        return spacejamChild.exec("" + spacejamBin + " package-version", 'spacejam', (function(_this) {
           return function(err, stdout, stderr) {
             try {
               expect(err).to.be["null"];
