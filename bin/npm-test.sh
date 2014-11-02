@@ -2,4 +2,5 @@
 
 coffee -o lib -c src
 coffee -o tests/lib -c tests/src
-mocha --colors --compilers coffee:coffee-script/register --reporter spec tests/src/*Test*.coffee
+#mocha --colors --compilers coffee:coffee-script/register --reporter spec tests/src/*Test*.coffee
+mocha --colors --reporter spec tests/lib/*Test*.js
