@@ -12,6 +12,7 @@ task "compile", "Compile coffee-script library sources", ->
 
 
 task "test", "Run tests", ->
+  invoke 'compile'
   child = new ChildProcess()
   child.exec mochaCmdLine, "mocha"
 
@@ -23,5 +24,6 @@ task "test-js", "Run tests", ->
 
 
 task "test-wait", "Run tests and wait for file changes", ->
+  invoke 'compile'
   child = new ChildProcess()
   child.exec mochaCmdLine + " -w", "mocha"
