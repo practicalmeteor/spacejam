@@ -7,11 +7,10 @@
 ## Table of Contents
 
 - [Installation](#installation)
-- [Commands](#commands)
-    - [spacejam test-packages](#spacejam-test-packages)
-        - [Running your package tests without a meteor app](#running-your-package-tests-without-a-meteor-app)
-        - [Exit codes](#exit-codes)
-    - [spacjam package-version](#spacjam-package-version)
+- [spacejam test-packages](#spacejam-test-packages)
+    - [Running your package tests without a meteor app](#running-your-package-tests-without-a-meteor-app)
+    - [Exit codes](#exit-codes)
+- [spacjam package-version](#spacjam-package-version)
 - [Contributing](#contributing)
 - [Changelog](#changelog)
 - [License](#license)
@@ -33,9 +32,7 @@ sudo -H npm install -g spacejam
 
 This will automatically add spacejam and all the scripts it includes to your path.
 
-## Commands
-
-### spacejam test-packages
+## spacejam test-packages
 
 `spacejam test-packages [options] [package...]`
 
@@ -90,7 +87,7 @@ To get help, just:
 spacejam help
 ```
 
-#### Running your package tests without a meteor app
+### Running your package tests without a meteor app
 
 From within your package folder, run:
 
@@ -98,7 +95,7 @@ From within your package folder, run:
 spacejam test-packages ./
 ```
 
-#### Exit codes
+### Exit codes
 
 ```spacejam``` will return the following exit codes:
 
@@ -108,7 +105,7 @@ spacejam test-packages ./
 * ```3``` The meteor app has errors.
 * ```4``` The tests have timed out.
 
-### spacejam package-version
+## spacejam package-version
 
 Prints the package version in the current working directory's package.js
 
