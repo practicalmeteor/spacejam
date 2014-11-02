@@ -4,6 +4,7 @@ path = require("path")
 _ = require("underscore")
 expect = require("chai").expect
 Spacejam = require './Spacejam'
+Meteor = require './Meteor'
 
 require.extensions['.txt'] = (module, filename)->
   module.exports = fs.readFileSync(filename, 'utf8')
@@ -85,7 +86,11 @@ class CLI
     log.debug "command: #{command}"
     if command is 'help'
       @printHelp()
-      return
+      process.exit(0)
+    else if command is 'package-version'
+      version = Meteor.getPackageVersion()
+      console.log(version)
+      process.exit(0)
 
     if not _.has(@commands, command)
       log.error "spacejam: Error: \n'#{command}' is not a recognized command\n" if command
