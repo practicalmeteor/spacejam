@@ -6,23 +6,23 @@
 
 ## Table of Contents
 
-1. [Installation](#installation)
+- [Installation](#installation)
 
-2. [Commands](#commands)
+- [Commands](#commands)
 
-2.1. [spacjam test-packages](#spacjam-test-packages)
+-- [spacejam test-packages](#spacejam-test-packages)
 
-2.1.1. [Running your package tests without a meteor app](#running-your-package-tests-without-a-meteor-app)
+--- [Running your package tests without a meteor app](#running-your-package-tests-without-a-meteor-app)
 
-2.1.2. [Exit codes](#exit-codes)
+--- [Exit codes](#exit-codes)
 
-2.2. [spacjam package-version](#spacjam-package-version)
+-- [spacjam package-version](#spacjam-package-version)
 
-3. [Contributing](#contributing)
+- [Contributing](#contributing)
 
-4. [Changelog](#changelog)
+- [Changelog](#changelog)
 
-5. [License](#license)
+- [License](#license)
 
 ## Installation
 
