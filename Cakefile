@@ -19,7 +19,7 @@ task "test", "Run tests", ->
 task "test-js", "Run tests", ->
   invoke 'compile'
   child = new ChildProcess()
-  child.exec mochaCmdLine, "mocha"
+  child.exec jsMochaCmdLine, "mocha"
 
 
 task "test-wait", "Run tests and wait for file changes", ->
