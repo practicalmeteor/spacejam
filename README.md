@@ -10,13 +10,13 @@
 
 - [Commands](#commands)
 
--- [spacejam test-packages](#spacejam-test-packages)
+    - [spacejam test-packages](#spacejam-test-packages)
 
---- [Running your package tests without a meteor app](#running-your-package-tests-without-a-meteor-app)
+        - [Running your package tests without a meteor app](#running-your-package-tests-without-a-meteor-app)
 
---- [Exit codes](#exit-codes)
+        - [Exit codes](#exit-codes)
 
--- [spacjam package-version](#spacjam-package-version)
+    - [spacjam package-version](#spacjam-package-version)
 
 - [Contributing](#contributing)
 
