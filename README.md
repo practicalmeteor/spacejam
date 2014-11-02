@@ -47,7 +47,7 @@ If not specified, will call meteor test-packages without arguments which will re
 
 The following options are specific to spacejam:
 
-`--log-level <level>`
+`--loglevel <level>`
 
 spacejam log level. One of trace|debug|info|warn|error. Defaults to info.
 

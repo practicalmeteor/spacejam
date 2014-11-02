@@ -1,7 +1,7 @@
 global.log = require('loglevel')
 
 logLevelOpts = require("rc")("spacejam",{
-  "log-level" : "debug"
+  "loglevel" : "info"
 })
 
 #originalFactory = log.methodFactory
@@ -12,4 +12,4 @@ logLevelOpts = require("rc")("spacejam",{
 #  return (message)=>
 #    rawMethod("spacejam: " + message)
 #
-log.setLevel logLevelOpts["log-level"]
+log.setLevel logLevelOpts["loglevel"]
