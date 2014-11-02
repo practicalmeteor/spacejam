@@ -80,7 +80,7 @@ describe "CLI", ->
     it 'should exit, if the pid file exists and the pid is alive', ->
       fs.writeFileSync(pidPath, "#{process.pid}")
       cli.pidFileInit(pidFile)
-      expect(exitStub).to.have.been.calledWith(Spaacejam.DONE.ALREADY_RUNNING)
+      expect(exitStub).to.have.been.calledWith(Spacejam.DONE.ALREADY_RUNNING)
 
     it 'should not exit, if the pid file exists but the pid is dead', ->
       fs.writeFileSync(pidPath, "50000")
