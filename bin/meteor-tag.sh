@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -xe
 
 usage="Usage: mtag package-build"
 
@@ -22,13 +22,8 @@ fi
 
 package_version=$(spacejam package-version)
 
-spacejam_exe=$(which spacejam)
-spacejam_bin_dir=$(dirname $spacejam_exe)
-
-semver_exe="$spacejam_bin_dir/../node_modules/semver/bin/semver"
-
 # Need to enclose $package_version in quotes, otherwise semver will exit with 0, since it found at least one valid version.
-$semver_exe "$package_version"
+semver "$package_version"
 
 tag_name="build/v$package_version+$TRAVIS_BUILD_NUMBER"
 
