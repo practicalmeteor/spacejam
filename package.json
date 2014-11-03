@@ -2,13 +2,14 @@
   "name": "spacejam",
   "version": "1.1.0-rc14",
   "dependencies": {
-    "underscore": "1.7.0",
-    "rc": "0.5.1",
-    "loglevel": "1.1.0",
-    "glob": "4.0.6",
-    "phantomjs": "1.9.7-7",
     "chai": "1.9.2",
-    "ps-node": "0.0.3"
+    "glob": "4.0.6",
+    "loglevel": "1.1.0",
+    "phantomjs": "1.9.7-7",
+    "ps-node": "0.0.3",
+    "rc": "0.5.1",
+    "semver": "4.1.0",
+    "underscore": "1.7.0"
   },
   "devDependencies": {
     "coffee-script": "1.8.0",
