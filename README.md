@@ -8,7 +8,7 @@ spacejam is a console test runner for [meteor](https://www.meteor.com/) packages
 
 - [Installation](#installation)
 - [spacejam test-packages](#spacejam-test-packages)
-    - [Running your package tests without a meteor app](#running-your-package-tests-without-a-meteor-app)
+    - [Running your package tests standalone](#running-your-package-tests-standalone)
     - [Exit codes](#exit-codes)
 - [spacjam package-version](#spacjam-package-version)
 - [Contributing](#contributing)
@@ -87,9 +87,9 @@ To get help, just:
 spacejam help
 ```
 
-### Running your package tests without a meteor app
+### Running your package tests standalone
 
-From within your package folder, run:
+to run your package tests without a meteor app, from within your package folder, run:
 
 ````
 spacejam test-packages ./
@@ -108,6 +108,24 @@ spacejam test-packages ./
 ## spacejam package-version
 
 Prints the package version in the current working directory's package.js
+
+## mrun (meteor run)
+
+Runs `meteor run` with the provided options. Supports the following additional environment variables:
+
+### METEOR_SETTINGS_PATH
+
+If set, runs meteor with --settings $METEOR_SETTINGS_PATH
+
+## mtp (meteor test-packages)
+
+Runs `meteor test-packages` with the provided arguments on port 3100 and with MONGO_URL unset so you can run your app and your package tests in parallel. Supports the following additional environment variables:
+
+### TEST_PORT
+ 
+ - If set, runs meteor with --settings $METEOR_SETTINGS_PATH
+
+`METEOR_SETTINGS_PATH` - If set, runs meteor with --settings $METEOR_SETTINGS_PATH
 
 ## Changelog
 
