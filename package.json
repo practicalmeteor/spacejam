@@ -14,8 +14,7 @@
   "devDependencies": {
     "coffee-script": "1.8.0",
     "mocha": "1.21.5",
-    "sinon-chai": "2.6.0",
-    "sinopia": "^0.12.1"
+    "sinon-chai": "2.6.0"
   },
   "main": "lib/main.js",
   "scripts": {
