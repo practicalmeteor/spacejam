@@ -16,13 +16,14 @@
 
   _ = require('underscore');
 
-  describe("scripts", function() {
-    var child, execOptions, execRun, execTestPackages, meteorStubDir;
+  describe.only("scripts", function() {
+    var child, execOptions, execRun, execTestPackages, meteorStubDir, spacejamBinDir;
+    spacejamBinDir = path.resolve(__dirname, "../../bin");
     meteorStubDir = path.resolve(__dirname, "../bin");
     child = null;
     execOptions = null;
     execRun = function(done, args, expectedArgs) {
-      return child.exec("meteor-run.sh " + args, execOptions, (function(_this) {
+      return child.exec("" + spacejamBinDir + "/meteor-run.sh " + args, execOptions, (function(_this) {
         return function(err, stdout, stderr) {
           var actualArgs, output;
           try {
@@ -46,7 +47,7 @@
       if (expectedRootUrl == null) {
         expectedRootUrl = 'http://localhost:3100/';
       }
-      cmdLine = "meteor-test-packages.sh " + args;
+      cmdLine = "" + spacejamBinDir + "/meteor-test-packages.sh " + args;
       return child.exec(cmdLine, execOptions, (function(_this) {
         return function(err, stdout, stderr) {
           var actualArgs, output;
@@ -107,7 +108,7 @@
         return execRun(done, '--port 4000', expectedArgs);
       });
     });
-    return describe.only("mtp", function() {
+    return describe("mtp", function() {
       it("should launch meteor with --port 3100 by default", function(done) {
         return execTestPackages(done, '--production', '--production');
       });

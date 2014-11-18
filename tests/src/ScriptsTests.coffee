@@ -7,8 +7,9 @@ else
 path = require 'path'
 _ = require('underscore')
 
-describe "scripts", ->
+describe.only "scripts", ->
 
+  spacejamBinDir = path.resolve(__dirname, "../../bin")
   meteorStubDir = path.resolve(__dirname, "../bin")
 
   child = null
@@ -19,7 +20,7 @@ describe "scripts", ->
   # line and env it was executed with. We verify it is what
   # we expected
   execRun = (done, args, expectedArgs)->
-    child.exec "meteor-run.sh #{args}", execOptions, (err, stdout, stderr)=>
+    child.exec "#{spacejamBinDir}/meteor-run.sh #{args}", execOptions, (err, stdout, stderr)=>
       try
         expect(err).to.be.null
         output = JSON.parse(stdout)
@@ -30,7 +31,7 @@ describe "scripts", ->
         done(err)
 
   execTestPackages = (done, args, expectedArgs, expectedPort = 3100, expectedRootUrl = 'http://localhost:3100/', expectedMongoUrl)->
-    cmdLine = "meteor-test-packages.sh #{args}"
+    cmdLine = "#{spacejamBinDir}/meteor-test-packages.sh #{args}"
     child.exec cmdLine, execOptions, (err, stdout, stderr)=>
       try
         expect(err).to.be.null
