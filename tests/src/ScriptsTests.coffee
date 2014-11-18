@@ -92,7 +92,7 @@ describe "scripts", ->
         '--production'
       )
 
-    it "should launch meteor with --port $TEST_PORT, set PORT to TEST_PORT and ROOT_URL to 'http://localhost:$TEST_PORT/'", (done)->
+    it "should launch meteor with --port $TEST_PORT, set PORT to $TEST_PORT and ROOT_URL to 'http://localhost:$TEST_PORT/'", (done)->
       execOptions.env.TEST_PORT = 3200
       execTestPackages(
         done,
