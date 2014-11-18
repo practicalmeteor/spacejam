@@ -85,14 +85,14 @@ describe "scripts", ->
 
   describe "mtp", ->
 
-    it "should launch meteor with --port 3100 by default", (done)->
+    it "should launch meteor with --port 3100 and set ROOT_URL to 'http://localhost:3100/' by default", (done)->
       execTestPackages(
         done,
         '--production',
         '--production'
       )
 
-    it "should launch meteor with --port $TEST_PORT, set PORT to TEST_PORT and ROOT_URL to 'http://localhost:3200/'", (done)->
+    it "should launch meteor with --port $TEST_PORT, set PORT to TEST_PORT and ROOT_URL to 'http://localhost:$TEST_PORT/'", (done)->
       execOptions.env.TEST_PORT = 3200
       execTestPackages(
         done,
