@@ -7,7 +7,7 @@ else
 path = require 'path'
 _ = require('underscore')
 
-describe.only "scripts", ->
+describe "scripts", ->
 
   spacejamBinDir = path.resolve(__dirname, "../../bin")
   meteorStubDir = path.resolve(__dirname, "../bin")
