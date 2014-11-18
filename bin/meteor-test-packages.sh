@@ -9,7 +9,7 @@ fi
 if [ -n "$TEST_ROOT_URL" ]; then
   export ROOT_URL="$TEST_ROOT_URL"
 else
-  export ROOT_URL="http://localhost:$PORT"
+  export ROOT_URL="http://localhost:$PORT/"
 fi
 
 if [ -n "$TEST_MONGO_URL" ]; then
@@ -19,9 +19,12 @@ else
 fi
 
 if [ -n "$TEST_METEOR_SETTINGS_PATH" ]; then
-  meteor test-packages --port $PORT --settings $TEST_METEOR_SETTINGS_PATH $@
-elif [ -n "$METEOR_SETTINGS_PATH" ]; then
-  meteor test-packages --port $PORT --settings $METEOR_SETTINGS_PATH $@
-else
-  meteor test-packages --port $PORT $@
+  METEOR_SETTINGS_PATH="$TEST_METEOR_SETTINGS_PATH"
 fi
+
+if [ -n "$METEOR_SETTINGS_PATH" ]; then
+  # The space at the end is to put a space before --port
+  METEOR_SETTINGS_ARGS="--settings $METEOR_SETTINGS_PATH"
+fi
+
+meteor test-packages --port $PORT ${METEOR_SETTINGS_ARGS} $@

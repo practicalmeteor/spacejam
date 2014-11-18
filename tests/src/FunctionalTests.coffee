@@ -161,7 +161,7 @@ describe "spacejam", ->
     it "should print the package version", (done)->
       process.chdir(__dirname + "/../packages/standalone-package")
       spacejamChild = new ChildProcess()
-      spacejamChild.exec "#{spacejamBin} package-version", 'spacejam', (err, stdout, stderr)=>
+      spacejamChild.exec "#{spacejamBin} package-version", null, (err, stdout, stderr)=>
         try
           expect(err).to.be.null
           expect(stdout.toString()).to.contain '0.9.5'

@@ -1,0 +1,9 @@
+#!/usr/bin/env coffee
+
+output =
+  argv: process.argv
+  env: process.env
+
+process.stdout.write(JSON.stringify(output, null, 2))
+
+process.exit(0)
