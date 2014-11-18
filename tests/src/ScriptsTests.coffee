@@ -82,7 +82,7 @@ describe "scripts", ->
       expectedArgs = "--settings #{settingsPath} --port 4000"
       execRun(done, '--port 4000', expectedArgs)
 
-  describe.only "mtp", ->
+  describe "mtp", ->
 
     it "should launch meteor with --port 3100 by default", (done)->
       execTestPackages(
