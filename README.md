@@ -61,7 +61,7 @@ The meteor MONGO_URL. Defaults to none, and not MONGO_URL, to avoid conflicts wi
 
 `--timeout  <milliseconds>`
      
-Total timeout for all tests. Defaults to 120000 milliseconds, i.e. 2 minutes.
+Total timeout for all tests. Defaults to no timeout.
                                   
 The following options are meteor options and are passed through to meteor (all are optional):
 
@@ -119,13 +119,23 @@ If set, runs meteor with --settings $METEOR_SETTINGS_PATH
 
 ## mtp (meteor test-packages)
 
-Runs `meteor test-packages` with the provided arguments on port 3100 and with MONGO_URL unset so you can run your app and your package tests in parallel. Supports the following additional environment variables:
+Runs `meteor test-packages` with the provided options on port 3100 and with MONGO_URL unset so you can run your app and your package tests in parallel, without port or mongodb conflicts, if you use an external mongodb for your app. Supports the following additional environment variables:
 
 ### TEST_PORT
  
- - If set, runs meteor with --settings $METEOR_SETTINGS_PATH
+Runs meteor with --port $TEST_PORT and sets PORT to TEST_PORT. Defaults to 3100.
 
-`METEOR_SETTINGS_PATH` - If set, runs meteor with --settings $METEOR_SETTINGS_PATH
+### TEST_ROOT_URL
+ 
+If set, sets ROOT_URL to TEST_ROOT_URL. If not set, sets ROOT_URL to http://localhost:$TEST_PORT/
+
+### TEST_METEOR_SETTINGS_PATH
+
+If set, runs meteor with --settings $TEST_METEOR_SETTINGS_PATH. Useful if you use different settings for your app and your package tests.
+
+### METEOR_SETTINGS_PATH
+
+If set, runs meteor with --settings $METEOR_SETTINGS_PATH. Useful if you use the same settings for your app and your package tests.
 
 ## Changelog
 

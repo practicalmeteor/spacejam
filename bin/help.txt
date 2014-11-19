@@ -32,8 +32,9 @@ to avoid conflicts with your app's ROOT_URL.
 The meteor MONGO_URL. Defaults to none, and not MONGO_URL,
 to avoid conflicts with your app's MONGO_URL.
 
---timeout  <milliseconds>   Total timeout for all tests (defaults to
-                              120000 milliseconds, i.e. 2 minutes).
+--timeout  <milliseconds>
+
+Total timeout for all tests. Defaults to no timeout.
 
 The following options are meteor options and are passed through to meteor (all are optional):
 
