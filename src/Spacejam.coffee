@@ -14,8 +14,6 @@ class Spacejam extends EventEmitter
 
   defaultOptions:
     'phantomjs-script': 'phantomjs-test-in-console'
-    'timeout'   : 120000
-    'crash-spacejam-after': 0
 
   meteor: null
 
@@ -42,6 +40,9 @@ class Spacejam extends EventEmitter
   testPackages: (options = {})->
     log.debug "Spacejam.testPackages()", options
     expect(options).to.be.an "object"
+    expect(options.timeout).to.be.a 'number' if options.timeout?
+    expect(options['crash-spacejam-after']).to.be.a 'number' if options['crash-spacejam-after']?
+
     expect(@meteor, "Meteor is already running").to.be.null
 
     options = _.extend @defaultOptions, options
@@ -85,16 +86,16 @@ class Spacejam extends EventEmitter
       @emit "done", 1
       return
 
-    if +options.timeout > 0
+    if options.timeout? and +options.timeout > 0
       setTimeout =>
         log.error "spacejam: Error: tests timed out after #{options.timeout} milliseconds."
         @killChildren( Spacejam.DONE.TEST_TIMEOUT )
       , +options.timeout
 
-    if +options["crash-spacejam-after"] > 0
+    if options['crash-spacejam-after']? and +options['crash-spacejam-after'] > 0
       setTimeout =>
-        throw new Error("Testing spacejam crash")
-      , +options["crash-spacejam-after"]
+        throw new Error("Testing spacejam crashing.")
+      , +options['crash-spacejam-after']
 
 
   testInVelocity: (options = {})->
