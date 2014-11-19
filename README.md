@@ -11,6 +11,14 @@ spacejam is a console test runner for [meteor](https://www.meteor.com/) packages
     - [Running your package tests standalone](#running-your-package-tests-standalone)
     - [Exit codes](#exit-codes)
 - [spacjam package-version](#spacjam-package-version)
+- [mrun (meteor run)](#mrun-meteor-run)
+    - [METEOR_SETTINGS_PATH](#meteor_settings_path)
+- [mtp (meteor test-packages)](#mtp-meteor-test-packages)
+    - [TEST_PORT](#test_port)
+    - [TEST_ROOT_URL](#test_root_url)
+    - [TEST_MONGO_URL](#test_mongo_url)
+    - [TEST_METEOR_SETTINGS_PATH](#test_meteor_settings_path)
+    - [METEOR_SETTINGS_PATH](#meteor_settings_path-1)
 - [Contributing](#contributing)
 - [Changelog](#changelog)
 - [License](#license)
@@ -128,6 +136,10 @@ Runs meteor with --port $TEST_PORT and sets PORT to TEST_PORT. Defaults to 3100.
 ### TEST_ROOT_URL
  
 If set, sets ROOT_URL to TEST_ROOT_URL. If not set, sets ROOT_URL to http://localhost:$TEST_PORT/
+
+### TEST_MONGO_URL
+ 
+If set, sets MONGO_URL to TEST_MONGO_URL. If not set, unsets MONGO_URL.
 
 ### TEST_METEOR_SETTINGS_PATH
 
