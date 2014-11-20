@@ -35,7 +35,7 @@
       return spacejam = new Spacejam();
     });
     return describe("testInVelocity", function() {
-      it.only("should call testPackages with the correct options", function() {
+      it("should call testPackages with the correct options", function() {
         var expectedOptions, stub;
         stub = sinon.stub(spacejam, 'testPackages');
         expectedOptions = {
