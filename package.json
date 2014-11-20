@@ -1,6 +1,6 @@
 {
   "name": "spacejam",
-  "version": "1.1.0-rc15",
+  "version": "1.1.0",
   "dependencies": {
     "chai": "1.9.2",
     "glob": "4.0.6",
@@ -25,31 +25,25 @@
   "bin": {
     "spacejam": "bin/spacejam",
     "mrun": "bin/meteor-run.sh",
-    "mtp": "bin/meteor-test-packages.sh",
-    "mtag": "bin/meteor-tag.sh",
-    "mpublish": "bin/meteor-publish.sh"
+    "mtp": "bin/meteor-test-packages.sh"
   },
-  "description": "Wrapper for meteor test-packages for use in continuous integration environments.",
-  "homepage": "https://github.com/spacejamio/spacejam",
-  "bugs": "https://github.com/spacejamio/spacejam/issues",
+  "description": "Test your meteor packages from the command line using phantomjs. Use in continuous integration environments, such as Travis CI.",
+  "homepage": "https://github.com/practicalmeteor/spacejam",
+  "bugs": "https://github.com/practicalmeteor/spacejam/issues",
   "keywords": [
     "spacejam",
     "meteor",
-    "velocity",
     "test-packages",
     "test-in-console",
-    "test-in-velocity",
-    "meteor test-packages",
-    "meteor velocity",
-    "meteor ci",
-    "meteor continuous integration",
-    "meteor cd",
-    "meteor continuous delivery"
+    "ci",
+    "continuous integration",
+    "cd",
+    "continuous delivery"
   ],
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/spacejamio/spacejam/blob/master/LICENSE.txt"
+      "url": "https://github.com/practicalmeteor/spacejam/blob/master/LICENSE.txt"
     }
   ],
   "engines": {
@@ -58,10 +52,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/spacejamio/spacejam.git"
+    "url": "https://github.com/practicalmeteor/spacejam.git"
   },
   "author": {
-    "name": "SpaceJam.io (LaVaina Inc.)",
-    "url": "http://spacejam.io/"
+    "name": "LaVaina Inc.",
+    "url": "http://lavaina.com/"
   }
 }
