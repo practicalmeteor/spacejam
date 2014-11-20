@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/spacejamio/spacejam.svg?branch=master)](https://travis-ci.org/spacejamio/spacejam)
+[![Build Status](https://travis-ci.org/practicalmeteor/spacejam.svg?branch=master)](https://travis-ci.org/practicalmeteor/spacejam)
 
-## SpaceJam
+## Overview
 
 An npm package to test your meteor packages from the command line using phantomjs. Use in continuous integration environments, such as Travis CI. Also includes helper scripts, mrun and mtp, to easily run meteor and test meteor packages in parallel, during development.
 
