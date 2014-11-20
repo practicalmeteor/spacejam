@@ -75,9 +75,7 @@ class Spacejam extends EventEmitter
 
     @meteor.on "error", =>
       log.error "spacejam: meteor has errors"
-
-      # If timeout > 0 it means we should run the tests only once
-      @killChildren(Spacejam.DONE.METEOR_ERROR) if options.timeout > 0
+      @killChildren(Spacejam.DONE.METEOR_ERROR) if not options.watch
 
     try
       @meteor.testPackages(options)
@@ -105,7 +103,7 @@ class Spacejam extends EventEmitter
 
     process.env.VELOCITY_URL = options['velocity-url'] || process.env.ROOT_URL || "http://localhost:3000/"
     options['driver-package'] = "spacejamio:test-in-velocity"
-    options.timeout = 0
+    options.watch = true
     options['phantomjs-script'] = 'phantomjs-test-in-velocity'
 
     @testPackages(options);

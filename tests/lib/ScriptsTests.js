@@ -16,7 +16,7 @@
 
   _ = require('underscore');
 
-  describe.only("scripts", function() {
+  describe("scripts", function() {
     var child, execOptions, execRun, execTestPackages, meteorStubDir, spacejamBinDir;
     spacejamBinDir = path.resolve(__dirname, "../../bin");
     meteorStubDir = path.resolve(__dirname, "../bin");
@@ -109,10 +109,10 @@
       });
     });
     return describe("mtp", function() {
-      it("should launch meteor with --port 3100 by default", function(done) {
+      it("should launch meteor with --port 3100 and set ROOT_URL to 'http://localhost:3100/' by default", function(done) {
         return execTestPackages(done, '--production', '--production');
       });
-      it("should launch meteor with --port $TEST_PORT, set PORT to TEST_PORT and ROOT_URL to 'http://localhost:3200/'", function(done) {
+      it("should launch meteor with --port $TEST_PORT, set PORT to $TEST_PORT and ROOT_URL to 'http://localhost:$TEST_PORT/'", function(done) {
         execOptions.env.TEST_PORT = 3200;
         return execTestPackages(done, '--production', '--production', 3200, 'http://localhost:3200/');
       });

@@ -38,7 +38,7 @@ For all users:
 sudo -H npm install -g spacejam
 ```
 
-This will automatically add spacejam and all the scripts it includes to your path.
+This will automatically add spacejam, mrun and mtp to your path.
 
 ## spacejam test-packages
 
