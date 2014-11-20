@@ -32,7 +32,7 @@ describe "Sapcejam.coffee", ->
       stub = sinon.stub(spacejam, 'testPackages')
       expectedOptions =
         'driver-package': "spacejamio:test-in-velocity"
-        timeout:  0
+        watch:  true
         'phantomjs-script': 'phantomjs-test-in-velocity'
       spacejam.testInVelocity()
       expect(stub).to.have.been.calledWithExactly(expectedOptions)

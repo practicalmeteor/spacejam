@@ -35,12 +35,12 @@
       return spacejam = new Spacejam();
     });
     return describe("testInVelocity", function() {
-      it("should call testPackages with the correct options", function() {
+      it.only("should call testPackages with the correct options", function() {
         var expectedOptions, stub;
         stub = sinon.stub(spacejam, 'testPackages');
         expectedOptions = {
           'driver-package': "spacejamio:test-in-velocity",
-          timeout: 0,
+          watch: true,
           'phantomjs-script': 'phantomjs-test-in-velocity'
         };
         spacejam.testInVelocity();

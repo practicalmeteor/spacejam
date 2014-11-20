@@ -26,7 +26,7 @@
 
   log.info(spacejamBin);
 
-  describe.only("spacejam", function() {
+  describe("spacejam", function() {
     var spacejamChild, spacejamChild2, standAlonePackage, testApp1, testApp2;
     this.timeout(60000);
     spacejamChild = null;
