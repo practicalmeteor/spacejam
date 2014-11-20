@@ -3,6 +3,7 @@
 * Add --dir option to specify current working directory.
 * Unless you explicitly specify --mongo-url, mongodb will default to internal meteor mongodb, and not MONGO_URL.
 * Unless you explicitly specify --root-url, ROOT_URL will default to localost:--port (default 4096), and not ROOT_URL.
+* Add mrun and mtp scripts
 * Internal: Update tests to meteor 1.0
 
 ## 1.0.0
