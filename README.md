@@ -2,7 +2,17 @@
 
 ## SpaceJam
 
-spacejam is a console test runner for [meteor](https://www.meteor.com/) packages. It wraps meteor test-packages with some enhancements, allowing you to easily run your package tinytests or [munit](https://atmospherejs.com/package/munit) tests from the command line. It's primary use is in continuous integration environments. It starts meteor test-packages, waits for it to be ready, and then runs the tinytests or [munit](https://atmospherejs.com/package/munit) tests in phantomjs. The npm package also includes helper scripts to easily run meteor and test meteor packages in parallel, tag package builds in Travis CI and publish packages from Travis CI build tags.
+An npm package to test your meteor packages from the command line using phantomjs. Use in continuous integration environments, such as Travis CI. Also includes helper scripts, mrun and mtp, to easily run meteor and test meteor packages in parallel, during development.
+
+## Quickstart
+
+```
+npm install -g spacejam
+# Run from a meteor package folder
+spacejam test-packages ./
+# Run from a meteor app folder
+spacejam test-packages myaccount:mypkg1 myaccount:mypkg2
+```
 
 ## Table of Contents
 
