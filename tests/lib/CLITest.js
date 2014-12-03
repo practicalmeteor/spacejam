@@ -73,7 +73,9 @@
       }
       testPackagesStub = null;
       if (spawnSpy != null) {
-        spawnSpy.restore();
+        if (typeof spawnSpy.restore === "function") {
+          spawnSpy.restore();
+        }
       }
       return spawnSpy = null;
     });
@@ -101,13 +103,19 @@
       cli.exec();
       return spacejam.on('done', (function(_this) {
         return function(code) {
-          if (code === 0) {
-            done();
-          } else {
-            done("spacejam.done=" + code);
+          var err;
+          try {
+            if (code === 0) {
+              done();
+            } else {
+              done("spacejam.done=" + code);
+            }
+            expect(spawnSpy).to.have.been.calledTwice;
+            return expect(spawnSpy.secondCall.args[1]).to.deep.equal(['--ignore-ssl-errors=true', '--load-images=false', phantomjsScript]);
+          } catch (_error) {
+            err = _error;
+            return done(err);
           }
-          expect(spawnSpy).to.have.been.calledTwice;
-          return expect(spawnSpy.secondCall.args[1]).to.deep.equal(['--ignore-ssl-errors=true', '--load-images=false', phantomjsScript]);
         };
       })(this));
     });

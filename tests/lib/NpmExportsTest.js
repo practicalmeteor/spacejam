@@ -8,7 +8,7 @@
 
   isCoffee = require('./isCoffee');
 
-  describe("main.coffee", function() {
+  describe("main", function() {
     return it("should export all public classes", function() {
       var npmExports;
       if (isCoffee) {
