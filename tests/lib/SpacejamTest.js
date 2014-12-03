@@ -22,7 +22,7 @@
     Spacejam = require('../../lib/Spacejam');
   }
 
-  describe("Sapcejam.coffee", function() {
+  describe("Spacejam", function() {
     var spacejam;
     this.timeout(60000);
     spacejam = null;
