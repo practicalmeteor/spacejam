@@ -2,7 +2,7 @@ chai = require("chai")
 expect = chai.expect
 isCoffee = require './isCoffee'
 
-describe "main.coffee", ->
+describe "main", ->
   it "should export all public classes",->
     if isCoffee
       npmExports = require "../../src/main"

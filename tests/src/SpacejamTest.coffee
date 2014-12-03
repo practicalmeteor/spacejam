@@ -11,7 +11,7 @@ else
   Spacejam = require '../../lib/Spacejam'
 
 
-describe "Sapcejam.coffee", ->
+describe "Spacejam", ->
   @timeout 60000
 
   spacejam = null
