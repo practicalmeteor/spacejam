@@ -1,11 +1,13 @@
 require('./log')
 expect = require("chai").expect
-_spawn = require("child_process").spawn
-_exec = require("child_process").exec
 Pipe = require("./Pipe")
 path = require 'path'
 
 class ChildProcess
+
+  # Design for testability - so we can spy on them / stub them in tests
+  @_spawn: require("child_process").spawn
+  @_exec: require("child_process").exec
 
   child: null
 
@@ -38,9 +40,9 @@ class ChildProcess
       cb(err, stdout, stderr) if cb?
 
     if options?
-      @child = _exec command, options, innerCB
+      @child = ChildProcess._exec command, options, innerCB
     else
-      @child = _exec command, innerCB
+      @child = ChildProcess._exec command, innerCB
 
     @child.stdout.pipe(process.stdout)
     @child.stderr.pipe(process.stderr)
@@ -62,7 +64,7 @@ class ChildProcess
       log.debug "ChildProcess.process.on 'exit': @command=#{@command} @killed=#{@killed} code=#{code}"
       @kill()
 
-    @child = _spawn(command, args, options)
+    @child = ChildProcess._spawn(command, args, options)
 
     if pipeClass
       @pipe = new pipeClass(@child.stdout, @child.stderr)
