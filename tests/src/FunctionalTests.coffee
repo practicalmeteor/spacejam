@@ -46,9 +46,13 @@ describe "spacejam", ->
     log.debug "spacejam.afterEach"
     try
       spacejamChild?.kill('SIGPIPE')
-      spacejamChild2?.kill('SIGPIPE')
     finally
       spacejamChild = null
+
+    try
+      spacejamChild2?.kill('SIGPIPE')
+    finally
+      spacejamChild2 = null
 
   describe "test-packages", ->
 
