@@ -15,7 +15,7 @@ ps = require('ps-node')
 path = require "path"
 
 
-describe "Meteor.coffee", ->
+describe "Meteor", ->
   @timeout 30000
 
   meteor = null
@@ -60,7 +60,7 @@ describe "Meteor.coffee", ->
 
   afterEach ->
     ChildProcess.prototype.child = null
-    spawnStub?.restore()
+    spawnStub?.restore?()
     spawnStub = null
 
   getExpectedSpawnOptions = (port, rootUrl, mongoUrl, cwd = process.cwd())->

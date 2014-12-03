@@ -55,7 +55,7 @@ describe "CLI", ->
     exitStub = null
     testPackagesStub?.restore?()
     testPackagesStub = null
-    spawnSpy?.restore()
+    spawnSpy?.restore?()
     spawnSpy = null
 
   it "should call Spacejam.testPackages() with an empty options.packages array, if no packages where provided on the command line", ->
@@ -77,9 +77,12 @@ describe "CLI", ->
     process.argv.push 'test-packages', '--mongo-url', 'mongodb://', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './'
     cli.exec()
     spacejam.on 'done', (code)=>
-      if code is 0 then done() else done("spacejam.done=#{code}")
-      expect(spawnSpy).to.have.been.calledTwice
-      expect(spawnSpy.secondCall.args[1]).to.deep.equal(['--ignore-ssl-errors=true', '--load-images=false', phantomjsScript])
+      try
+        if code is 0 then done() else done("spacejam.done=#{code}")
+        expect(spawnSpy).to.have.been.calledTwice
+        expect(spawnSpy.secondCall.args[1]).to.deep.equal(['--ignore-ssl-errors=true', '--load-images=false', phantomjsScript])
+      catch err
+        done(err)
 
 
   describe 'pidFileInit', ->
