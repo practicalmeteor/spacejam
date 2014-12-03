@@ -81,7 +81,7 @@
             var err;
             try {
               log.debug('SpacejamTest on meteor ready');
-              expect(spy).to.have.been.calledWith('http://localhost:4096/', 'phantomjs-test-in-velocity');
+              expect(spy).to.have.been.calledWith('http://localhost:4096/', '--load-images=no --ssl-protocol=TLSv1', 'phantomjs-test-in-velocity');
               return done();
             } catch (_error) {
               err = _error;

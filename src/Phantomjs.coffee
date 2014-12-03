@@ -12,23 +12,27 @@ class Phantomjs extends EventEmitter
 
   childProcess: null
 
-  run: (url, script = "phantomjs-test-in-console")=>
+  run: (url, options = '--load-images=no --ssl-protocol=TLSv1', script = "phantomjs-test-in-console")=>
     log.debug "Phantomjs.run()", arguments
-    expect(url,"Invalid @url").to.be.a 'string'
+    expect(url, "Invalid url").to.be.a 'string'
+    expect(options, "Invalid options").to.be.a 'string'
+    expect(script, "Invalid script").to.be.a 'string'
     expect(@childProcess,"ChildProcess is already running").to.be.null
 
     env = _.extend process.env, {ROOT_URL: url}
 
     script += if isCoffee then '.coffee' else '.js'
-    args = [script]
-    options = {
+    log.debug("script=#{__dirname}/#{script}")
+    spawnArgs = options.split(' ')
+    spawnArgs.push(script)
+    spawnOptions = {
       cwd: __dirname,
       detached: false
       env: env
     }
 
     @childProcess = new ChildProcess()
-    @childProcess.spawn("phantomjs", args, options)
+    @childProcess.spawn("phantomjs", spawnArgs, spawnOptions)
 
     @childProcess.child.on "exit", (code, signal) =>
       @emit "exit", code, signal
