@@ -1,21 +1,14 @@
-language: objective-c
+language: node_js
+node_js:
+  - "0.10.29"
 
-#git:
-#  submodules: false
+git:
+  submodules: false
 
 before_install:
-#  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-#  - git submodule update --init --recursive
-  - curl https://raw.githubusercontent.com/creationix/nvm/v0.20.0/install.sh | bash
-  - source $HOME/.bashrc
-  - nvm install 0.10.29
-  - nvm use 0.10.29
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
   - "curl https://install.meteor.com | /bin/sh"
   - "meteor --version"
   - "npm install -g coffee-script@1.8.0"
-
-install:
-  - npm install
-
-script:
-  - npm test
+  - "phantomjs -v"
