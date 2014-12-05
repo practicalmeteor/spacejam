@@ -1,6 +1,4 @@
-language: node_js
-node_js:
-  - "0.10.29"
+language: objective-c
 
 git:
   submodules: false
@@ -8,7 +6,15 @@ git:
 before_install:
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
+  - nvm install 0.10.29
+  - nvm use 0.10.29
   - "curl https://install.meteor.com | /bin/sh"
   - "meteor --version"
   - "npm install -g coffee-script@1.8.0"
   - "phantomjs -v"
+
+install:
+  - npm install
+
+script:
+  - npm test
