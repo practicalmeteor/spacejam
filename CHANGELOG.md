@@ -1,3 +1,11 @@
+## 1.1.2
+
+* Mac / OS X support added
+
+## 1.1.1
+
+* Update README.md
+
 ## 1.1.0
 
 * coffee-script installation perquisite removed.

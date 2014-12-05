@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "0.10.29"
+
+git:
+  submodules: false
+
+before_install:
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
+  - "curl https://install.meteor.com | /bin/sh"
+  - "meteor --version"
+  - "npm install -g coffee-script@1.8.0"
+  - "phantomjs -v"
