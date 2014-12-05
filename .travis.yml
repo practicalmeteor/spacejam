@@ -1,11 +1,11 @@
 language: objective-c
 
-git:
-  submodules: false
+#git:
+#  submodules: false
 
 before_install:
-  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-  - git submodule update --init --recursive
+#  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+#  - git submodule update --init --recursive
   - nvm install 0.10.29
   - nvm use 0.10.29
   - "curl https://install.meteor.com | /bin/sh"
