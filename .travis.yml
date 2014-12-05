@@ -13,7 +13,6 @@ before_install:
   - "curl https://install.meteor.com | /bin/sh"
   - "meteor --version"
   - "npm install -g coffee-script@1.8.0"
-  - "phantomjs -v"
 
 install:
   - npm install
