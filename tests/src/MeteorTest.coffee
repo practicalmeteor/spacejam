@@ -11,7 +11,7 @@ if isCoffee
 else
   Meteor = require "../../lib/Meteor"
   ChildProcess = require "../../lib/ChildProcess"
-ps = require('ps-node')
+ps = require('psext')
 path = require "path"
 
 
@@ -160,28 +160,20 @@ describe "Meteor.coffee", ->
 
     meteor.testPackages({packages: [packageToTest]})
 
-    meteor.on "ready",->
-      pid = meteor.childProcess.child.pid
-      lookUpMongodChilds pid,(err, resultList )->
-        expect(err,"could not find mongod children").not.to.be.ok
-        expect(resultList,"Found more than one mongod child").have.length.of 1
+    meteor.on "ready", =>
+      try
+        pid = meteor.childProcess.child.pid
+        expect(meteor.mongodb.mongodChilds).to.have.length 1
+        mongoPid = meteor.mongodb.mongodChilds[0].pid
+        expect(mongoPid).to.be.ok
         meteor.kill()
-        # This should never be called from a test. meteor is responsible for calling this. why was it called again?
-        #meteor.meteorMongodb.kill()
-        # BlackBook testing only, we dont care how mongoDB is killed only that its dead so no need to register to implementation type of events
-        #meteor.meteorMongodb.once "kill-done",->
-        timerId = setInterval ->
-          lookUpMongodChilds pid,(err, resultList )->
-            if err
-              expect(resultList,"the mongod children were not killed").not.to.be.ok
-              clearInterval(timerId)
-              done()
-        ,500
-
-
-
-lookUpMongodChilds =(pid,cb)->
-    ps.lookup
-      command: 'mongod',
-      psargs: '--ppid '+pid
-    , cb
+        timerId = setInterval =>
+          try
+            process.kill(mongoPid, 0)
+          catch
+            # mondogb is dead
+            clearInterval timerId
+            done()
+        , 500
+      catch e1
+        done(e1)

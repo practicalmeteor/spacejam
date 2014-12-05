@@ -1,6 +1,6 @@
 expect = require('chai').expect
 EventEmitter = require('events').EventEmitter
-ps = require('ps-node')
+ps = require('psext')
 
 class MeteorMongodb extends EventEmitter
 
@@ -25,8 +25,9 @@ class MeteorMongodb extends EventEmitter
     log.debug "MeteorMongodb.findAllChildren()", arguments
     log.debug "@meteorPid", @meteorPid
     ps.lookup
-      command: 'mongod',
-      psargs: '--ppid ' + @meteorPid
+      command: 'mongod'
+      psargs: '-l'
+      ppid: @meteorPid
     , (err, resultList )=>
       @mongodChilds = resultList
       if (err)

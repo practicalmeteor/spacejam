@@ -6,7 +6,7 @@
     "glob": "4.0.6",
     "loglevel": "1.1.0",
     "phantomjs": "1.9.7-7",
-    "ps-node": "0.0.3",
+    "psext": "0.0.4-rc0",
     "rc": "0.5.1",
     "semver": "4.1.0",
     "underscore": "1.7.0"
