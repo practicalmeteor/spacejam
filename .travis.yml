@@ -6,6 +6,7 @@ language: objective-c
 before_install:
 #  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
 #  - git submodule update --init --recursive
+  - curl https://raw.githubusercontent.com/creationix/nvm/v0.20.0/install.sh | bash
   - nvm install 0.10.29
   - nvm use 0.10.29
   - "curl https://install.meteor.com | /bin/sh"
