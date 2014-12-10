@@ -1,24 +1,14 @@
-#!/bin/bash -e
+#!/bin/bash -xe
 
-version=$1
-
-if [ -z "$version" ]
-then
-  echo "ERROR: No package version supplied. Exiting..." >&2
+if [ -n "$(git status --porcelain)" ]; then
+  echo "The git working directory is not clean. Exiting."
   exit 1
 fi
 
 npm test
-testStatus=$?
-
-if [ $testStatus -gt 0 ]
-then
-  echo "ERROR: npm test failed. Exiting..." >&2
-  exit 1
-fi
-
-echo "Bumping package version to $version"
-npm version $version -m "Bumping package version to (%s)"
-git push origin master
-git push origin v$version
+version=$(jq -r .version < package.json)
+tag_name="v${version}"
+echo "Publishing $tag_name"
 npm publish
+git tag $tag_name
+git push origin $tag_name
