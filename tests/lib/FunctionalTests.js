@@ -84,7 +84,26 @@
           };
         })(this));
       });
-      it("should exit with 1, if not in a meteor app or package folder", function(done) {
+      it("should execute multiple independent package tests provided by path while not in a meteor app or package folder", function(done) {
+        var args;
+        process.chdir(path.resolve(__dirname, ".."));
+        spacejamChild = new ChildProcess();
+        args = ["test-packages", "packages/standalone-package-dep", 'apps/leaderboard/packages/success'];
+        spacejamChild.spawn(spacejamBin, args);
+        return spacejamChild.child.on("exit", (function(_this) {
+          return function(code) {
+            var err;
+            try {
+              expect(code, "spacejam exited with errors").to.equal(Spacejam.DONE.TEST_SUCCESS);
+              return done();
+            } catch (_error) {
+              err = _error;
+              return done(err);
+            }
+          };
+        })(this));
+      });
+      it("should exit with 3, if meteor couldn't find package", function(done) {
         var args;
         process.chdir(__dirname);
         spacejamChild = new ChildProcess();
@@ -92,7 +111,7 @@
         spacejamChild.spawn(spacejamBin, args);
         return spacejamChild.child.on("exit", (function(_this) {
           return function(code) {
-            expect(code, "spacejam exited with the wrong code").to.equal(1);
+            expect(code, "spacejam exited with the wrong code").to.equal(Spacejam.DONE.METEOR_ERROR);
             return done();
           };
         })(this));

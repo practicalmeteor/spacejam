@@ -64,9 +64,6 @@ class Meteor extends EventEmitter
 
     log.debug "meteor cwd=#{cwd}"
 
-    if not fs.existsSync(cwd + '/.meteor/packages') and not fs.existsSync(cwd + '/package.js')
-      throw new Error("spacejam needs to be run from within a meteor app or package folder.")
-
     expect(@options['driver-package'], "options.driver-package is missing").to.be.ok
 
     expect(+@options.port, "options.port is not a number.").to.be.ok

@@ -1,2 +1,3 @@
-Tinytest.addAsync "Timeout - test",(test)->
-  test.equal true, false
+Tinytest.addAsync "timeout",(test, onComplete)->
+  test.equal true, true
+  # Never call onComplete so test will timeout

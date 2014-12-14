@@ -1,3 +1,3 @@
 FAIL
-Tinytest.add "App Fails - test",(test)->
+Tinytest.add "appfails",(test)->
   test.equal true, true

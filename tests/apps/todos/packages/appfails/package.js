@@ -2,12 +2,14 @@ Package.describe({
   summary: "appfails"
 });
 
-Package.on_use(function (api, where) {
+Package.onUse(function (api) {
   api.use(['coffeescript']);
-  api.add_files(['appfails.coffee']);
+
+  api.addFiles(['appfails.coffee']);
 });
 
-Package.on_test(function(api) {
+Package.onTest(function(api) {
   api.use(['coffeescript', 'tinytest', 'appfails']);
-  api.add_files(['appfails-test.coffee'],['server']);
+
+  api.addFiles('appfails-test.coffee');
 });
