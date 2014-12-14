@@ -1,15 +1,18 @@
 Package.describe({
-  summary: "success"
+  name: "standalone-package-dep",
+  version: "1.0.1"
 });
 
-Package.on_use(function (api) {
+Package.onUse(function (api) {
   api.versionsFrom('0.9.0');
 
   api.use(['coffeescript']);
-  api.add_files(['success.coffee'])
+
+  api.addFiles(['success.coffee'])
 });
 
-Package.on_test(function(api) {
-  api.use(['coffeescript', 'tinytest', 'standalone-package'])
-  api.add_files(['success-test.coffee'],['server']);
+Package.onTest(function(api) {
+  api.use(['coffeescript', 'tinytest', 'standalone-package-dep']);
+
+  api.addFiles('success-test.coffee');
 });

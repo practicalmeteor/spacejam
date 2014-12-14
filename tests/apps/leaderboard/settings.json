@@ -1,3 +1,6 @@
 {
-"TEST_SETTING":"spacejam"
+  "serverSetting": "server",
+  "public": {
+    "clientSetting": "client"
+  }
 }

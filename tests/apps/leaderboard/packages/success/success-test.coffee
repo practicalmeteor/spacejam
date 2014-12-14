@@ -1,2 +1,2 @@
-Tinytest.add "Success - test",(test)->
+Tinytest.add "success",(test)->
   test.equal true, true

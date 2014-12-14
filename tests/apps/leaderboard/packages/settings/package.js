@@ -2,12 +2,14 @@ Package.describe({
   summary: "settings"
 });
 
-Package.on_use(function (api, where) {
-  api.use(['coffeescript']);
-  api.add_files(['settings.coffee'])
+Package.onUse(function (api) {
+  api.use(['meteor', 'coffeescript']);
+
+  api.addFiles(['settings.coffee'])
 });
 
-Package.on_test(function(api) {
-  api.use(['coffeescript', 'tinytest', 'settings'])
-  api.add_files(['settings-test.coffee'],['server']);
+Package.onTest(function(api) {
+  api.use(['meteor', 'coffeescript', 'tinytest', 'settings']);
+
+  api.addFiles('settings-test.coffee');
 });

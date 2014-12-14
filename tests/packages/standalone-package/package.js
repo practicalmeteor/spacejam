@@ -7,7 +7,7 @@ Package.describe({
 Package.onUse(function (api) {
   api.versionsFrom('0.9.0');
 
-  api.use(['coffeescript','standalone-package-dep']);
+  api.use(['coffeescript', 'standalone-package-dep']);
 
   api.addFiles(['success.coffee'])
 });
@@ -15,5 +15,5 @@ Package.onUse(function (api) {
 Package.onTest(function(api) {
   api.use(['coffeescript', 'tinytest', 'standalone-package']);
 
-  api.addFiles(['success-test.coffee'],['server']);
+  api.addFiles('success-test.coffee');
 });
