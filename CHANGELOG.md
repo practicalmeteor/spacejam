@@ -1,6 +1,10 @@
+## 1.1.3
+
+* Remove requirement to be in a meteor app or package folder
+
 ## 1.1.2
 
-* Mac / OS X support added
+* Mac / OS X support
 
 ## 1.1.1
 
