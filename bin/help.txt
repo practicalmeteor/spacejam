@@ -32,6 +32,12 @@ to avoid conflicts with your app's ROOT_URL.
 The meteor MONGO_URL. Defaults to none, and not MONGO_URL,
 to avoid conflicts with your app's MONGO_URL.
 
+--phantomjs-options "<options...>"
+
+The command line options to pass to phantomjs.
+The default is: "--load-images=no --ssl-protocol=TLSv1".
+
+
 --timeout  <milliseconds>
 
 Total timeout for all tests. Defaults to no timeout.

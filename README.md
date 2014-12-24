@@ -77,6 +77,10 @@ The meteor ROOT_URL. Defaults to http://localhost:--port/, and not ROOT_URL, to 
 
 The meteor MONGO_URL. Defaults to none, and not MONGO_URL, to avoid conflicts with your meteor app MONGO_URL.
 
+`--phantomjs-options "<options...>"`
+
+The [command line options](http://phantomjs.org/api/command-line.html) to pass to phantomjs. The default is `--load-images=no --ssl-protocol=TLSv1`.
+
 `--timeout  <milliseconds>`
      
 Total timeout for all tests. Defaults to no timeout.
