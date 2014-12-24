@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 coffee -o lib -c src
 coffee -o tests/lib -c tests/src
