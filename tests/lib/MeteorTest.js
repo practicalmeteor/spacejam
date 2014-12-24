@@ -28,7 +28,7 @@
 
   path = require("path");
 
-  describe("Meteor.coffee", function() {
+  describe("Meteor", function() {
     var childProcessMockObj, defaultTestPort, env, expectedSpawnArgs, expectedSpawnOptions, getExpectedSpawnOptions, meteor, packageToTest, spawnStub;
     this.timeout(30000);
     meteor = null;
@@ -63,7 +63,9 @@
     afterEach(function() {
       ChildProcess.prototype.child = null;
       if (spawnStub != null) {
-        spawnStub.restore();
+        if (typeof spawnStub.restore === "function") {
+          spawnStub.restore();
+        }
       }
       return spawnStub = null;
     });

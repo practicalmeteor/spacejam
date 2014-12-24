@@ -1,3 +1,7 @@
+## 1.1.4
+
+* Add --phantomjs-options
+
 ## 1.1.3
 
 * Remove requirement to be in a meteor app or package folder

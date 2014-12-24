@@ -9,11 +9,15 @@ Phantomjs = require("./Phantomjs")
 class Spacejam extends EventEmitter
 
   instance = null
+
   @get: ->
     instance ?= new Spacejam()
 
-  defaultOptions:
-    'phantomjs-script': 'phantomjs-test-in-console'
+  defaultOptions: ->
+    {
+      'phantomjs-script': 'phantomjs-test-in-console'
+      'phantomjs-options': '--load-images=no --ssl-protocol=TLSv1'
+    }
 
   meteor: null
 
@@ -45,7 +49,7 @@ class Spacejam extends EventEmitter
 
     expect(@meteor, "Meteor is already running").to.be.null
 
-    options = _.extend @defaultOptions, options
+    options = _.extend @defaultOptions(), options
     log.debug options
 
     try
@@ -71,7 +75,7 @@ class Spacejam extends EventEmitter
     @meteor.on "ready", =>
       log.info "spacejam: meteor is ready"
 
-      @runPhantom(@meteor.options["root-url"], options['phantomjs-script'])
+      @runPhantom(@meteor.options["root-url"], options['phantomjs-options'], options['phantomjs-script'])
 
     @meteor.on "error", =>
       log.error "spacejam: meteor has errors"
@@ -109,7 +113,7 @@ class Spacejam extends EventEmitter
     @testPackages(options);
 
 
-  runPhantom: (url, script)->
+  runPhantom: (url, options, script)->
     log.debug "Spacejam.runPhantom()",arguments
     expect(url).to.be.a "string"
     expect(@phantomjs).to.be.ok
@@ -120,7 +124,7 @@ class Spacejam extends EventEmitter
       if code?
         @done code
 
-    @phantomjs.run(url, script)
+    @phantomjs.run(url, options, script)
 
 
   onMeteorMongodbKillDone: =>
