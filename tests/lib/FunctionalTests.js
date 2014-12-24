@@ -52,9 +52,13 @@
         if (spacejamChild != null) {
           spacejamChild.kill('SIGPIPE');
         }
-        return spacejamChild2 != null ? spacejamChild2.kill('SIGPIPE') : void 0;
       } finally {
         spacejamChild = null;
+      }
+      try {
+        return spacejamChild2 != null ? spacejamChild2.kill('SIGPIPE') : void 0;
+      } finally {
+        spacejamChild2 = null;
       }
     });
     describe("test-packages", function() {

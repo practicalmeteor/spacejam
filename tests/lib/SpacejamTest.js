@@ -34,6 +34,9 @@
       delete process.env.PACKAGE_DIRS;
       return spacejam = new Spacejam();
     });
+    afterEach(function() {
+      return spacejam = null;
+    });
     return describe("testInVelocity", function() {
       it("should call testPackages with the correct options", function() {
         var expectedOptions, stub;
@@ -68,23 +71,25 @@
         return expect(process.env.VELOCITY_URL).to.equal("http://vm:3000");
       });
       return it("should run Phantomjs with the correct arguments", function(done) {
-        var options, spy;
+        var options, phantomjsRunSpy;
         process.env.PACKAGE_DIRS = path.resolve(__dirname, '../../packages');
         process.chdir(path.resolve(__dirname, '../apps/leaderboard'));
         options = {
           packages: ['success']
         };
         spacejam.testInVelocity(options);
-        spy = sinon.spy(spacejam.phantomjs, 'run');
+        phantomjsRunSpy = sinon.spy(spacejam.phantomjs, 'run');
         return spacejam.meteor.on("ready", (function(_this) {
           return function() {
             var err;
             try {
               log.debug('SpacejamTest on meteor ready');
-              expect(spy).to.have.been.calledWith('http://localhost:4096/', '--load-images=no --ssl-protocol=TLSv1', 'phantomjs-test-in-velocity');
+              expect(phantomjsRunSpy).to.have.been.calledWith('http://localhost:4096/', '--load-images=no --ssl-protocol=TLSv1', 'phantomjs-test-in-velocity');
+              phantomjsRunSpy.restore();
               return done();
             } catch (_error) {
               err = _error;
+              phantomjsRunSpy.restore();
               return done(err);
             }
           };

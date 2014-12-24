@@ -26,6 +26,9 @@ describe "Spacejam", ->
 
     spacejam = new Spacejam()
 
+  afterEach ->
+    spacejam = null
+
   describe "testInVelocity", ->
 
     it "should call testPackages with the correct options", ()->
@@ -59,11 +62,13 @@ describe "Spacejam", ->
       process.chdir(path.resolve(__dirname, '../apps/leaderboard'))
       options = {packages: ['success']}
       spacejam.testInVelocity(options)
-      spy = sinon.spy(spacejam.phantomjs, 'run')
+      phantomjsRunSpy = sinon.spy(spacejam.phantomjs, 'run')
       spacejam.meteor.on "ready", =>
         try
           log.debug 'SpacejamTest on meteor ready'
-          expect(spy).to.have.been.calledWith('http://localhost:4096/', '--load-images=no --ssl-protocol=TLSv1', 'phantomjs-test-in-velocity')
+          expect(phantomjsRunSpy).to.have.been.calledWith('http://localhost:4096/', '--load-images=no --ssl-protocol=TLSv1', 'phantomjs-test-in-velocity')
+          phantomjsRunSpy.restore()
           done()
         catch err
+          phantomjsRunSpy.restore()
           done(err)

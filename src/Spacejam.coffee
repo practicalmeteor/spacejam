@@ -9,12 +9,15 @@ Phantomjs = require("./Phantomjs")
 class Spacejam extends EventEmitter
 
   instance = null
+
   @get: ->
     instance ?= new Spacejam()
 
-  defaultOptions:
-    'phantomjs-script': 'phantomjs-test-in-console'
-    'phantomjs-options': '--load-images=no --ssl-protocol=TLSv1'
+  defaultOptions: ->
+    {
+      'phantomjs-script': 'phantomjs-test-in-console'
+      'phantomjs-options': '--load-images=no --ssl-protocol=TLSv1'
+    }
 
   meteor: null
 
@@ -46,7 +49,7 @@ class Spacejam extends EventEmitter
 
     expect(@meteor, "Meteor is already running").to.be.null
 
-    options = _.extend @defaultOptions, options
+    options = _.extend @defaultOptions(), options
     log.debug options
 
     try

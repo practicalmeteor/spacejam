@@ -57,6 +57,7 @@ describe "CLI", ->
     testPackagesStub = null
     spawnSpy?.restore?()
     spawnSpy = null
+    spacejam = null
 
   it "should call Spacejam.testPackages() with an empty options.packages array, if no packages where provided on the command line", ->
     process.argv.push "test-packages"
