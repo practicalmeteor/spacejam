@@ -1,11 +1,11 @@
 {
   "name": "spacejam",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "dependencies": {
     "chai": "1.9.2",
     "glob": "4.0.6",
     "loglevel": "1.1.0",
-    "phantomjs": "1.9.7-7",
+    "phantomjs": "1.9.16",
     "psext": "0.0.4",
     "rc": "0.5.1",
     "semver": "4.1.0",
