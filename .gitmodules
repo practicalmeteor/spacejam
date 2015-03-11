@@ -10,9 +10,6 @@
 [submodule "packages/tinytest-velocity"]
 	path = packages/tinytest-velocity
 	url = git@github.com:spacejamio/tinytest-velocity.git
-[submodule "packages/loglevel"]
-	path = packages/loglevel
-	url = git@github.com:spacejamio/meteor-loglevel.git
 [submodule "packages/mconfig"]
 	path = packages/mconfig
 	url = git@github.com:practicalmeteor/meteor-mconfig.git
