@@ -24,6 +24,7 @@
   },
   "bin": {
     "spacejam": "bin/spacejam",
+    "spacejam-xunit": "bin/spacejam-xunit",
     "mrun": "bin/meteor-run.sh",
     "mtp": "bin/meteor-test-packages.sh"
   },
