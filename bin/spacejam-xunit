@@ -1,0 +1,4 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+spacejam test-packages --platform xunit $@ | sed -ne 's/^##_meteor_magic##xunit: //p'
