@@ -75,7 +75,7 @@ class Spacejam extends EventEmitter
     @meteor.on "ready", =>
       log.info "spacejam: meteor is ready"
 
-      @runPhantom(@meteor.options["root-url"], options['phantomjs-options'], options['phantomjs-script'])
+      @runPhantom(@meteor.options["root-url"], options['phantomjs-options'], options['phantomjs-script'], options['xunit-output'])
 
     @meteor.on "error", =>
       log.error "spacejam: meteor has errors"
@@ -113,7 +113,7 @@ class Spacejam extends EventEmitter
     @testPackages(options);
 
 
-  runPhantom: (url, options, script)->
+  runPhantom: (url, options, script, xunitOutput)->
     log.debug "Spacejam.runPhantom()",arguments
     expect(url).to.be.a "string"
     expect(@phantomjs).to.be.ok
@@ -124,7 +124,7 @@ class Spacejam extends EventEmitter
       if code?
         @done code
 
-    @phantomjs.run(url, options, script)
+    @phantomjs.run(url, options, script, xunitOutput)
 
 
   onMeteorMongodbKillDone: =>
