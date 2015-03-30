@@ -40,7 +40,7 @@ The default is: "--load-images=no --ssl-protocol=TLSv1".
 --xunit-output <file>
 
 Where to write xunit XML output.
-Default is the empty string (xunit output will not be produced nor captured).
+Default is the empty string (xunit output will neither be produced nor captured).
 
 --timeout  <milliseconds>
 
