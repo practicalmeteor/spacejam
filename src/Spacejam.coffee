@@ -4,6 +4,7 @@ _ = require("underscore")
 EventEmitter = require('events').EventEmitter
 Meteor = require("./Meteor")
 Phantomjs = require("./Phantomjs")
+XunitFilePipe = require './XunitFilePipe'
 
 
 class Spacejam extends EventEmitter
@@ -75,7 +76,16 @@ class Spacejam extends EventEmitter
     @meteor.on "ready", =>
       log.info "spacejam: meteor is ready"
 
-      @runPhantom(@meteor.options["root-url"], options['phantomjs-options'], options['phantomjs-script'], options['xunit-output'])
+      scriptArgs = ''
+      pipeClass = null
+      spawnOptions = {}
+
+      if options['xunit-output']
+        scriptArgs = 'xunit'
+        pipeClass = XunitFilePipe
+        spawnOptions = { pipeToFile: options['xunit-output'] }
+
+      @runPhantom(@meteor.options["root-url"], options['phantomjs-options'], options['phantomjs-script'], scriptArgs, spawnOptions, pipeClass)
 
     @meteor.on "error", =>
       log.error "spacejam: meteor has errors"
@@ -113,9 +123,12 @@ class Spacejam extends EventEmitter
     @testPackages(options);
 
 
-  runPhantom: (url, options, script, xunitOutput)->
+  runPhantom: (url, options, script, scriptArgs, spawnOptions, pipeClass)->
     log.debug "Spacejam.runPhantom()",arguments
     expect(url).to.be.a "string"
+    expect(script).to.be.a "string"
+    expect(scriptArgs).to.be.a "string"
+    expect(spawnOptions).to.be.an "object"
     expect(@phantomjs).to.be.ok
 
     @phantomjs.on "exit", (code, signal)=>
@@ -124,7 +137,7 @@ class Spacejam extends EventEmitter
       if code?
         @done code
 
-    @phantomjs.run(url, options, script, xunitOutput)
+    @phantomjs.run(url, options, script, scriptArgs, spawnOptions, pipeClass)
 
 
   onMeteorMongodbKillDone: =>
