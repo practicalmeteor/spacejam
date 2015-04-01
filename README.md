@@ -81,6 +81,11 @@ The meteor MONGO_URL. Defaults to none, and not MONGO_URL, to avoid conflicts wi
 
 The [command line options](http://phantomjs.org/api/command-line.html) to pass to phantomjs. The default is `--load-images=no --ssl-protocol=TLSv1`.
 
+`--xunit-output <file>`
+
+Where to write xunit XML output.
+Default is the empty string (xunit output will neither be produced nor captured).
+
 `--timeout  <milliseconds>`
      
 Total timeout for all tests. Defaults to no timeout.

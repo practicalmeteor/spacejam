@@ -67,7 +67,7 @@ class ChildProcess
     @child = ChildProcess._spawn(command, args, options)
 
     if pipeClass
-      @pipe = new pipeClass(@child.stdout, @child.stderr)
+      @pipe = new pipeClass(@child.stdout, @child.stderr, options)
     else
       @pipe = new Pipe(@child.stdout, @child.stderr)
 
