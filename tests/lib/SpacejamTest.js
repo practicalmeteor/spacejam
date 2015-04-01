@@ -34,67 +34,8 @@
       delete process.env.PACKAGE_DIRS;
       return spacejam = new Spacejam();
     });
-    afterEach(function() {
+    return afterEach(function() {
       return spacejam = null;
-    });
-    return describe("testInVelocity", function() {
-      it("should call testPackages with the correct options", function() {
-        var expectedOptions, stub;
-        stub = sinon.stub(spacejam, 'testPackages');
-        expectedOptions = {
-          'driver-package': "spacejamio:test-in-velocity",
-          watch: true,
-          'phantomjs-script': 'phantomjs-test-in-velocity'
-        };
-        spacejam.testInVelocity();
-        return expect(stub).to.have.been.calledWithExactly(expectedOptions);
-      });
-      it("should set VELOCITY_URL to http://localhost:3000/ by default", function() {
-        var stub;
-        stub = sinon.stub(spacejam, 'testPackages');
-        spacejam.testInVelocity();
-        return expect(process.env.VELOCITY_URL).to.equal("http://localhost:3000/");
-      });
-      it("should set VELOCITY_URL to ROOT_URL", function() {
-        var stub;
-        stub = sinon.stub(spacejam, 'testPackages');
-        process.env.ROOT_URL = "http://vm:4000";
-        spacejam.testInVelocity();
-        return expect(process.env.VELOCITY_URL).to.equal("http://vm:4000");
-      });
-      it("should set VELOCITY_URL to options.velocity-url", function() {
-        var stub;
-        stub = sinon.stub(spacejam, 'testPackages');
-        spacejam.testInVelocity({
-          "velocity-url": "http://vm:3000"
-        });
-        return expect(process.env.VELOCITY_URL).to.equal("http://vm:3000");
-      });
-      return it("should run Phantomjs with the correct arguments", function(done) {
-        var options, phantomjsRunSpy;
-        process.env.PACKAGE_DIRS = path.resolve(__dirname, '../../packages');
-        process.chdir(path.resolve(__dirname, '../apps/leaderboard'));
-        options = {
-          packages: ['success']
-        };
-        spacejam.testInVelocity(options);
-        phantomjsRunSpy = sinon.spy(spacejam.phantomjs, 'run');
-        return spacejam.meteor.on("ready", (function(_this) {
-          return function() {
-            var err;
-            try {
-              log.debug('SpacejamTest on meteor ready');
-              expect(phantomjsRunSpy).to.have.been.calledWith('http://localhost:4096/', '--load-images=no --ssl-protocol=TLSv1', 'phantomjs-test-in-velocity');
-              phantomjsRunSpy.restore();
-              return done();
-            } catch (_error) {
-              err = _error;
-              phantomjsRunSpy.restore();
-              return done(err);
-            }
-          };
-        })(this));
-      });
     });
   });
 

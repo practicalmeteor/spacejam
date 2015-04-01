@@ -100,19 +100,6 @@ class Spacejam extends EventEmitter
       , +options['crash-spacejam-after']
 
 
-  testInVelocity: (options = {})->
-    log.debug "Spacejam.testInVelocity()", options
-    expect(options).to.be.an "object"
-    expect(@meteor, "Meteor is already running").to.be.null
-
-    process.env.VELOCITY_URL = options['velocity-url'] || process.env.ROOT_URL || "http://localhost:3000/"
-    options['driver-package'] = "spacejamio:test-in-velocity"
-    options.watch = true
-    options['phantomjs-script'] = 'phantomjs-test-in-velocity'
-
-    @testPackages(options);
-
-
   runPhantom: (url, options, script)->
     log.debug "Spacejam.runPhantom()",arguments
     expect(url).to.be.a "string"

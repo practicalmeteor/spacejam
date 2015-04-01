@@ -187,37 +187,6 @@
         })(this));
       });
     });
-    describe("test-in-velocity", function() {
-      return it("should never exit", function(done) {
-        var args, onExit, testPort, timeoutId;
-        process.env.PACKAGE_DIRS = path.normalize(__dirname + '/../../packages');
-        log.debug("PACKAGE_DIRS=" + process.env.PACKAGE_DIRS);
-        spacejamChild = new ChildProcess();
-        testPort = "11096";
-        args = ["test-in-velocity", "--port", testPort, 'success'];
-        spacejamChild.spawn(spacejamBin, args);
-        onExit = (function(_this) {
-          return function(code) {
-            clearTimeout(timeoutId);
-            return done("spacejam test-in-velocity should never exit");
-          };
-        })(this);
-        spacejamChild.child.on("exit", onExit);
-        return timeoutId = setTimeout((function(_this) {
-          return function() {
-            var err;
-            try {
-              spacejamChild.child.removeListener('exit', onExit);
-              spacejamChild.kill('SIGPIPE');
-              return done();
-            } catch (_error) {
-              err = _error;
-              return done(err);
-            }
-          };
-        })(this), 45000);
-      });
-    });
     return describe("package-version", function() {
       return it("should print the package version", function(done) {
         process.chdir(__dirname + "/../packages/standalone-package");

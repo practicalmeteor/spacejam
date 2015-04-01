@@ -147,30 +147,6 @@ describe "spacejam", ->
         expect(code,"spacejam exited with errors").to.equal Spacejam.DONE.TEST_SUCCESS
         done()
 
-  describe "test-in-velocity", ->
-
-    it "should never exit", (done)->
-      process.env.PACKAGE_DIRS = path.normalize __dirname + '/../../packages'
-      log.debug "PACKAGE_DIRS=#{process.env.PACKAGE_DIRS}"
-      spacejamChild = new ChildProcess()
-      testPort = "11096"
-      args = ["test-in-velocity", "--port", testPort, 'success']
-      spacejamChild.spawn(spacejamBin,args)
-
-      onExit = (code) =>
-        clearTimeout(timeoutId)
-        done("spacejam test-in-velocity should never exit")
-      spacejamChild.child.on "exit", onExit
-
-      timeoutId = setTimeout =>
-        try
-          spacejamChild.child.removeListener 'exit', onExit
-          spacejamChild.kill('SIGPIPE')
-          done()
-        catch err
-          done(err)
-      , 45000
-
   describe "package-version", ->
 
     it "should print the package version", (done)->
@@ -183,30 +159,3 @@ describe "spacejam", ->
           done()
         catch err
           done(err)
-
-#    it "should create a pid-file or exit if it already exists and pid is running", (done)->
-#      process.env.PACKAGE_DIRS = path.normalize __dirname + '/../../packages'
-#      log.debug "PACKAGE_DIRS=#{process.env.PACKAGE_DIRS}"
-#      spacejamChild = new ChildProcess()
-#      testPort = "12096"
-#      args = ["test-in-velocity", "--pid-file", 'test.pid', "--port", testPort, 'success']
-#      spacejamChild.spawn(spacejamBin,args)
-#
-#      spacejamChild.child.on "exit", (code) =>
-#        done("1st spacejam should never exit")
-#
-#      setTimeout ->
-#        spacejamChild2 = new ChildProcess()
-#        spacejamChild2.spawn(spacejamBin,args)
-#        spacejamChild2.child.on "exit", (code) =>
-#          try
-#            expect(code).to.equal Spacejam.DONE.ALREADY_RUNNING
-#            done()
-#          catch err
-#            done(err)
-#        setTimeout ->
-#          try
-#            done("2nd spacejam should already have exited")
-#          catch
-#        , 5000
-#      , 5000

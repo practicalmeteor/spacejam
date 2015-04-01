@@ -95,7 +95,7 @@
         packages: ['package1', 'package2']
       });
     });
-    it("should spawn phantomjs with the value of --phantomjs-options", function(done) {
+    return it("should spawn phantomjs with the value of --phantomjs-options", function(done) {
       log.setLevel('debug');
       testPackagesStub.restore();
       spawnSpy = sinon.spy(ChildProcess, '_spawn');
@@ -119,46 +119,6 @@
           }
         };
       })(this));
-    });
-    return describe('pidFileInit', function() {
-      var pidFile, pidPath;
-      pidFile = pidPath = null;
-      beforeEach(function() {
-        process.chdir(__dirname);
-        pidFile = 'test.pid';
-        pidPath = path.resolve('test.pid');
-        if (fs.existsSync(pidFile)) {
-          return fs.unlinkSync(pidPath);
-        }
-      });
-      afterEach(function() {
-        if (cli != null) {
-          return process.removeListener('exit', cli.onProcessExit);
-        }
-      });
-      it('should create a pid file and delete it on exit', function() {
-        var pid;
-        cli.pidFileInit(pidFile);
-        expect(fs.existsSync(pidFile)).to.be["true"];
-        pid = +fs.readFileSync(pidFile);
-        expect(pid).to.equal(process.pid);
-        cli.onProcessExit(0);
-        return expect(fs.existsSync(pidFile)).to.be["false"];
-      });
-      it('should exit, if the pid file exists and the pid is alive', function() {
-        fs.writeFileSync(pidPath, "" + process.pid);
-        cli.pidFileInit(pidFile);
-        return expect(exitStub).to.have.been.calledWith(Spacejam.DONE.ALREADY_RUNNING);
-      });
-      return it('should not exit, if the pid file exists but the pid is dead', function() {
-        var pid;
-        fs.writeFileSync(pidPath, "50000");
-        cli.pidFileInit(pidFile);
-        expect(exitStub).to.have.not.been.called;
-        pid = +fs.readFileSync(pidFile);
-        expect(pid).to.equal(process.pid);
-        return cli.onProcessExit(0);
-      });
     });
   });
 

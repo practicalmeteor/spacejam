@@ -19,7 +19,6 @@ class CLI
 
   commands: {
     "test-packages" : "testPackages"
-    "test-in-velocity" : "testInVelocity"
   }
   
   options: null
@@ -39,31 +38,6 @@ class CLI
 #      log.info "spacejam: exiting with code #{code}"
 #      @spacejam?.killChildren()
 
-  # If the pid-file exists and the process is alive, exit with 1.
-  # Otherwise, create the pid-file and write our pid into it and return to continue normal startup.
-  pidFileInit: (pidFile)->
-    log.debug "CLI.checkAndCreatePidFile()", arguments
-    expect(pidFile).to.be.a('string').that.has.length.above(0)
-    pidPath = path.resolve(pidFile)
-    if fs.existsSync(pidPath)
-      pid = +fs.readFileSync(pidPath)
-      log.info "spacejam: Found pid file #{pidFile} with pid #{pid}, checking if process is alive."
-      try
-        # Check for the existence of the process without killing it, by sending signal 0.
-        process.kill(pid, 0)
-        # process is alive, otherwise an exception would have been thrown, so we need to exit.
-        log.warn "spacejam: process with pid #{pid} is already running, exiting."
-        process.exit(Spacejam.DONE.ALREADY_RUNNING)
-      catch err
-        log.trace err
-        log.warn "spacejam: pid file #{pidFile} exists, but process is dead, ignoring it."
-
-    log.info "spacejam: Saving pid #{process.pid} to #{pidPath}"
-    fs.writeFileSync(pidPath, "#{process.pid}")
-    @pidPath = pidPath
-    process.on 'exit', @onProcessExit
-    return
-
 
   onProcessExit: (code)=>
     log.info "spacejam: spacejam is exiting with code #{code}, deleting pid file."
@@ -79,8 +53,6 @@ class CLI
     expect(@options, "You can only call CLI.exec() once").to.be.null
 
     @options = require("rc")("spacejam", {})
-
-    @pidFileInit(@options['pid-file']) if @options['pid-file']?
 
     command = @options._[0]
     log.debug "command: #{command}"
