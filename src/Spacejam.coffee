@@ -47,7 +47,7 @@ class Spacejam extends EventEmitter
     expect(options).to.be.an "object"
     expect(options.timeout).to.be.a 'number' if options.timeout?
     expect(options['crash-spacejam-after']).to.be.a 'number' if options['crash-spacejam-after']?
-
+    expect(options['xunit-out']).to.be.a 'string' if options['xunit-out']?
     expect(@meteor, "Meteor is already running").to.be.null
 
     options = _.extend @defaultOptions(), options
@@ -80,10 +80,10 @@ class Spacejam extends EventEmitter
       pipeClass = null
       spawnOptions = {}
 
-      if options['xunit-output']
+      if options['xunit-out']
         scriptArgs = 'xunit'
         pipeClass = XunitFilePipe
-        spawnOptions = { pipeToFile: options['xunit-output'] }
+        spawnOptions = { pipeToFile: options['xunit-out'] }
 
       @runPhantom(@meteor.options["root-url"], options['phantomjs-options'], options['phantomjs-script'], scriptArgs, spawnOptions, pipeClass)
 
