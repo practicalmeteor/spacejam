@@ -13,13 +13,13 @@ describe "XunitFilePipe", ->
 
   it "should correctly filter xunit XML and state data", (done) ->
     fakeStdout = new Readable()
-    fakeStdout.push('##_meteor_magic##xunit: bar\n##_meteor_magic##state: foo')
+    fakeStdout.push('passed/expected/failed/total 5 / 0 / 0 / 5\n##_meteor_magic##xunit: bar\n##_meteor_magic##state: foo')
     fakeStdout.push(null)
     tmpFile = tmp.tmpNameSync()
     xunitFilePipe = new XunitFilePipe(fakeStdout, process.stderr, {pipeToFile: tmpFile})
     setTimeout =>
       actual = fs.readFileSync(tmpFile, {encoding:'utf8'})
-      expect(actual).to.equal 'bar\n'
+      expect(actual).to.equal 'bar'
       fs.unlinkSync(tmpFile)
       done()
     , 10

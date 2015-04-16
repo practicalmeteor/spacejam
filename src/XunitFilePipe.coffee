@@ -12,7 +12,7 @@ class XunitFilePipe extends Pipe
       encoding: 'utf8'
     })
     meteorMagicStatePattern = /^##_meteor_magic##state:.*$/gm
-    meteorMagicXunitPattern = /^##_meteor_magic##xunit: /gm
+    meteorMagicXunitPattern = /^##_meteor_magic##xunit: (.*)$/gm
 
     @stdout.on "data", (data)=>
       dataWithoutState = data
@@ -23,9 +23,11 @@ class XunitFilePipe extends Pipe
         stateMatch.forEach (stateMessage) ->
           process.stderr.write stateMessage + '\n'
 
-      if dataWithoutState.match(meteorMagicXunitPattern)
-        xmlOnly = dataWithoutState.replace(meteorMagicXunitPattern, '')
-        outputStream.write xmlOnly
+      found = dataWithoutState.match(meteorMagicXunitPattern)
+      if found.length
+        found.forEach (matched) ->
+          xmlOnly = matched.replace(meteorMagicXunitPattern, '$1')
+          outputStream.write xmlOnly
       else
         process.stderr.write data
 
