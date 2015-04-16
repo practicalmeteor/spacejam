@@ -24,7 +24,7 @@ class XunitFilePipe extends Pipe
           process.stderr.write stateMessage + '\n'
 
       found = dataWithoutState.match(meteorMagicXunitPattern)
-      if found.length
+      if found
         found.forEach (matched) ->
           xmlOnly = matched.replace(meteorMagicXunitPattern, '$1')
           outputStream.write xmlOnly
