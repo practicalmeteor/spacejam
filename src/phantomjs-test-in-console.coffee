@@ -1,13 +1,12 @@
 page = require('webpage').create()
 system = require('system')
-platform = system.args[1] || "local"
 
 console.log("phantomjs: Running tests at #{system.env.ROOT_URL} using test-in-console")
 
 page.onConsoleMessage = (message) ->
   console.log(message)
 
-page.open(system.env.ROOT_URL + platform)
+page.open(system.env.ROOT_URL)
 
 setInterval ->
   done = page.evaluate ->

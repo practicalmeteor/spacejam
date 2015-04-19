@@ -37,6 +37,9 @@ to avoid conflicts with your app's MONGO_URL.
 The command line options to pass to phantomjs.
 The default is: "--load-images=no --ssl-protocol=TLSv1".
 
+--xunit-out <file>
+
+If specified, saves results as xunit output to file.
 
 --timeout  <milliseconds>
 
