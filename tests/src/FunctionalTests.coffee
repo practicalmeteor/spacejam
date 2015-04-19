@@ -1,18 +1,23 @@
+path = require 'path'
+fs = require 'fs'
+DOMParser = require('xmldom').DOMParser
+xpath = require('xpath')
+
 expect = require("chai").expect
+
 isCoffee = require './isCoffee'
+
 if isCoffee
   CLI = require '../../src/CLI'
   ChildProcess = require '../../src/ChildProcess'
   Spacejam = require '../../src/Spacejam'
+  spacejamBin = require.resolve("../../bin/spacejam.coffee")
 else
   CLI = require '../../lib/CLI'
   ChildProcess = require '../../lib/ChildProcess'
   Spacejam = require '../../lib/Spacejam'
-path = require 'path'
-if isCoffee
-  spacejamBin = require.resolve("../../bin/spacejam.coffee")
-else
   spacejamBin = require.resolve("../../bin/spacejam")
+
 log.info spacejamBin
 
 
@@ -136,6 +141,25 @@ describe "spacejam", ->
       spacejamChild.child.on "exit", (code) =>
         expect(code).to.equal Spacejam.DONE.METEOR_ERROR
         done()
+
+
+    it "should save xunit output to file, if --xunit-out is specified", (done)->
+      spacejamChild = new ChildProcess()
+      args = ["test-packages", '--xunit-out', '/tmp/xunit.xml', "success"]
+      spacejamChild.spawn(spacejamBin,args)
+      spacejamChild.child.on "close", (code, signal) =>
+        try
+          expect(code,"spacejam exited with errors").to.equal Spacejam.DONE.TEST_SUCCESS
+          xml = fs.readFileSync('/tmp/xunit.xml', encoding: 'utf8')
+          log.debug xml
+          expect(xml).to.be.ok
+          xmlDom = new DOMParser().parseFromString(xml)
+          expect(xmlDom.documentElement.tagName).to.equal 'testsuite'
+          testcaseNodes = xpath.select("//testcase", xmlDom)
+          expect(testcaseNodes).to.have.length 2
+          done()
+        catch ex
+          done(ex)
 
 
     it "should exit with 0, in case of a complete test, with a settings file, multiple packages, including wildcards in package names", (done)->

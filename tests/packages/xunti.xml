@@ -1,0 +1,6 @@
+<testsuite errors="" failures="" name="meteor" skips="" tests="" time="">
+<testcase classname="tinytest.standalone-package-dep-server" name="standalone-package-dep-server" time="0.001">
+</testcase>
+<testcase classname="tinytest.standalone-package-dep-client" name="standalone-package-dep-client" time="0.001">
+</testcase>
+</testsuite>

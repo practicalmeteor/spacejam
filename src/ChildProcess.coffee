@@ -48,13 +48,15 @@ class ChildProcess
     @child.stderr.pipe(process.stderr)
 
 
-  spawn: (command, args=[], options={}, pipeClass = null)->
+  spawn: (command, args=[], options={}, pipeClass = undefined, pipeClassOptions = undefined)->
     log.debug "ChildProcess.spawn()", command, args
 
     expect(@child,"ChildProcess is already running").to.be.null
     expect(command,"Invalid @command argument").to.be.a "string"
     expect(args,"Invalid @args argument").to.be.an "array"
     expect(options,"Invalid @options").to.be.an "object"
+    expect(pipeClass, "Invalid pipeClass").to.be.a 'function' if pipeClass?
+    expect(pipeClassOptions, "Invalid pipeClassOptions").to.be.an 'object' if pipeClassOptions?
 
     @command = path.basename command
 
@@ -67,12 +69,12 @@ class ChildProcess
     @child = ChildProcess._spawn(command, args, options)
 
     if pipeClass
-      @pipe = new pipeClass(@child.stdout, @child.stderr)
+      @pipe = new pipeClass(@child.stdout, @child.stderr, pipeClassOptions)
     else
       @pipe = new Pipe(@child.stdout, @child.stderr)
 
     @child.on "exit", (code, signal)=>
-      log.debug "ChildProcess.process.on 'exit': @command=#{@command} @killed=#{@killed} code=#{code} singal=#{signal}"
+      log.debug "ChildProcess.process.on 'exit': @command=#{@command} @killed=#{@killed} code=#{code} signal=#{signal}"
       @killed = true
       if code?
         log.info "spacejam: #{command} exited with code: #{code}"

@@ -4,6 +4,7 @@ _ = require("underscore")
 EventEmitter = require('events').EventEmitter
 Meteor = require("./Meteor")
 Phantomjs = require("./Phantomjs")
+XunitFilePipe = require './XunitFilePipe'
 
 
 class Spacejam extends EventEmitter
@@ -49,8 +50,8 @@ class Spacejam extends EventEmitter
 
     expect(@meteor, "Meteor is already running").to.be.null
 
-    options = _.extend @defaultOptions(), options
-    log.debug options
+    @options = _.extend @defaultOptions(), options
+    log.debug @options
 
     try
       @meteor = new Meteor()
@@ -75,35 +76,50 @@ class Spacejam extends EventEmitter
     @meteor.on "ready", =>
       log.info "spacejam: meteor is ready"
 
-      @runPhantom(@meteor.options["root-url"], options['phantomjs-options'], options['phantomjs-script'])
+      scriptArgs = ''
+      pipeClass = null
+      spawnOptions = {}
+
+      @runPhantom()
 
     @meteor.on "error", =>
       log.error "spacejam: meteor has errors"
-      @killChildren(Spacejam.DONE.METEOR_ERROR) if not options.watch
+      @killChildren(Spacejam.DONE.METEOR_ERROR) if not @options.watch
 
     try
-      @meteor.testPackages(options)
+      @meteor.testPackages(@options)
     catch err
       console.trace err
       @emit "done", 1
       return
 
-    if options.timeout? and +options.timeout > 0
+    if @options.timeout? and +@options.timeout > 0
       setTimeout =>
         log.error "spacejam: Error: tests timed out after #{options.timeout} milliseconds."
         @killChildren( Spacejam.DONE.TEST_TIMEOUT )
       , +options.timeout
 
-    if options['crash-spacejam-after']? and +options['crash-spacejam-after'] > 0
+    if @options['crash-spacejam-after']? and +@options['crash-spacejam-after'] > 0
       setTimeout =>
         throw new Error("Testing spacejam crashing.")
       , +options['crash-spacejam-after']
 
 
-  runPhantom: (url, options, script)->
-    log.debug "Spacejam.runPhantom()",arguments
-    expect(url).to.be.a "string"
+  runPhantom: ->
+    log.debug "Spacejam.runPhantom()"
     expect(@phantomjs).to.be.ok
+    expect(@meteor.options["root-url"]).to.be.ok
+    expect(@options["phantomjs-options"]).to.be.ok
+    expect(@options["phantomjs-script"]).to.be.ok
+
+    url = @meteor.options["root-url"]
+
+    if @options['xunit-out']?
+      url += 'xunit'
+      pipeClass = XunitFilePipe
+      pipeClassOptions = pipeToFile: @options['xunit-out']
+    else
+      url += 'local'
 
     @phantomjs.on "exit", (code, signal)=>
       @phantomjs = null
@@ -111,7 +127,7 @@ class Spacejam extends EventEmitter
       if code?
         @done code
 
-    @phantomjs.run(url, options, script)
+    @phantomjs.run(url, @options['phantomjs-options'], @options['phantomjs-script'], pipeClass, pipeClassOptions)
 
 
   onMeteorMongodbKillDone: =>
