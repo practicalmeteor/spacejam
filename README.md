@@ -86,13 +86,13 @@ The [command line options](http://phantomjs.org/api/command-line.html) to pass t
 If specified, saves results as xunit output to file.
 
 `--timeout  <milliseconds>`
-     
+
 Total timeout for all tests. Defaults to no timeout.
-                                  
+
 The following options are meteor options and are passed through to meteor (all are optional):
 
 `--port <port>`
-                 
+
 The meteor port. Defaults to 4096, and not PORT, to avoid conflicts with your meteor app PORT.
 
 `--settings <file>`
@@ -106,7 +106,12 @@ Simulate meteor production mode. Minify and bundle CSS and JS files.
 `--release <version>`
 
 Specify the release of Meteor to use.
-                                  
+
+`--use-system-phantomjs`
+
+Use the installed version of PhantomJS instead of the one from the
+[PhantomJS NPM package](https://www.npmjs.com/package/phantomjs)
+
 To get help, just:
 
 ```
@@ -148,15 +153,15 @@ If set, runs meteor with --settings $METEOR_SETTINGS_PATH
 Runs `meteor test-packages` with the provided options on port 3100 and with MONGO_URL unset so you can run your app and your package tests in parallel, without port or mongodb conflicts, if you use an external mongodb for your app. Supports the following additional environment variables:
 
 ### TEST_PORT
- 
+
 Runs meteor with --port $TEST_PORT and sets PORT to TEST_PORT. Defaults to 3100.
 
 ### TEST_ROOT_URL
- 
+
 If set, sets ROOT_URL to TEST_ROOT_URL. If not set, sets ROOT_URL to http://localhost:$TEST_PORT/
 
 ### TEST_MONGO_URL
- 
+
 If set, sets MONGO_URL to TEST_MONGO_URL. If not set, unsets MONGO_URL.
 
 ### TEST_METEOR_SETTINGS_PATH
