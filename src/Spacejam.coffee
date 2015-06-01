@@ -127,7 +127,7 @@ class Spacejam extends EventEmitter
       if code?
         @done code
 
-    @phantomjs.run(url, @options['phantomjs-options'], @options['phantomjs-script'], pipeClass, pipeClassOptions)
+    @phantomjs.run(url, @options['phantomjs-options'], @options['phantomjs-script'], pipeClass, pipeClassOptions, @options['use-system-phantomjs']?)
 
 
   onMeteorMongodbKillDone: =>
