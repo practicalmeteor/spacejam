@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
 
-if [ -n "$METEOR_SETTINGS_PATH" ]; then
-  meteor --settings $METEOR_SETTINGS_PATH $@
+# For sure can do a better DRY job here, but no time right now
+if [ -n "$METEOR_APP_HOME" ]; then
+ if [ -n "$METEOR_SETTINGS_PATH" ]; then
+    cd $METEOR_APP_HOME && meteor --settings $METEOR_SETTINGS_PATH $@
+  else
+    cd $METEOR_APP_HOME && meteor $@
+  fi
 else
-  meteor $@
+ if [ -n "$METEOR_SETTINGS_PATH" ]; then
+    cd $METEOR_APP_HOME && meteor --settings $METEOR_SETTINGS_PATH $@
+  else
+    cd $METEOR_APP_HOME && meteor $@
+  fi
 fi
