@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash -x
 
 if [ -n "$TEST_PORT" ]; then
   export PORT="$TEST_PORT"
@@ -27,4 +27,10 @@ if [ -n "$METEOR_SETTINGS_PATH" ]; then
   METEOR_SETTINGS_ARGS="--settings $METEOR_SETTINGS_PATH"
 fi
 
-meteor test-packages --port $PORT ${METEOR_SETTINGS_ARGS} $@
+export METEOR_TEST_PACKAGES=1
+
+if [ -n "$METEOR_APP_HOME" ]; then
+  cd $METEOR_APP_HOME && meteor test-packages --port $PORT ${METEOR_SETTINGS_ARGS} $@
+else
+  meteor test-packages --port $PORT ${METEOR_SETTINGS_ARGS} $@
+fi
