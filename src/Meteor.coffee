@@ -58,6 +58,11 @@ class Meteor extends EventEmitter
 
     @options = _.extend(@defaultOptions(), options)
 
+    #TODO add tests and cli help
+    # Shortcut option to run meteor with practicalmeteor:mocha test driver package
+    if @options["mocha"]?
+      @options['driver-package'] = "practicalmeteor:mocha"
+
     log.debug 'meteor options:', @options
 
     cwd = path.resolve(@options.dir);
