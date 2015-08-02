@@ -27,8 +27,11 @@
   },
   "bin": {
     "spacejam": "bin/spacejam",
-    "mrun": "bin/meteor-run.sh",
-    "mtp": "bin/meteor-test-packages.sh"
+    "unset-meteor-env": "bin/unset-meteor-env",
+    "mrun": "bin/mrun",
+    "mtp": "bin/mtp",
+    "mpublish": "bin/mpublish",
+    "npm-publish": "bin/npm-publish"
   },
   "description": "Test your meteor packages from the command line using phantomjs. Use in continuous integration environments, such as Travis CI.",
   "homepage": "https://github.com/practicalmeteor/spacejam",
