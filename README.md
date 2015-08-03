@@ -106,6 +106,10 @@ Simulate meteor production mode. Minify and bundle CSS and JS files.
 `--release <version>`
 
 Specify the release of Meteor to use.
+        
+`--mocha`
+
+Run tests with mocha using practicalmeteor:mocha test driver-package.
                                   
 To get help, just:
 
