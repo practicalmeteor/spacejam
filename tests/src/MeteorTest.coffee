@@ -15,7 +15,7 @@ ps = require('psext')
 path = require "path"
 
 
-describe "Meteor", ->
+describe.only "Meteor", ->
   @timeout 30000
 
   meteor = null
@@ -147,6 +147,15 @@ describe "Meteor", ->
   it "testPackages() - should spawn meteor with MONGO_URL set to --mongo-url",->
     mongoUrl = "mongodb://localhost/mydb"
     meteor.testPackages({"mongo-url": mongoUrl, packages: [packageToTest]})
+    expectedSpawnArgs.push "--port", defaultTestPort, packageToTest
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096, null, mongoUrl)])
+    expect(spawnStub.args[0][2].env.MONGO_URL).to.equal mongoUrl
+
+
+  it "testPackages() - should spawn meteor with practicalmeteor:mocha driver package with --mocha option",->
+    mongoUrl = "mongodb://localhost/mydb"
+    meteor.testPackages({"mongo-url": mongoUrl, packages: [packageToTest], mocha: true})
+    expectedSpawnArgs = ['test-packages', '--driver-package', 'practicalmeteor:mocha']
     expectedSpawnArgs.push "--port", defaultTestPort, packageToTest
     expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096, null, mongoUrl)])
     expect(spawnStub.args[0][2].env.MONGO_URL).to.equal mongoUrl
