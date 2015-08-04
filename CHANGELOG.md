@@ -1,6 +1,10 @@
-## 1.2.1
+## 1.2.2
 
 * Add --mocha flag to run tests with practicalmeteor:mocha test diver-package.
+
+## 1.2.1
+
+* Add --use-system-phantomjs flag.
 
 ## 1.2.0
 

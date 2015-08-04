@@ -1,5 +1,8 @@
+DEFAULT_PATH = process.env.PATH
+
 fs = require('fs')
 path = require 'path'
+phantomjs = require("phantomjs")
 chai = require("chai")
 expect = chai.expect
 sinon = require("sinon")
@@ -16,6 +19,7 @@ else
   CLI = require '../../lib/CLI'
   Spacejam = require '../../lib/Spacejam'
   ChildProcess = require '../../lib/ChildProcess'
+
 
 
 describe "CLI", ->
@@ -42,6 +46,8 @@ describe "CLI", ->
     delete process.env.ROOT_URL
     delete process.env.MONGO_URL
     delete process.env.PACKAGE_DIRS
+
+    process.env.PATH = DEFAULT_PATH
 
     process.argv = ['coffee', path.normalize __dirname + "/../bin/spacejam"]
     cli = new CLI()
@@ -82,5 +88,34 @@ describe "CLI", ->
         if code is 0 then done() else done("spacejam.done=#{code}")
         expect(spawnSpy).to.have.been.calledTwice
         expect(spawnSpy.secondCall.args[1]).to.deep.equal(['--ignore-ssl-errors=true', '--load-images=false', phantomjsScript])
+      catch err
+        done(err)
+
+  it "should modify PATH to include the path to the bundled phantomjs", (done)->
+    testPackagesStub.restore()
+    process.chdir(__dirname + "/../apps/leaderboard/packages/success")
+    # We set mongo-url to mongodb:// so test will be faster
+    process.argv.push 'test-packages', '--mongo-url', 'mongodb://', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './'
+    cli.exec()
+    spacejam.on 'done', (code)=>
+      try
+        if code is 0 then done() else done("spacejam.done=#{code}")
+
+        firstPathEntry = process.env.PATH.split(":")[0]
+        expect(firstPathEntry).to.equal(path.dirname(phantomjs.path))
+      catch err
+        done(err)
+
+  it "should not modify PATH if --use-system-phantomjs is given", (done)->
+    testPackagesStub.restore()
+    process.chdir(__dirname + "/../apps/leaderboard/packages/success")
+    # We set mongo-url to mongodb:// so test will be faster
+    process.argv.push 'test-packages', '--mongo-url', 'mongodb://', '--use-system-phantomjs', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './'
+    cli.exec()
+    spacejam.on 'done', (code)=>
+      try
+        if code is 0 then done() else done("spacejam.done=#{code}")
+
+        expect(process.env.PATH).to.equal(DEFAULT_PATH)
       catch err
         done(err)

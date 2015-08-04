@@ -15,7 +15,7 @@ ps = require('psext')
 path = require "path"
 
 
-describe.only "Meteor", ->
+describe "Meteor", ->
   @timeout 30000
 
   meteor = null

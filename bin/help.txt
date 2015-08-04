@@ -63,6 +63,10 @@ Path to a meteor settings file.
 
 Simulate meteor production mode. Minify and bundle CSS and JS files.
 
+--use-system-phantomjs
+
+Use the installed version of PhantomJS instead of the one from the PhantomJS NPM package.
+
 --mocha
 
 Run tests with mocha using practicalmeteor:mocha test driver-package.

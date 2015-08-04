@@ -28,7 +28,7 @@
 
   path = require("path");
 
-  describe.only("Meteor", function() {
+  describe("Meteor", function() {
     var childProcessMockObj, defaultTestPort, env, expectedSpawnArgs, expectedSpawnOptions, getExpectedSpawnOptions, meteor, packageToTest, spawnStub;
     this.timeout(30000);
     meteor = null;
