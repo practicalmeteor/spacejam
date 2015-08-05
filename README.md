@@ -86,13 +86,13 @@ The [command line options](http://phantomjs.org/api/command-line.html) to pass t
 If specified, saves results as xunit output to file.
 
 `--timeout  <milliseconds>`
-
+     
 Total timeout for all tests. Defaults to no timeout.
-
+                                  
 The following options are meteor options and are passed through to meteor (all are optional):
 
 `--port <port>`
-
+                 
 The meteor port. Defaults to 4096, and not PORT, to avoid conflicts with your meteor app PORT.
 
 `--settings <file>`
@@ -112,6 +112,11 @@ Specify the release of Meteor to use.
 Use the installed version of PhantomJS instead of the one from the
 [PhantomJS NPM package](https://www.npmjs.com/package/phantomjs)
 
+        
+`--mocha`
+
+Run tests with mocha using practicalmeteor:mocha test driver-package.
+                                  
 To get help, just:
 
 ```

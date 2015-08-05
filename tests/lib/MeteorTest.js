@@ -28,7 +28,7 @@
 
   path = require("path");
 
-  describe("Meteor", function() {
+  describe.only("Meteor", function() {
     var childProcessMockObj, defaultTestPort, env, expectedSpawnArgs, expectedSpawnOptions, getExpectedSpawnOptions, meteor, packageToTest, spawnStub;
     this.timeout(30000);
     meteor = null;
@@ -180,6 +180,19 @@
         packages: [packageToTest]
       });
       expectedSpawnArgs.push("--port", defaultTestPort, packageToTest);
+      expect(spawnStub.args[0]).to.eql(["meteor", expectedSpawnArgs, getExpectedSpawnOptions(4096, null, mongoUrl)]);
+      return expect(spawnStub.args[0][2].env.MONGO_URL).to.equal(mongoUrl);
+    });
+    it("testPackages() - should spawn meteor with practicalmeteor:mocha driver package with --mocha option", function() {
+      var mongoUrl;
+      mongoUrl = "mongodb://localhost/mydb";
+      expectedSpawnArgs = ['test-packages', '--driver-package', 'practicalmeteor:mocha-spacejam-reporter'];
+      expectedSpawnArgs.push("--port", defaultTestPort, packageToTest);
+      meteor.testPackages({
+        "mongo-url": mongoUrl,
+        packages: [packageToTest],
+        mocha: true
+      });
       expect(spawnStub.args[0]).to.eql(["meteor", expectedSpawnArgs, getExpectedSpawnOptions(4096, null, mongoUrl)]);
       return expect(spawnStub.args[0][2].env.MONGO_URL).to.equal(mongoUrl);
     });

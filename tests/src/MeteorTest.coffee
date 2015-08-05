@@ -152,6 +152,18 @@ describe "Meteor", ->
     expect(spawnStub.args[0][2].env.MONGO_URL).to.equal mongoUrl
 
 
+  it "testPackages() - should spawn meteor with practicalmeteor:mocha driver package with --mocha option",->
+    mongoUrl = "mongodb://localhost/mydb"
+
+    expectedSpawnArgs = ['test-packages', '--driver-package', 'practicalmeteor:mocha-spacejam-reporter']
+    expectedSpawnArgs.push "--port", defaultTestPort, packageToTest
+
+    meteor.testPackages({"mongo-url": mongoUrl, packages: [packageToTest], mocha: true})
+
+    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096, null, mongoUrl)])
+    expect(spawnStub.args[0][2].env.MONGO_URL).to.equal mongoUrl
+
+
   it "kill() - should kill internal mongodb child processes", (done)->
     @timeout 60000
     spawnStub.restore()
