@@ -103,6 +103,9 @@ class Meteor extends EventEmitter
     else
       delete env.MONGO_URL if env.MONGO_URL?
 
+    if @options["mocha"]?
+      env.SPACEJAM = "spacejam"
+
     options = {
       cwd: cwd,
       env: env,
