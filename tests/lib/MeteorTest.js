@@ -186,8 +186,7 @@
     it("testPackages() - should spawn meteor with practicalmeteor:mocha driver package with --mocha option", function() {
       var mongoUrl;
       mongoUrl = "mongodb://localhost/mydb";
-      env.SPACEJAM = "spacejam";
-      expectedSpawnArgs = ['test-packages', '--driver-package', 'practicalmeteor:mocha'];
+      expectedSpawnArgs = ['test-packages', '--driver-package', 'practicalmeteor:mocha-spacejam-reporter'];
       expectedSpawnArgs.push("--port", defaultTestPort, packageToTest);
       meteor.testPackages({
         "mongo-url": mongoUrl,

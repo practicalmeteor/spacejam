@@ -60,7 +60,7 @@ class Meteor extends EventEmitter
 
     # Shortcut option to run meteor with practicalmeteor:mocha test driver package
     if @options["mocha"]?
-      @options['driver-package'] = "practicalmeteor:mocha"
+      @options['driver-package'] = "practicalmeteor:mocha-spacejam-reporter"
 
     log.debug 'meteor options:', @options
 
@@ -103,8 +103,6 @@ class Meteor extends EventEmitter
     else
       delete env.MONGO_URL if env.MONGO_URL?
 
-    if @options["mocha"]?
-      env.SPACEJAM = "spacejam"
 
     options = {
       cwd: cwd,
