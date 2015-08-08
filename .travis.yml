@@ -1,4 +1,7 @@
+sudo: false
+
 language: node_js
+
 node_js:
   - "0.10.36"
 
@@ -9,6 +12,9 @@ before_install:
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
   - "curl https://install.meteor.com | /bin/sh"
+# On travis's new docker based sudoless infastructure, meteor can't be linked to /usr/local/bin,
+# so we have to add meteor to the PATH ourselves
+  - "export PATH="$HOME/.meteor:$PATH"
   - "meteor --version"
   - "npm install -g coffee-script@1.8.0"
   - "phantomjs -v"
