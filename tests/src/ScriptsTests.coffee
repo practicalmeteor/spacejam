@@ -20,7 +20,7 @@ describe "scripts", ->
   # line and env it was executed with. We verify it is what
   # we expected
   execRun = (done, args, expectedArgs)->
-    child.exec "#{spacejamBinDir}/meteor-run.sh #{args}", execOptions, (err, stdout, stderr)=>
+    child.exec "#{spacejamBinDir}/mrun #{args}", execOptions, (err, stdout, stderr)=>
       try
         expect(err).to.be.null
         output = JSON.parse(stdout)
@@ -31,7 +31,7 @@ describe "scripts", ->
         done(err)
 
   execTestPackages = (done, args, expectedArgs, expectedPort = 3100, expectedRootUrl = 'http://localhost:3100/', expectedMongoUrl)->
-    cmdLine = "#{spacejamBinDir}/meteor-test-packages.sh #{args}"
+    cmdLine = "#{spacejamBinDir}/mtp #{args}"
     child.exec cmdLine, execOptions, (err, stdout, stderr)=>
       try
         expect(err).to.be.null

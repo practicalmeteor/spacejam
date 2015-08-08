@@ -23,7 +23,7 @@
     child = null;
     execOptions = null;
     execRun = function(done, args, expectedArgs) {
-      return child.exec("" + spacejamBinDir + "/meteor-run.sh " + args, execOptions, (function(_this) {
+      return child.exec("" + spacejamBinDir + "/mrun " + args, execOptions, (function(_this) {
         return function(err, stdout, stderr) {
           var actualArgs, output;
           try {
@@ -47,7 +47,7 @@
       if (expectedRootUrl == null) {
         expectedRootUrl = 'http://localhost:3100/';
       }
-      cmdLine = "" + spacejamBinDir + "/meteor-test-packages.sh " + args;
+      cmdLine = "" + spacejamBinDir + "/mtp " + args;
       return child.exec(cmdLine, execOptions, (function(_this) {
         return function(err, stdout, stderr) {
           var actualArgs, output;
