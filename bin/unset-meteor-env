@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Unset all meteor related environment variables. Run:
+# source unset-meteor-env
+# This will unset the variables below in your current shell.
+unset PORT
+unset ROOT_URL
+unset MONGO_URL
+unset MONGO_OPLOG_URL
+
+# mongodb related extras
+unset MONGO_USERNAME
+unset MONGO_PASSWORD
+unset MONGO_SERVER
+unset MONGO_PORT
+unset MONGO_DB
+
+# meteor development related extras
+unset REPO_HOME
+unset METEOR_APP_HOME
+unset ROOT_HOST
+unset METEOR_PATH # In case you use a meteor checkout
+unset METEOR_SETTINGS_PATH
+
+# meteor testing related extras
+unset METEOR_TEST_PACKAGES
+unset TEST_PORT
+unset TEST_ROOT_URL
+unset TEST_MONGO_URL
+unset TEST_METEOR_SETTINGS_PATH
+
+# meteor deployment related extras
+unset METEOR_HOSTNAME
+unset NGINX_PROTOCOL

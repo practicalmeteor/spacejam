@@ -16,35 +16,38 @@ describe "scripts", ->
 
   execOptions = null
 
+  validateExpectedEnv = (env, expectedEnv)->
+    for name, value of expectedEnv
+      expect(env[name], "process.env.#{name}").to.equal value
+
   # The meteor stub process prints out a json with the command
   # line and env it was executed with. We verify it is what
   # we expected
-  execRun = (done, args, expectedArgs)->
-    child.exec "#{spacejamBinDir}/meteor-run.sh #{args}", execOptions, (err, stdout, stderr)=>
+  execRun = (done, args, expectedArgs, expectedEnv = {})->
+    child.exec "#{spacejamBinDir}/mrun #{args}", execOptions, (err, stdout, stderr)=>
       try
         expect(err).to.be.null
         output = JSON.parse(stdout)
         actualArgs = output.argv.slice(2).join(' ')
         expect(actualArgs).to.deep.equal(expectedArgs)
+        validateExpectedEnv(output.env, expectedEnv)
         done()
       catch err
         done(err)
 
-  execTestPackages = (done, args, expectedArgs, expectedPort = 3100, expectedRootUrl = 'http://localhost:3100/', expectedMongoUrl)->
-    cmdLine = "#{spacejamBinDir}/meteor-test-packages.sh #{args}"
+  execTestPackages = (done, args, expectedArgs, expectedEnv = {})->
+    cmdLine = "#{spacejamBinDir}/mtp #{args}"
     child.exec cmdLine, execOptions, (err, stdout, stderr)=>
       try
         expect(err).to.be.null
         output = JSON.parse(stdout)
         actualArgs = output.argv.slice(2).join(' ')
-        expectedArgs = "test-packages --port #{expectedPort} #{expectedArgs}"
+        expectedEnv.METEOR_TEST_PACKAGES = '1' # This should always exist.
+        expectedEnv.PORT ?= '3100' # Env vars are strings
+        expectedEnv.ROOT_URL ?= 'http://localhost:3100/'
+        expectedArgs = "test-packages --port #{expectedEnv.PORT} #{expectedArgs}"
         expect(actualArgs).to.deep.equal(expectedArgs)
-        expect(output.env.PORT).to.equal(expectedPort.toString())
-        expect(output.env.ROOT_URL).to.equal(expectedRootUrl)
-        if _.isString(expectedMongoUrl)
-          expect(output.env.MONGO_URL).to.equal(expectedMongoUrl)
-        else
-          expect(output.env.MONGO_URL).to.be.undefined
+        validateExpectedEnv(output.env, expectedEnv)
         done()
       catch err
         done(err)
@@ -56,6 +59,8 @@ describe "scripts", ->
     delete childEnv.ROOT_URL
     delete childEnv.MONGO_URL
     delete childEnv.METEOR_SETTINGS_PATH
+    delete childEnv.METEOR_APP_HOME
+    delete childEnv.METEOR_TEST_PACKAGES
     delete childEnv.TEST_PORT
     delete childEnv.TEST_ROOT_URL
     delete childEnv.TEST_MONGO_URL
@@ -83,6 +88,14 @@ describe "scripts", ->
       expectedArgs = "--settings #{settingsPath} --port 4000"
       execRun(done, '--port 4000', expectedArgs)
 
+    it "should cd to and run meteor in $METEOR_APP_HOME", (done)->
+      settingsPath = __dirname + '/settings.json'
+      execOptions.env.METEOR_APP_HOME = path.resolve(__dirname, '../apps/leaderboard')
+      expectedArgs = "--port 4000"
+      expectedEnv =
+        PWD: execOptions.env.METEOR_APP_HOME
+      execRun(done, '--port 4000', expectedArgs, expectedEnv)
+
   describe "mtp", ->
 
     it "should launch meteor with --port 3100 and set ROOT_URL to 'http://localhost:3100/' by default", (done)->
@@ -94,34 +107,38 @@ describe "scripts", ->
 
     it "should launch meteor with --port $TEST_PORT, set PORT to $TEST_PORT and ROOT_URL to 'http://localhost:$TEST_PORT/'", (done)->
       execOptions.env.TEST_PORT = 3200
+      expectedEnv =
+        PORT: '3200' # Env vars are strings
+        ROOT_URL: 'http://localhost:3200/'
       execTestPackages(
         done,
         '--production',
         '--production',
-        3200,
-        'http://localhost:3200/'
+        expectedEnv
       )
 
     it "should launch meteor with ROOT_URL set to TEST_ROOT_URL", (done)->
       execOptions.env.TEST_PORT = 3300
       execOptions.env.TEST_ROOT_URL = 'https://myvm/'
+      expectedEnv =
+        PORT: '3300'
+        ROOT_URL: 'https://myvm/'
       execTestPackages(
         done,
         '--production',
         '--production',
-        3300,
-        'https://myvm/'
+        expectedEnv
       )
 
     it "should launch meteor with MONGO_URL set to TEST_MONGO_URL", (done)->
       execOptions.env.TEST_MONGO_URL = 'mongodb://user:pass@mongohq.com/testdb'
+      expectedEnv =
+        MONGO_URL: execOptions.env.TEST_MONGO_URL
       execTestPackages(
         done,
         '--production',
         '--production',
-        3100,
-        'http://localhost:3100/',
-        'mongodb://user:pass@mongohq.com/testdb'
+        expectedEnv
       )
 
     it "should launch meteor with --settings $METEOR_SETTINGS_PATH", (done)->
