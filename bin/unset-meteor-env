@@ -21,7 +21,6 @@ unset METEOR_APP_HOME
 unset ROOT_HOST
 unset METEOR_PATH # In case you use a meteor checkout
 unset METEOR_SETTINGS_PATH
-unset TEST_METEOR_SETTINGS_PATH
 
 # meteor testing related extras
 unset METEOR_TEST_PACKAGES
