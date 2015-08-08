@@ -34,7 +34,7 @@
     ChildProcess = require('../../lib/ChildProcess');
   }
 
-  describe("CLI", function() {
+  describe.only("CLI", function() {
     var cli, exitStub, phantomjsScript, processArgv, spacejam, spawnSpy, testPackagesStub;
     this.timeout(30000);
     processArgv = null;
@@ -105,7 +105,7 @@
       testPackagesStub.restore();
       spawnSpy = sinon.spy(ChildProcess, '_spawn');
       process.chdir(__dirname + "/../apps/leaderboard/packages/success");
-      process.argv.push('test-packages', '--mongo-url', 'mongodb://', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './');
+      process.argv.push('test-packages', '--port', '11096', '--mongo-url', 'mongodb://', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './');
       cli.exec();
       return spacejam.on('done', (function(_this) {
         return function(code) {
@@ -128,7 +128,7 @@
     it("should modify PATH to include the path to the bundled phantomjs", function(done) {
       testPackagesStub.restore();
       process.chdir(__dirname + "/../apps/leaderboard/packages/success");
-      process.argv.push('test-packages', '--mongo-url', 'mongodb://', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './');
+      process.argv.push('test-packages', '--port', '12096', '--mongo-url', 'mongodb://', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './');
       cli.exec();
       return spacejam.on('done', (function(_this) {
         return function(code) {
@@ -151,7 +151,7 @@
     return it("should not modify PATH if --use-system-phantomjs is given", function(done) {
       testPackagesStub.restore();
       process.chdir(__dirname + "/../apps/leaderboard/packages/success");
-      process.argv.push('test-packages', '--mongo-url', 'mongodb://', '--use-system-phantomjs', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './');
+      process.argv.push('test-packages', '--port', '13096', '--mongo-url', 'mongodb://', '--use-system-phantomjs', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './');
       cli.exec();
       return spacejam.on('done', (function(_this) {
         return function(code) {

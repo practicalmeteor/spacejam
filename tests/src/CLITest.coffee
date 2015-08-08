@@ -81,7 +81,7 @@ describe "CLI", ->
     spawnSpy = sinon.spy(ChildProcess, '_spawn')
     process.chdir(__dirname + "/../apps/leaderboard/packages/success")
     # We set mongo-url to mongodb:// so test will be faster
-    process.argv.push 'test-packages', '--mongo-url', 'mongodb://', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './'
+    process.argv.push 'test-packages', '--port', '11096', '--mongo-url', 'mongodb://', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './'
     cli.exec()
     spacejam.on 'done', (code)=>
       try
@@ -95,7 +95,7 @@ describe "CLI", ->
     testPackagesStub.restore()
     process.chdir(__dirname + "/../apps/leaderboard/packages/success")
     # We set mongo-url to mongodb:// so test will be faster
-    process.argv.push 'test-packages', '--mongo-url', 'mongodb://', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './'
+    process.argv.push 'test-packages', '--port', '12096', '--mongo-url', 'mongodb://', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './'
     cli.exec()
     spacejam.on 'done', (code)=>
       try
@@ -110,7 +110,7 @@ describe "CLI", ->
     testPackagesStub.restore()
     process.chdir(__dirname + "/../apps/leaderboard/packages/success")
     # We set mongo-url to mongodb:// so test will be faster
-    process.argv.push 'test-packages', '--mongo-url', 'mongodb://', '--use-system-phantomjs', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './'
+    process.argv.push 'test-packages', '--port', '13096', '--mongo-url', 'mongodb://', '--use-system-phantomjs', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './'
     cli.exec()
     spacejam.on 'done', (code)=>
       try
