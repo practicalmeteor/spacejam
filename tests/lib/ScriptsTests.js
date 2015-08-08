@@ -16,13 +16,25 @@
 
   _ = require('underscore');
 
-  describe("scripts", function() {
-    var child, execOptions, execRun, execTestPackages, meteorStubDir, spacejamBinDir;
+  describe.only("scripts", function() {
+    var child, execOptions, execRun, execTestPackages, meteorStubDir, spacejamBinDir, validateExpectedEnv;
     spacejamBinDir = path.resolve(__dirname, "../../bin");
     meteorStubDir = path.resolve(__dirname, "../bin");
     child = null;
     execOptions = null;
-    execRun = function(done, args, expectedArgs) {
+    validateExpectedEnv = function(env, expectedEnv) {
+      var name, value, _results;
+      _results = [];
+      for (name in expectedEnv) {
+        value = expectedEnv[name];
+        _results.push(expect(env[name], "process.env." + name).to.equal(value));
+      }
+      return _results;
+    };
+    execRun = function(done, args, expectedArgs, expectedEnv) {
+      if (expectedEnv == null) {
+        expectedEnv = {};
+      }
       return child.exec("" + spacejamBinDir + "/mrun " + args, execOptions, (function(_this) {
         return function(err, stdout, stderr) {
           var actualArgs, output;
@@ -31,6 +43,7 @@
             output = JSON.parse(stdout);
             actualArgs = output.argv.slice(2).join(' ');
             expect(actualArgs).to.deep.equal(expectedArgs);
+            validateExpectedEnv(output.env, expectedEnv);
             return done();
           } catch (_error) {
             err = _error;
@@ -39,13 +52,10 @@
         };
       })(this));
     };
-    execTestPackages = function(done, args, expectedArgs, expectedPort, expectedRootUrl, expectedMongoUrl) {
+    execTestPackages = function(done, args, expectedArgs, expectedEnv) {
       var cmdLine;
-      if (expectedPort == null) {
-        expectedPort = 3100;
-      }
-      if (expectedRootUrl == null) {
-        expectedRootUrl = 'http://localhost:3100/';
+      if (expectedEnv == null) {
+        expectedEnv = {};
       }
       cmdLine = "" + spacejamBinDir + "/mtp " + args;
       return child.exec(cmdLine, execOptions, (function(_this) {
@@ -55,15 +65,16 @@
             expect(err).to.be["null"];
             output = JSON.parse(stdout);
             actualArgs = output.argv.slice(2).join(' ');
-            expectedArgs = "test-packages --port " + expectedPort + " " + expectedArgs;
-            expect(actualArgs).to.deep.equal(expectedArgs);
-            expect(output.env.PORT).to.equal(expectedPort.toString());
-            expect(output.env.ROOT_URL).to.equal(expectedRootUrl);
-            if (_.isString(expectedMongoUrl)) {
-              expect(output.env.MONGO_URL).to.equal(expectedMongoUrl);
-            } else {
-              expect(output.env.MONGO_URL).to.be.undefined;
+            expectedEnv.METEOR_TEST_PACKAGES = '1';
+            if (expectedEnv.PORT == null) {
+              expectedEnv.PORT = '3100';
             }
+            if (expectedEnv.ROOT_URL == null) {
+              expectedEnv.ROOT_URL = 'http://localhost:3100/';
+            }
+            expectedArgs = "test-packages --port " + expectedEnv.PORT + " " + expectedArgs;
+            expect(actualArgs).to.deep.equal(expectedArgs);
+            validateExpectedEnv(output.env, expectedEnv);
             return done();
           } catch (_error) {
             err = _error;
@@ -80,6 +91,8 @@
       delete childEnv.ROOT_URL;
       delete childEnv.MONGO_URL;
       delete childEnv.METEOR_SETTINGS_PATH;
+      delete childEnv.METEOR_APP_HOME;
+      delete childEnv.METEOR_TEST_PACKAGES;
       delete childEnv.TEST_PORT;
       delete childEnv.TEST_ROOT_URL;
       delete childEnv.TEST_MONGO_URL;
@@ -100,12 +113,22 @@
       it("should launch meteor with the provided command line arguments", function(done) {
         return execRun(done, '--port 4000', '--port 4000');
       });
-      return it("should launch meteor with --settings $METEOR_SETTINGS_PATH", function(done) {
+      it("should launch meteor with --settings $METEOR_SETTINGS_PATH", function(done) {
         var expectedArgs, settingsPath;
         settingsPath = __dirname + '/settings.json';
         execOptions.env.METEOR_SETTINGS_PATH = settingsPath;
         expectedArgs = "--settings " + settingsPath + " --port 4000";
         return execRun(done, '--port 4000', expectedArgs);
+      });
+      return it("should cd to and run meteor in $METEOR_APP_HOME", function(done) {
+        var expectedArgs, expectedEnv, settingsPath;
+        settingsPath = __dirname + '/settings.json';
+        execOptions.env.METEOR_APP_HOME = path.resolve(__dirname, '../apps/leaderboard');
+        expectedArgs = "--port 4000";
+        expectedEnv = {
+          PWD: execOptions.env.METEOR_APP_HOME
+        };
+        return execRun(done, '--port 4000', expectedArgs, expectedEnv);
       });
     });
     return describe("mtp", function() {
@@ -113,17 +136,31 @@
         return execTestPackages(done, '--production', '--production');
       });
       it("should launch meteor with --port $TEST_PORT, set PORT to $TEST_PORT and ROOT_URL to 'http://localhost:$TEST_PORT/'", function(done) {
+        var expectedEnv;
         execOptions.env.TEST_PORT = 3200;
-        return execTestPackages(done, '--production', '--production', 3200, 'http://localhost:3200/');
+        expectedEnv = {
+          PORT: '3200',
+          ROOT_URL: 'http://localhost:3200/'
+        };
+        return execTestPackages(done, '--production', '--production', expectedEnv);
       });
       it("should launch meteor with ROOT_URL set to TEST_ROOT_URL", function(done) {
+        var expectedEnv;
         execOptions.env.TEST_PORT = 3300;
         execOptions.env.TEST_ROOT_URL = 'https://myvm/';
-        return execTestPackages(done, '--production', '--production', 3300, 'https://myvm/');
+        expectedEnv = {
+          PORT: '3300',
+          ROOT_URL: 'https://myvm/'
+        };
+        return execTestPackages(done, '--production', '--production', expectedEnv);
       });
       it("should launch meteor with MONGO_URL set to TEST_MONGO_URL", function(done) {
+        var expectedEnv;
         execOptions.env.TEST_MONGO_URL = 'mongodb://user:pass@mongohq.com/testdb';
-        return execTestPackages(done, '--production', '--production', 3100, 'http://localhost:3100/', 'mongodb://user:pass@mongohq.com/testdb');
+        expectedEnv = {
+          MONGO_URL: execOptions.env.TEST_MONGO_URL
+        };
+        return execTestPackages(done, '--production', '--production', expectedEnv);
       });
       it("should launch meteor with --settings $METEOR_SETTINGS_PATH", function(done) {
         var settingsPath;
