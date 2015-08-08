@@ -144,6 +144,10 @@ Prints the package version in the current working directory's package.js
 
 Runs `meteor run` with the provided options. Supports the following additional environment variables:
 
+### METEOR_APP_HOME
+
+If set, will cd $METEOR_APP_HOME && meteor run, so you can run your app from any folder, without leaving that folder.
+
 ### METEOR_SETTINGS_PATH
 
 If set, runs meteor with --settings $METEOR_SETTINGS_PATH
