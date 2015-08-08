@@ -61,7 +61,7 @@ describe "spacejam", ->
 
   describe "test-packages", ->
 
-    it "should exit with 0 if tests pass for a meteor app package", (done)->
+    it "should exit with 0 if tests pass for a meteor app package. Also verifies METEOR_TEST_PACKAGES is '1'", (done)->
       spacejamChild = new ChildProcess()
       args = ["test-packages", "success"]
       spacejamChild.spawn(spacejamBin,args)

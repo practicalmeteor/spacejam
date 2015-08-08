@@ -64,7 +64,7 @@
       }
     });
     describe("test-packages", function() {
-      it("should exit with 0 if tests pass for a meteor app package", function(done) {
+      it.only("should exit with 0 if tests pass for a meteor app package. Also verifies METEOR_TEST_PACKAGES is '1'", function(done) {
         var args;
         spacejamChild = new ChildProcess();
         args = ["test-packages", "success"];
