@@ -16,7 +16,7 @@
 
   _ = require('underscore');
 
-  describe.only("scripts", function() {
+  describe("scripts", function() {
     var child, execOptions, execRun, execTestPackages, meteorStubDir, spacejamBinDir, validateExpectedEnv;
     spacejamBinDir = path.resolve(__dirname, "../../bin");
     meteorStubDir = path.resolve(__dirname, "../bin");
