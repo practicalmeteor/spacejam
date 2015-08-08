@@ -154,7 +154,11 @@ If set, runs meteor with --settings $METEOR_SETTINGS_PATH
 
 ## mtp (meteor test-packages)
 
-Runs `meteor test-packages` with the provided options on port 3100 and with MONGO_URL unset so you can run your app and your package tests in parallel, without port or mongodb conflicts, if you use an external mongodb for your app. Supports the following additional environment variables:
+Runs `meteor test-packages` with the provided options on port 3100 and with MONGO_URL unset so you can run your app and your package tests in parallel, without port or mongodb conflicts, if you use an external mongodb for your app.
+
+It also always sets METEOR_TEST_PACKAGES to '1', so packages can know they run in the context of meteor test-packages. Not really a good practice, but sometimes just unavoidable.
+
+Supports the following additional environment variables:
 
 ### TEST_PORT
 
