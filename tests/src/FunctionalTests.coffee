@@ -145,7 +145,9 @@ describe "spacejam", ->
 
     it "should save xunit output to file, if --xunit-out is specified", (done)->
       spacejamChild = new ChildProcess()
-      args = ["test-packages", '--xunit-out', '/tmp/xunit.xml', "success"]
+      # TODO: Have a global singleton to provide the port
+      testPort = "20096"
+      args = ["test-packages", "--port", testPort, '--xunit-out', '/tmp/xunit.xml', "success"]
       spacejamChild.spawn(spacejamBin,args)
       spacejamChild.child.on "close", (code, signal) =>
         try
@@ -155,8 +157,8 @@ describe "spacejam", ->
           expect(xml).to.be.ok
           xmlDom = new DOMParser().parseFromString(xml)
           expect(xmlDom.documentElement.tagName).to.equal 'testsuite'
-          testcaseNodes = xpath.select("//testcase", xmlDom)
-          expect(testcaseNodes).to.have.length 2
+          testCaseNodes = xpath.select("//testcase", xmlDom)
+          expect(testCaseNodes).to.have.length 3
           done()
         catch ex
           done(ex)

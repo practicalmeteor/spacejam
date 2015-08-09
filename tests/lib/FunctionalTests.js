@@ -64,7 +64,7 @@
       }
     });
     describe("test-packages", function() {
-      it.only("should exit with 0 if tests pass for a meteor app package. Also verifies METEOR_TEST_PACKAGES is '1'", function(done) {
+      it("should exit with 0 if tests pass for a meteor app package. Also verifies METEOR_TEST_PACKAGES is '1'", function(done) {
         var args;
         spacejamChild = new ChildProcess();
         args = ["test-packages", "success"];
@@ -175,14 +175,15 @@
           };
         })(this));
       });
-      it("should save xunit output to file, if --xunit-out is specified", function(done) {
-        var args;
+      it.only("should save xunit output to file, if --xunit-out is specified", function(done) {
+        var args, testPort;
         spacejamChild = new ChildProcess();
-        args = ["test-packages", '--xunit-out', '/tmp/xunit.xml', "success"];
+        testPort = "20096";
+        args = ["test-packages", "--port", testPort, '--xunit-out', '/tmp/xunit.xml', "success"];
         spacejamChild.spawn(spacejamBin, args);
         return spacejamChild.child.on("close", (function(_this) {
           return function(code, signal) {
-            var ex, testcaseNodes, xml, xmlDom;
+            var ex, testCaseNodes, xml, xmlDom;
             try {
               expect(code, "spacejam exited with errors").to.equal(Spacejam.DONE.TEST_SUCCESS);
               xml = fs.readFileSync('/tmp/xunit.xml', {
@@ -192,8 +193,8 @@
               expect(xml).to.be.ok;
               xmlDom = new DOMParser().parseFromString(xml);
               expect(xmlDom.documentElement.tagName).to.equal('testsuite');
-              testcaseNodes = xpath.select("//testcase", xmlDom);
-              expect(testcaseNodes).to.have.length(2);
+              testCaseNodes = xpath.select("//testcase", xmlDom);
+              expect(testCaseNodes).to.have.length(3);
               return done();
             } catch (_error) {
               ex = _error;

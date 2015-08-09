@@ -66,6 +66,7 @@ describe "Meteor", ->
   getExpectedSpawnOptions = (port, rootUrl, mongoUrl, cwd = process.cwd())->
     expectedSpawnOptions = {cwd: cwd, detached: false, env: env}
     rootUrl ?= "http://localhost:#{port}/"
+    expectedSpawnOptions.env.METEOR_TEST_PACKAGES = '1'
     expectedSpawnOptions.env.ROOT_URL = rootUrl
     expectedSpawnOptions.env.MONGO_URL = mongoUrl if mongoUrl?
     return expectedSpawnOptions

@@ -81,6 +81,7 @@
       if (rootUrl == null) {
         rootUrl = "http://localhost:" + port + "/";
       }
+      expectedSpawnOptions.env.METEOR_TEST_PACKAGES = '1';
       expectedSpawnOptions.env.ROOT_URL = rootUrl;
       if (mongoUrl != null) {
         expectedSpawnOptions.env.MONGO_URL = mongoUrl;
