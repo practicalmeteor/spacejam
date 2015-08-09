@@ -175,7 +175,7 @@
           };
         })(this));
       });
-      it.only("should save xunit output to file, if --xunit-out is specified", function(done) {
+      it("should save xunit output to file, if --xunit-out is specified", function(done) {
         var args, testPort;
         spacejamChild = new ChildProcess();
         testPort = "20096";

@@ -143,7 +143,7 @@ describe "spacejam", ->
         done()
 
 
-    it "should save xunit output to file, if --xunit-out is specified", (done)->
+    it   "should save xunit output to file, if --xunit-out is specified", (done)->
       spacejamChild = new ChildProcess()
       # TODO: Have a global singleton to provide the port
       testPort = "20096"
