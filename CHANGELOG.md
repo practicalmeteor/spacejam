@@ -1,8 +1,8 @@
-## v.NEXT
+## 1.2.2
 
 - Add support for METEOR_APP_HOME in mrun
 
-- Always export METEOR_TEST_PACKAGES=1 in mtp before running meteor test-packages
+- Always export METEOR_TEST_PACKAGES='1' in both spacejam and mtp before running meteor test-packages
 
 ## 1.2.1
 

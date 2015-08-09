@@ -34,7 +34,7 @@
     ChildProcess = require('../../lib/ChildProcess');
   }
 
-  describe.only("CLI", function() {
+  describe("CLI", function() {
     var cli, exitStub, phantomjsScript, processArgv, spacejam, spawnSpy, testPackagesStub;
     this.timeout(30000);
     processArgv = null;

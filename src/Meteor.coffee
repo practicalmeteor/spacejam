@@ -93,6 +93,9 @@ class Meteor extends EventEmitter
     log.debug 'meteor args=', args
 
     env = _.clone(process.env)
+#   So packages will know they're running in the context of test-packages.
+#   Not really a good practice, but sometimes just unavoidable.
+    env.METEOR_TEST_PACKAGES='1'
     env.ROOT_URL = @options["root-url"]
     if @options["mongo-url"]
       env.MONGO_URL = @options["mongo-url"]
