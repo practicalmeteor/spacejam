@@ -8,6 +8,10 @@ page.onConsoleMessage = (message) ->
 
 page.open(system.env.ROOT_URL)
 
+page.onError = (msg, trace) ->
+  console.log('Page Error', msg);
+  phantom.exit(2);
+
 setInterval ->
   done = page.evaluate ->
     return TEST_STATUS.DONE if TEST_STATUS?
