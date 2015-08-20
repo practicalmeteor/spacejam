@@ -142,6 +142,17 @@ describe "spacejam", ->
         expect(code).to.equal Spacejam.DONE.METEOR_ERROR
         done()
 
+    it "should exit with 6, if the tests contain an error", (done)->
+      @timeout 90000
+      process.chdir(__dirname + "/../apps/todos")
+      spacejamChild = new ChildProcess()
+      testPort = "8096"
+      args = ["test-packages", "--port", testPort, 'appclientsideerror']
+      spacejamChild.spawn(spacejamBin,args)
+      spacejamChild.child.on "exit", (code) =>
+        expect(code).to.equal Spacejam.DONE.TEST_ERROR
+        done()
+
 
     it   "should save xunit output to file, if --xunit-out is specified", (done)->
       spacejamChild = new ChildProcess()
