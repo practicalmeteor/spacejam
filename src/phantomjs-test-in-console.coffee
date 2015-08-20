@@ -13,7 +13,7 @@ page.onError = (msg, trace) ->
   trace.forEach((item) ->
     console.log("    #{item.file}: #{item.line}")
   )
-  phantom.exit(2)
+  phantom.exit(6)
 
 setInterval ->
   done = page.evaluate ->
