@@ -36,7 +36,7 @@ class Spacejam extends EventEmitter
     METEOR_ERROR: 3
     TEST_TIMEOUT: 4
     ALREADY_RUNNING: 5
-    TEST_ERROR: 6
+    CLIENT_ERROR: 6
 
 
   constructor: ->

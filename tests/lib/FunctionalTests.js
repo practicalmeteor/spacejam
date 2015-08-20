@@ -185,7 +185,7 @@
         spacejamChild.spawn(spacejamBin, args);
         return spacejamChild.child.on("exit", (function(_this) {
           return function(code) {
-            expect(code).to.equal(Spacejam.DONE.TEST_ERROR);
+            expect(code).to.equal(Spacejam.DONE.CLIENT_ERROR);
             return done();
           };
         })(this));

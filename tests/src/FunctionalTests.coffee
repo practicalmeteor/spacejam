@@ -150,7 +150,7 @@ describe "spacejam", ->
       args = ["test-packages", "--port", testPort, 'appclientsideerror']
       spacejamChild.spawn(spacejamBin,args)
       spacejamChild.child.on "exit", (code) =>
-        expect(code).to.equal Spacejam.DONE.TEST_ERROR
+        expect(code).to.equal Spacejam.DONE.CLIENT_ERROR
         done()
 
 
