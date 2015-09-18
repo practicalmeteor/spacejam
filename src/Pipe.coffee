@@ -1,4 +1,4 @@
-class Pipe
+class practical.spacejam.Pipe
 
   constructor: (@stdout, @stderr)->
     @stdout.setEncoding "utf8"
@@ -10,4 +10,3 @@ class Pipe
     @stderr.on "data", (data)=>
       process.stderr.write data
 
-module.exports = Pipe

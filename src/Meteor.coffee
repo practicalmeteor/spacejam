@@ -1,14 +1,9 @@
-require('./log')
-expect = require('chai').expect
-_ = require("underscore")
-ChildProcess = require './ChildProcess'
-EventEmitter = require('events').EventEmitter
-MeteorMongodb = require("./MeteorMongodb")
-glob = require("glob")
-fs = require("fs")
-path = require "path"
+EventEmitter = Npm.require('events').EventEmitter
+glob = Npm.require("glob")
+fs = Npm.require("fs")
+path = Npm.require "path"
 
-class Meteor extends EventEmitter
+class practical.spacejam.Meteor extends EventEmitter
 
   childProcess: null
 
@@ -35,6 +30,7 @@ class Meteor extends EventEmitter
   @getPackageVersion: ->
     log.debug "Meteor.getPackageVersion()"
     if not fs.existsSync('package.js')
+      log.info("error")
       throw new Error("Missing package.js in current working directory.")
     require './PackageJSStubs'
     require "#{process.cwd()}/package.js"
@@ -108,7 +104,7 @@ class Meteor extends EventEmitter
       detached: false
     }
 
-    @childProcess = new ChildProcess()
+    @childProcess = new practical.spacejam.ChildProcess()
     @childProcess.spawn("meteor",args,options)
 
     @childProcess.child.on "exit", (code,signal) =>
@@ -163,7 +159,7 @@ class Meteor extends EventEmitter
 
   hasStartedMongoDBText: (buffer)=>
     if buffer.lastIndexOf('Started MongoDB') isnt -1
-      @mongodb = new MeteorMongodb(@childProcess.child.pid)
+      @mongodb = new practical.spacejam.MeteorMongodb(@childProcess.child.pid)
       @emit "mongodb ready"
 
 
@@ -189,4 +185,3 @@ class Meteor extends EventEmitter
     @childProcess?.kill(signal)
     @mongodb?.kill()
 
-module.exports = Meteor

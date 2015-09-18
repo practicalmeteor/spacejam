@@ -1,14 +1,9 @@
-require './log'
-fs = require("fs")
-path = require("path")
-_ = require("underscore")
-expect = require("chai").expect
-Spacejam = require './Spacejam'
-Meteor = require './Meteor'
+fs = Npm.require("fs")
+path = Npm.require("path")
 
-require.extensions['.txt'] = (module, filename)->
-  module.exports = fs.readFileSync(filename, 'utf8')
-
+#require.extensions['.txt'] = (module, filename)->
+#  module.exports = fs.readFileSync(filename, 'utf8')
+#
 
 class CLI
 
@@ -28,11 +23,13 @@ class CLI
   pidPath: null
 
   constructor: ->
-    @spacejam = new Spacejam()
+    CLI.registerCommand("spacejam", @execute)
+    @spacejam = new practical.spacejam.Spacejam()
     log.debug "CLI.constructor()"
     process.on 'SIGPIPE', (code)=>
       log.info "spacejam: Received a SIGPIPE signal. Killing all child processes..."
       @spacejam?.killChildren()
+
 #
 #    process.on 'SIGINT', (code)=>
 #      log.info "spacejam: exiting with code #{code}"
@@ -48,11 +45,11 @@ class CLI
       log.error("spacejam: Error deleting pid file #{@pidPath}", err)
 
 
-  exec: ->
+  exec: (options)->
     log.debug "CLI.exec()"
     expect(@options, "You can only call CLI.exec() once").to.be.null
 
-    @options = require("rc")("spacejam", {})
+    @options = options
 
     command = @options._[0]
     log.debug "command: #{command}"
@@ -60,7 +57,7 @@ class CLI
       @printHelp()
       process.exit(0)
     else if command is 'package-version'
-      version = Meteor.getPackageVersion()
+      version = practical.spacejam.Meteor.getPackageVersion()
       console.log(version)
       process.exit(0)
 
@@ -89,4 +86,4 @@ class CLI
     process.stdout.write require('../bin/help.txt')
 
 
-module.exports = CLI
+CLI.get()

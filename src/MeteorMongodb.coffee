@@ -1,8 +1,7 @@
-expect = require('chai').expect
-EventEmitter = require('events').EventEmitter
-ps = require('psext')
+EventEmitter = Npm.require('events').EventEmitter
+ps = Npm.require('psext')
 
-class MeteorMongodb extends EventEmitter
+class practical.spacejam.MeteorMongodb extends EventEmitter
 
   mongodChilds: []
 
@@ -81,4 +80,3 @@ class MeteorMongodb extends EventEmitter
     interval = setInterval onInterval, 100
 
 
-module.exports = MeteorMongodb

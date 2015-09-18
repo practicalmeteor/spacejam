@@ -1,7 +1,7 @@
-fs = require('fs')
-Pipe = require("./Pipe")
+fs = Npm.require('fs')
 
-class XunitFilePipe extends Pipe
+class practical.spacejam.XunitFilePipe extends practical.spacejam.Pipe
+
   constructor: (@stdout, @stderr, @options)->
     @stdout.setEncoding "utf8"
     @stderr.setEncoding "utf8"
@@ -28,5 +28,3 @@ class XunitFilePipe extends Pipe
     @stderr.on "data", (data)=>
       process.stderr.write data
 
-
-module.exports = XunitFilePipe

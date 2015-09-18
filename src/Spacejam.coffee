@@ -1,18 +1,12 @@
-require('./log')
-expect = require("chai").expect
-_ = require("underscore")
-EventEmitter = require('events').EventEmitter
-Meteor = require("./Meteor")
-Phantomjs = require("./Phantomjs")
-XunitFilePipe = require './XunitFilePipe'
+EventEmitter = Npm.require('events').EventEmitter
 
 
-class Spacejam extends EventEmitter
+class practical.spacejam.Spacejam extends EventEmitter
 
   instance = null
 
   @get: ->
-    instance ?= new Spacejam()
+    instance ?= new practical.spacejam.Spacejam()
 
   defaultOptions: ->
     {
@@ -54,8 +48,8 @@ class Spacejam extends EventEmitter
     log.debug @options
 
     try
-      @meteor = new Meteor()
-      @phantomjs = new Phantomjs()
+      @meteor = new practical.spacejam.Meteor()
+      @phantomjs = new practical.spacejam.Phantomjs()
     catch err
       console.trace err
       @emit "done", 1
@@ -69,12 +63,12 @@ class Spacejam extends EventEmitter
         @killChildren Spacejam.DONE.METEOR_ERROR
 
     @meteor.on "mongodb ready", =>
-      log.info "spacejam: meteor mongodb is ready"
+      log.info "meteor mongodb is ready"
       @waitForMeteorMongodbKillDone = true
       @meteor.mongodb.on "kill-done", @onMeteorMongodbKillDone
 
     @meteor.on "ready", =>
-      log.info "spacejam: meteor is ready"
+      log.info "meteor is ready"
 
       scriptArgs = ''
       pipeClass = null
@@ -83,7 +77,7 @@ class Spacejam extends EventEmitter
       @runPhantom()
 
     @meteor.on "error", =>
-      log.error "spacejam: meteor has errors"
+      log.error "meteor has errors"
       @killChildren(Spacejam.DONE.METEOR_ERROR) if not @options.watch
 
     try
@@ -95,7 +89,7 @@ class Spacejam extends EventEmitter
 
     if @options.timeout? and +@options.timeout > 0
       setTimeout =>
-        log.error "spacejam: Error: tests timed out after #{options.timeout} milliseconds."
+        log.error "Error: tests timed out after #{options.timeout} milliseconds."
         @killChildren( Spacejam.DONE.TEST_TIMEOUT )
       , +options.timeout
 
@@ -116,7 +110,7 @@ class Spacejam extends EventEmitter
 
     if @options['xunit-out']?
       url += 'xunit'
-      pipeClass = XunitFilePipe
+      pipeClass = practical.spacejam.XunitFilePipe
       pipeClassOptions = pipeToFile: @options['xunit-out']
     else
       url += 'local'
@@ -158,5 +152,3 @@ class Spacejam extends EventEmitter
     log.debug 'Spacejam.done() waiting for mongodb to exit before calling done'
     @doneCode = code
 
-
-module.exports = Spacejam

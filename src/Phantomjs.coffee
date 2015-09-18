@@ -1,15 +1,12 @@
-_ = require "underscore"
-expect = require('chai').expect
-ChildProcess = require './ChildProcess'
-EventEmitter = require('events').EventEmitter
-path = require 'path'
-phantomjs = require 'phantomjs'
-isCoffee = __filename.indexOf('.coffee') > 0
+EventEmitter = Npm.require('events').EventEmitter
+path = Npm.require 'path'
+phantomjs = Npm.require 'phantomjs'
+isCoffee = __filename?.indexOf('.coffee') > 0
 
 DEFAULT_PATH = process.env.PATH
 
 
-class Phantomjs extends EventEmitter
+class practical.spacejam.Phantomjs extends EventEmitter
 
   childProcess: null
 
@@ -42,7 +39,7 @@ class Phantomjs extends EventEmitter
     else
       process.env.PATH = path.dirname(phantomjs.path) + ':' + DEFAULT_PATH
 
-    @childProcess = new ChildProcess()
+    @childProcess = new practical.spacejam.ChildProcess()
     @childProcess.spawn("phantomjs", spawnArgs, spawnOptions, pipeClass, pipeClassOptions)
 
     @childProcess.child.on "exit", (code, signal) =>
@@ -52,6 +49,4 @@ class Phantomjs extends EventEmitter
     log.debug "Phantomjs.kill()"
     @childProcess?.kill(signal)
 
-
-module.exports = Phantomjs
 
