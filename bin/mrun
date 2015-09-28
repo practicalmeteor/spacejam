@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+set -x
+
+export SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
+source $SPACEJAM_BIN/set-meteor-env
+echo "After $SPACEJAM_BIN/set-meteor-env"
+exit 0
+
 # For sure can do a better DRY job here, but no time right now
 if [ -n "$METEOR_APP_HOME" ]; then
  if [ -n "$METEOR_SETTINGS_PATH" ]; then
@@ -9,8 +16,8 @@ if [ -n "$METEOR_APP_HOME" ]; then
   fi
 else
  if [ -n "$METEOR_SETTINGS_PATH" ]; then
-    cd $METEOR_APP_HOME && meteor --settings $METEOR_SETTINGS_PATH $@
+    meteor --settings $METEOR_SETTINGS_PATH $@
   else
-    cd $METEOR_APP_HOME && meteor $@
+    meteor $@
   fi
 fi

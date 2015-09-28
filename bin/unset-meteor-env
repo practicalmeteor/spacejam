@@ -18,6 +18,8 @@ unset MONGO_DB
 # meteor development related extras
 unset REPO_HOME
 unset METEOR_APP_HOME
+unset METEOR_APP_NAME
+unset METEOR_CLI_HOME
 unset ROOT_HOST
 unset METEOR_PATH # In case you use a meteor checkout
 unset METEOR_SETTINGS_PATH

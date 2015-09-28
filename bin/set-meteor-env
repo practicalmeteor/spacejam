@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -x
+
+if [ -z "$METEOR_ENV" ]; then
+  return
+fi
+
+export REPO_HOME=$(git rev-parse --show-toplevel)
+
+export SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
+source $SPACEJAM_BIN/unset-meteor-env
+
+if [ -e "$PWD/$METEOR_ENV.meteor.env" ]; then
+  export METEOR_ENV_FILE="$PWD/$METEOR_ENV.meteor.env"
+elif [ -e "$PWD/bin/$METEOR_ENV.meteor.env" ]; then
+  export METEOR_ENV_FILE="$PWD/bin/$METEOR_ENV.meteor.env"
+else
+  parent_dir=$(dirname $PWD)
+  # In case we're in the cli folder of a standard repo structure
+  if [ -e "$parent_dir/app/$METEOR_ENV.meteor.env" ]; then
+    export METEOR_ENV_FILE="$parent_dir/app/$METEOR_ENV.meteor.env"
+  elif [ -e "$parent_dir/bin/$METEOR_ENV.meteor.env" ]; then
+    export METEOR_ENV_FILE="$PWD/bin/$METEOR_ENV.meteor.env"
+  fi
+fi
+
+if [ -z "$METEOR_ENV_FILE" ]; then
+  >&2 echo "METEOR_ENV=$METEOR_ENV, but $METEOR_ENV.meteor.env not found. Exiting."
+  exit 1
+fi
+
+if [ -e "$HOME/.meteor.env" ]; then
+  source $HOME/.meteor.env
+fi
+
+meteor_env_file_dir=$(dirname $METEOR_ENV_FILE)
+if [ -e "$meteor_env_file_dir/default.meteor.env" ]; then
+  source $meteor_env_file_dir/default.meteor.env
+fi
+source $METEOR_ENV_FILE
+
+if [ -z "$METEOR_APP_HOME" ]; then
+  if [ -e "$REPO_HOME/app" ]; then
+    export METEOR_APP_HOME="$REPO_HOME/app"
+  else
+    >&2 echo "METEOR_APP_HOME is not set and $REPO_HOME/app doesn't exist. Exiting."
+    exit 1
+  fi
+fi
+
+if [ -z "$METEOR_CLI_HOME" ]; then
+  if [ -e "$REPO_HOME/cli" ]; then
+    export METEOR_CLI_HOME="$REPO_HOME/cli"
+  fi
+fi
+
+if [ -z "$METEOR_APP_NAME" ]; then
+  export METEOR_APP_NAME=$(basename $REPO_HOME)
+fi
+
+#if [ -z "$PACKAGE_DIRS" ]; then
+#  #TODO fix
+#fi
+
+export METEOR_SETTINGS_PATH=$METEOR_APP_HOME/settings.json
+export METEOR_TEST_SETTINGS_PATH=$METEOR_APP_HOME/test-settings.json
+
+# Let's create a meteor meteor settings file that merges shared.settings and env specific settings
+
+deep-extend $SHOPIFY_LAVAINA_HOME/default.settings.json $METEOR_APP_HOME/default.settings.json > $HOME/tmp/default.settings.json
+deep-extend $HOME/tmp/default.settings.json $METEOR_APP_HOME/$DEVELOPER.settings.json > $METEOR_SETTINGS_PATH
+
+if [ -z "$USE_METEOR_SUBMODULE" ]; then
+  meteor_path=$HOME/.meteor
+else
+  meteor_path=$SHOPIFY_LAVAINA_HOME/submodules/meteor
+fi
