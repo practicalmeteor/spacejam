@@ -6,10 +6,10 @@ if [ -z "$METEOR_ENV" ]; then
   return
 fi
 
-export REPO_HOME=$(git rev-parse --show-toplevel)
-
 export SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
 source $SPACEJAM_BIN/unset-meteor-env
+
+export REPO_HOME=$(git rev-parse --show-toplevel)
 
 if [ -e "$PWD/$METEOR_ENV.meteor.env" ]; then
   export METEOR_ENV_FILE="$PWD/$METEOR_ENV.meteor.env"
@@ -21,12 +21,12 @@ else
   if [ -e "$parent_dir/app/$METEOR_ENV.meteor.env" ]; then
     export METEOR_ENV_FILE="$parent_dir/app/$METEOR_ENV.meteor.env"
   elif [ -e "$parent_dir/bin/$METEOR_ENV.meteor.env" ]; then
-    export METEOR_ENV_FILE="$PWD/bin/$METEOR_ENV.meteor.env"
+    export METEOR_ENV_FILE="$parent_dir/bin/$METEOR_ENV.meteor.env"
   fi
 fi
 
 if [ -z "$METEOR_ENV_FILE" ]; then
-  >&2 echo "METEOR_ENV=$METEOR_ENV, but $METEOR_ENV.meteor.env not found. Exiting."
+  >&2 echo "ERROR: METEOR_ENV=$METEOR_ENV, but $METEOR_ENV.meteor.env not found. Exiting."
   exit 1
 fi
 
@@ -44,7 +44,7 @@ if [ -z "$METEOR_APP_HOME" ]; then
   if [ -e "$REPO_HOME/app" ]; then
     export METEOR_APP_HOME="$REPO_HOME/app"
   else
-    >&2 echo "METEOR_APP_HOME is not set and $REPO_HOME/app doesn't exist. Exiting."
+    >&2 echo "ERROR: METEOR_APP_HOME is not set and $REPO_HOME/app doesn't exist. Exiting."
     exit 1
   fi
 fi
@@ -60,19 +60,35 @@ if [ -z "$METEOR_APP_NAME" ]; then
 fi
 
 #if [ -z "$PACKAGE_DIRS" ]; then
-#  #TODO fix
+#  #TODO Add app/packages to PACKAGE_DIRS so cli app can find those packages
 #fi
 
-export METEOR_SETTINGS_PATH=$METEOR_APP_HOME/settings.json
-export METEOR_TEST_SETTINGS_PATH=$METEOR_APP_HOME/test-settings.json
-
-# Let's create a meteor meteor settings file that merges shared.settings and env specific settings
-
-deep-extend $SHOPIFY_LAVAINA_HOME/default.settings.json $METEOR_APP_HOME/default.settings.json > $HOME/tmp/default.settings.json
-deep-extend $HOME/tmp/default.settings.json $METEOR_APP_HOME/$DEVELOPER.settings.json > $METEOR_SETTINGS_PATH
-
-if [ -z "$USE_METEOR_SUBMODULE" ]; then
-  meteor_path=$HOME/.meteor
-else
-  meteor_path=$SHOPIFY_LAVAINA_HOME/submodules/meteor
+if [ -n "$MONGO_DB" ]; then
+  if [ -z "$MONGO_USERNAME" ]; then
+    >&2 echo "ERROR: MONGO_DB is set but MONGO_USERNAME isn't. Exiting."
+    exit 1
+  fi
+  if [ -z "$MONGO_PASSWORD" ]; then
+    >&2 echo "ERROR: MONGO_DB is set but MONGO_PASSWORD isn't. Exiting."
+    exit 1
+  fi
+  if [ -z "$MONGO_HOST" ]; then
+    >&2 echo "ERROR: MONGO_DB is set but MONGO_HOST isn't. Exiting."
+    exit 1
+  fi
+  export MONGO_URL="mongodb://$MONGO_USERNAME:$MONGO_PASSWORD@$MONGO_HOST/$MONGO_DB"
 fi
+
+
+export METEOR_SETTINGS_PATH=$METEOR_APP_HOME/settings.json
+
+set -e
+# Let's create a meteor meteor settings file that merges the default settings and env specific settings
+deep-extend $HOME/.meteor.settings.json $METEOR_APP_HOME/default.settings.json $METEOR_APP_HOME/$METEOR_ENV.settings.json > $METEOR_SETTINGS_PATH
+set +e
+
+#if [ -z "$USE_METEOR_SUBMODULE" ]; then
+#  meteor_path=$HOME/.meteor
+#else
+#  meteor_path=$SHOPIFY_LAVAINA_HOME/submodules/meteor
+#fi

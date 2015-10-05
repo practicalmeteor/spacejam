@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 
-set -x
-
 export SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
 source $SPACEJAM_BIN/set-meteor-env
-echo "After $SPACEJAM_BIN/set-meteor-env"
-exit 0
 
 # For sure can do a better DRY job here, but no time right now
 if [ -n "$METEOR_APP_HOME" ]; then
