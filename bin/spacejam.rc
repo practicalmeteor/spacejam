@@ -1,0 +1,4 @@
+#!/bin/bash -e
+
+export SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
+alias menv='source $SPACEJAM_BIN/menv.rc'
