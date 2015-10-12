@@ -1,5 +1,8 @@
 #!/bin/bash -xe
 
+export SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
+source $SPACEJAM_BIN/set-meteor-env
+
 if [ -z "$METEOR_USERNAME" ]; then
   echo "ERROR: METEOR_USERNAME is not defined. Exiting."
   exit 1

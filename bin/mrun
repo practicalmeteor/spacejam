@@ -3,6 +3,8 @@
 export SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
 source $SPACEJAM_BIN/set-meteor-env
 
+unset METEOR_TEST_PACKAGES
+
 # For sure can do a better DRY job here, but no time right now
 if [ -n "$METEOR_APP_HOME" ]; then
  if [ -n "$METEOR_SETTINGS_PATH" ]; then
