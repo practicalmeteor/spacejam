@@ -36,7 +36,17 @@ class Spacejam extends EventEmitter
     METEOR_ERROR: 3
     TEST_TIMEOUT: 4
     ALREADY_RUNNING: 5
+    CLIENT_ERROR: 6
 
+  @DONE_MESSAGE: [
+    "All tests have passed"
+    "Usage error"
+    "Some tests have failed"
+    "meteor is crashing server side"
+    "Total timeout for tests has been reached"
+    "spacejam is already running"
+    "Unhandled error in meteor client side code"
+  ]
 
   constructor: ->
     log.debug "Spacejam.constructor()"

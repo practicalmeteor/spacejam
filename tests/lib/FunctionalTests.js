@@ -175,6 +175,21 @@
           };
         })(this));
       });
+      it("should exit with 6, if the tests contain an error", function(done) {
+        var args, testPort;
+        this.timeout(90000);
+        process.chdir(__dirname + "/../apps/todos");
+        spacejamChild = new ChildProcess();
+        testPort = "8096";
+        args = ["test-packages", "--port", testPort, 'appclientsideerror'];
+        spacejamChild.spawn(spacejamBin, args);
+        return spacejamChild.child.on("exit", (function(_this) {
+          return function(code) {
+            expect(code).to.equal(Spacejam.DONE.CLIENT_ERROR);
+            return done();
+          };
+        })(this));
+      });
       it("should save xunit output to file, if --xunit-out is specified", function(done) {
         var args, testPort;
         spacejamChild = new ChildProcess();
