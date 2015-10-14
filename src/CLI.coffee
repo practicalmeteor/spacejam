@@ -74,12 +74,18 @@ class CLI
     log.debug "CLI.exec() options:", @options
 
     @spacejam.on 'done', (code)=>
+      if Spacejam.DONE_MESSAGE[code]?
+        exitMsg = "spacejam: #{Spacejam.DONE_MESSAGE[code]}. Exiting."
+      else
+        exitMsg = "spacejam: Unknown error with exit code '#{code}'. Exiting."
+      log.error exitMsg
       process.exit code
 
     try
       @spacejam[@commands[command]](@options)
     catch err
       console.trace err
+      log.error "spacejam: Usage or initialization error. Exiting."
       process.exit 1
 
 
