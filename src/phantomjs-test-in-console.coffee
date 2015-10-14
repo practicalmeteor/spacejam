@@ -8,6 +8,13 @@ page.onConsoleMessage = (message) ->
 
 page.open(system.env.ROOT_URL)
 
+page.onError = (msg, trace) ->
+  console.log("phantomjs: #{msg}")
+  trace.forEach((item) ->
+    console.log("    #{item.file}: #{item.line}")
+  )
+  phantom.exit(6)
+
 setInterval ->
   done = page.evaluate ->
     return TEST_STATUS.DONE if TEST_STATUS?
