@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-set -x
+#!/bin/bash -x
 
 if [ -z "$METEOR_ENV" ]; then
   return
@@ -27,7 +25,7 @@ fi
 
 if [ -z "$METEOR_ENV_FILE" ]; then
   >&2 echo "ERROR: METEOR_ENV=$METEOR_ENV, but $METEOR_ENV.meteor.env not found. Exiting."
-  exit 1
+  return 1
 fi
 
 if [ -e "$HOME/.meteor.env" ]; then
@@ -45,7 +43,7 @@ if [ -z "$METEOR_APP_HOME" ]; then
     export METEOR_APP_HOME="$REPO_HOME/app"
   else
     >&2 echo "ERROR: METEOR_APP_HOME is not set and $REPO_HOME/app doesn't exist. Exiting."
-    exit 1
+    return 1
   fi
 fi
 
@@ -66,15 +64,15 @@ fi
 if [ -n "$MONGO_DB" ]; then
   if [ -z "$MONGO_USERNAME" ]; then
     >&2 echo "ERROR: MONGO_DB is set but MONGO_USERNAME isn't. Exiting."
-    exit 1
+    return 1
   fi
   if [ -z "$MONGO_PASSWORD" ]; then
     >&2 echo "ERROR: MONGO_DB is set but MONGO_PASSWORD isn't. Exiting."
-    exit 1
+    return 1
   fi
   if [ -z "$MONGO_HOST" ]; then
     >&2 echo "ERROR: MONGO_DB is set but MONGO_HOST isn't. Exiting."
-    exit 1
+    return 1
   fi
   export MONGO_URL="mongodb://$MONGO_USERNAME:$MONGO_PASSWORD@$MONGO_HOST/$MONGO_DB"
 fi
