@@ -61,7 +61,7 @@ fi
 #  #TODO Add app/packages to PACKAGE_DIRS so cli app can find those packages
 #fi
 
-if [ -n "$MONGO_DB" ]; then
+if [ -z "$MONGO_URL" ] && [ -n "$MONGO_DB" ]; then
   if [ -z "$MONGO_USERNAME" ]; then
     >&2 echo "ERROR: MONGO_DB is set but MONGO_USERNAME isn't. Exiting."
     return 1
@@ -75,6 +75,9 @@ if [ -n "$MONGO_DB" ]; then
     return 1
   fi
   export MONGO_URL="mongodb://$MONGO_USERNAME:$MONGO_PASSWORD@$MONGO_HOST/$MONGO_DB"
+  if [ "$MONGO_SSL" == "true" ]; then
+    export MONGO_URL="${MONGO_URL}?ssl=true"
+  fi
 fi
 
 
