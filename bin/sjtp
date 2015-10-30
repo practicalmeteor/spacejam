@@ -5,10 +5,6 @@ source $SPACEJAM_BIN/set-meteor-env
 
 export METEOR_TEST_PACKAGES=1
 
-if [ -n "$METEOR_SETTINGS_PATH" ]; then
-  cat $METEOR_SETTINGS_PATH
-fi
-
 # For sure can do a better DRY job here, but no time right now
 if [ -n "$METEOR_APP_HOME" ]; then
  if [ -n "$METEOR_SETTINGS_PATH" ]; then
