@@ -137,6 +137,7 @@ spacejam test-packages ./
 * ```2``` At least one test has failed.
 * ```3``` The meteor app has errors.
 * ```4``` The tests have timed out.
+* ```6``` An uncaught error happened client side before or during tests.
 
 ## spacejam package-version
 

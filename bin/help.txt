@@ -82,6 +82,7 @@ Exit codes
 2 - At least one test has failed.
 3 - The meteor app exited with an error or is crashing.
 4 - The tests have timed out.
+6 - An uncaught error happened client side before or during tests.
 
 spacejam package-version
 ------------------------
