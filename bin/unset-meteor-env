@@ -34,3 +34,7 @@ unset TEST_METEOR_SETTINGS_PATH
 # meteor deployment related extras
 unset METEOR_HOSTNAME
 unset NGINX_PROTOCOL
+
+# docker related config
+unset DOCKER_HTTP_PORT
+unset DOCKER_HTTPS_PORT

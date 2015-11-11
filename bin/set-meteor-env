@@ -80,8 +80,15 @@ if [ -z "$MONGO_URL" ] && [ -n "$MONGO_DB" ]; then
   fi
 fi
 
-
 export METEOR_SETTINGS_PATH=$METEOR_APP_HOME/settings.json
+
+if [ -z "$DOCKER_HTTP_PORT" ]; then
+  DOCKER_HTTP_PORT="80"
+fi
+
+if [ -z "$DOCKER_HTTPS_PORT" ]; then
+  DOCKER_HTTPS_PORT="443"
+fi
 
 set -e
 # Let's create a meteor meteor settings file that merges the default settings and env specific settings
