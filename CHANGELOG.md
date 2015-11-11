@@ -1,3 +1,7 @@
+## 1.3.0
+
+- Exit with exit code 6 in case of an uncaught client side error before or during tests.
+
 ## 1.2.2
 
 - Add support for METEOR_APP_HOME in mrun
