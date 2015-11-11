@@ -1,0 +1,21 @@
+#!/bin/bash -x
+
+export SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
+source $SPACEJAM_BIN/set-meteor-env
+
+export METEOR_TEST_PACKAGES=1
+
+# For sure can do a better DRY job here, but no time right now
+if [ -n "$METEOR_APP_HOME" ]; then
+ if [ -n "$METEOR_SETTINGS_PATH" ]; then
+    cd $METEOR_APP_HOME && spacejam test-packages --settings $METEOR_SETTINGS_PATH $@
+  else
+    cd $METEOR_APP_HOME && spacejam test-packages $@
+  fi
+else
+ if [ -n "$METEOR_SETTINGS_PATH" ]; then
+    spacejam test-packages --settings $METEOR_SETTINGS_PATH $@
+  else
+    spacejam test-packages $@
+  fi
+fi
