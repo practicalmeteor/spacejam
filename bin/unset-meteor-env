@@ -11,7 +11,7 @@ unset MONGO_OPLOG_URL
 # mongodb related extras
 unset MONGO_USERNAME
 unset MONGO_PASSWORD
-unset MONGO_SERVER
+unset MONGO_HOST
 unset MONGO_PORT
 unset MONGO_DB
 
@@ -38,3 +38,5 @@ unset NGINX_PROTOCOL
 # docker related config
 unset DOCKER_HTTP_PORT
 unset DOCKER_HTTPS_PORT
+unset DOCKER_CONTAINER_NAME
+unset DOCKER_HOSTNAME
