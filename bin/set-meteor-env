@@ -74,7 +74,7 @@ if [ -z "$MONGO_URL" ] && [ -n "$MONGO_DB" ]; then
     >&2 echo "ERROR: MONGO_DB is set but MONGO_HOST isn't. Exiting."
     return 1
   fi
-  export MONGO_URL="mongodb://$MONGO_USERNAME:$MONGO_PASSWORD@$MONGO_HOST/$MONGO_DB"
+  export MONGO_URL="mongodb://$MONGO_USERNAME:$MONGO_PASSWORD@$MONGO_HOST:$MONGO_PORT/$MONGO_DB"
   if [ "$MONGO_SSL" == "true" ]; then
     export MONGO_URL="${MONGO_URL}?ssl=true"
   fi
