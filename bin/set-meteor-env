@@ -11,6 +11,8 @@ export REPO_HOME=$(git rev-parse --show-toplevel)
 
 if [ -e "$PWD/$METEOR_ENV.meteor.env" ]; then
   export METEOR_ENV_FILE="$PWD/$METEOR_ENV.meteor.env"
+elif [ -e "$PWD/app/$METEOR_ENV.meteor.env" ]; then
+  export METEOR_ENV_FILE="$PWD/app/$METEOR_ENV.meteor.env"
 elif [ -e "$PWD/bin/$METEOR_ENV.meteor.env" ]; then
   export METEOR_ENV_FILE="$PWD/bin/$METEOR_ENV.meteor.env"
 else
@@ -39,10 +41,12 @@ fi
 source $METEOR_ENV_FILE
 
 if [ -z "$METEOR_APP_HOME" ]; then
-  if [ -e "$REPO_HOME/app" ]; then
+  if [ -e "$REPO_HOME/.meteor" ]; then
+    export METEOR_APP_HOME="$REPO_HOME"
+  elif [ -e "$REPO_HOME/app/.meteor" ]; then
     export METEOR_APP_HOME="$REPO_HOME/app"
   else
-    >&2 echo "ERROR: METEOR_APP_HOME is not set and $REPO_HOME/app doesn't exist. Exiting."
+    >&2 echo "ERROR: METEOR_APP_HOME is not set and cannot find a meteor app in $REPO_HOME or $REPO_HOME/app. Exiting."
     return 1
   fi
 fi
