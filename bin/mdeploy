@@ -1,0 +1,37 @@
+#!/bin/bash -xe
+
+export SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
+source $SPACEJAM_BIN/set-meteor-env
+
+if [ -z "$METEOR_USERNAME" ]; then
+  echo "ERROR: METEOR_USERNAME is not defined. Exiting."
+  exit 1
+fi
+
+if [ -z "$METEOR_PASSWORD" ]; then
+  echo "ERROR: METEOR_PASSWORD is not defined. Exiting."
+  exit 1
+fi
+
+if [ -z "$METEOR_SITE" ]; then
+  if [ -z "$METEOR_ENV" ]; then
+    echo "ERROR: METEOR_SITE is not defined and METEOR_ENV is not set. Exiting."
+    exit 1
+  fi
+  if [ -z "$METEOR_APP_NAME" ]; then
+    echo "ERROR: METEOR_SITE is not defined and METEOR_APP_NAME is not set. Exiting."
+    exit 1
+  fi
+  export METEOR_SITE="$METEOR_ENV-$METEOR_APP_NAME"
+fi
+
+meteor login <<EOF
+$METEOR_USERNAME
+$METEOR_PASSWORD
+EOF
+
+if [ -n "$METEOR_SETTINGS_PATH" ]; then
+  meteor deploy $METEOR_SITE --settings $METEOR_SETTINGS_PATH
+else
+  meteor deploy $METEOR_SITE
+fi

@@ -1,0 +1,8 @@
+#!/bin/bash -xe
+
+if [ -z "$1" ]; then
+  >&2 echo "ERROR: A new METEOR_ENV has not been specified. Exiting."
+  return
+else
+  export METEOR_ENV="$1"
+fi

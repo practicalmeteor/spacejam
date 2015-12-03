@@ -1,0 +1,5 @@
+#!/bin/bash -xe
+
+export SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
+alias menv="source $SPACEJAM_BIN/menv.rc"
+alias msetenv="source $SPACEJAM_BIN/set-meteor-env"
