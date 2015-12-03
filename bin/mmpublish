@@ -8,7 +8,7 @@ if [ -n "$(git status --porcelain)" ]; then
   exit 1
 fi
 
-spacejam test-packages --driver-package=practicalmeteor:mocha-console-reporter ./
+spacejam test-packages --driver-package=practicalmeteor:mocha-console-runner ./
 version=$(spacejam package-version)
 tag_name="v${version}"
 meteor publish $@
