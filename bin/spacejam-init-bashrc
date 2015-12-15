@@ -1,0 +1,5 @@
+#!/bin/bash -xe
+
+#SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
+
+#cat "source $SPACEJAM_BIN/spacejam.rc" >> $HOME/.bashrc
