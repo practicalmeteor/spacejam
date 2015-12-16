@@ -1,5 +1,25 @@
 ## 1.3.0
 
+- Add multi-env support to mrun and sjtp scripts using set-meteor-env and unset-meteor-env scripts
+
+- Add spacejam.rc script that adds the following aliases to the user's shell
+
+menv XXX (i.e. menv STAGE) - switches between envs
+
+msetenv - regenerates the meteor env
+
+- Add spacejam-init-bashrc script that adds to user's .bashrc the menv and msetenv aliases by sourcing spacejam.rc
+
+- Add mdeploy script to login and publish an app to meteor, with multi-env support
+
+- Add mongo-connect and mongo-reset scripts to reset an external mongodb
+
+- Add mmpublish script to publish packages with practicalmeteor:mocha tests
+
+- TODO: Documentation of all of the above in README
+
+## 1.3.0
+
 - Exit with exit code 6 in case of an uncaught client side error before or during tests.
 
 ## 1.2.2
