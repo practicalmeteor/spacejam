@@ -1,0 +1,11 @@
+#!/bin/bash -xe
+
+export SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
+
+if [ -z "$1" ]; then
+  >&2 echo "ERROR: A new METEOR_ENV has not been specified. Exiting."
+  return
+else
+  export METEOR_ENV="$1"
+  source $SPACEJAM_BIN/set-meteor-env
+fi

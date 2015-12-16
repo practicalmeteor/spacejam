@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+mongo -u $MONGO_USERNAME -p $MONGO_PASSWORD $MONGO_HOST:$MONGO_PORT/$MONGO_DB "$@"

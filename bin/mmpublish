@@ -1,0 +1,16 @@
+#!/bin/bash -xe
+
+# mmpublish - meteor mocha publish, i.e.
+# Same script as mpublish, but for packages that use our practicalmeteor:mocha package for testing.
+
+if [ -n "$(git status --porcelain)" ]; then
+  echo "The git working directory is not clean. Exiting."
+  exit 1
+fi
+
+spacejam test-packages --driver-package=practicalmeteor:mocha-console-runner ./
+version=$(spacejam package-version)
+tag_name="v${version}"
+meteor publish $@
+git tag $tag_name
+git push origin $tag_name

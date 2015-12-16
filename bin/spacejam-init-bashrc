@@ -1,0 +1,7 @@
+#!/bin/bash -xe
+
+SPACEJAM_BIN="$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)"
+
+echo "" >> $HOME/.bashrc
+echo "# Added by spacejam npm package" >> $HOME/.bashrc
+echo "[ -f $SPACEJAM_BIN/spacejam.rc ] && source $SPACEJAM_BIN/spacejam.rc" >> $HOME/.bashrc
