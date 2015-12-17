@@ -30,6 +30,8 @@
     "spacejam-init-bashrc": "bin/spacejam-init-bashrc",
     "mrun": "bin/mrun",
     "mtp": "bin/mtp",
+    "set-meteor-env": "bin/set-meteor-env",
+    "unset-meteor-env": "bin/unset-meteor-env",
     "mongo-reset": "bin/mongo-reset",
     "mdeploy": "bin/mdeploy",
     "mpublish": "bin/mpublish",
