@@ -1,4 +1,8 @@
-## 1.3.0
+## 1.4.1
+
+- Add set-meteor-env and unset-meteor-env to package.json bin so other scripts can find them.
+
+## 1.4.0
 
 - Add multi-env support to mrun and sjtp scripts using set-meteor-env and unset-meteor-env scripts
 
