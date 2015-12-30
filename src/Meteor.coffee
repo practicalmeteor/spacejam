@@ -72,6 +72,9 @@ class Meteor extends EventEmitter
 
     expect(@options.packages, "options.packages is not an array of package names").to.be.an 'array'
 
+    if @options.mocha?
+      @options["driver-package"] = "practicalmeteor:mocha-console-reporter"
+
     if @options.packages.length > 0
       packagesToTest = @_globPackages(@options.packages)
       expect(packagesToTest).to.have.length.above 0
