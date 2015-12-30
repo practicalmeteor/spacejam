@@ -12,7 +12,8 @@ page.onError = (msg, trace) ->
 
   mochaIsRunning = page.evaluate ->
     return mochaIsRunning
-  # Mocha will handle the error for us
+
+  # Mocha will handle and report the uncaught errors for us
   if mochaIsRunning
     return
 
