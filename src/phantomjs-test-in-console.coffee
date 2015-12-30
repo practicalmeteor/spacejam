@@ -9,7 +9,16 @@ page.onConsoleMessage = (message) ->
 page.open(system.env.ROOT_URL)
 
 page.onError = (msg, trace) ->
+
+  mochaIsRunning = page.evaluate ->
+    return mochaIsRunning
+
+  # Mocha will handle and report the uncaught errors for us
+  if mochaIsRunning
+    return
+
   console.log("phantomjs: #{msg}")
+
   trace.forEach((item) ->
     console.log("    #{item.file}: #{item.line}")
   )

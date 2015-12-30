@@ -66,6 +66,9 @@ class Meteor extends EventEmitter
 
     expect(@options['driver-package'], "options.driver-package is missing").to.be.ok
 
+    if @options.mocha?
+      @options["driver-package"] = "practicalmeteor:mocha-console-runner"
+
     expect(+@options.port, "options.port is not a number.").to.be.ok
 
     @options["root-url"] ?= "http://localhost:#{@options.port}/"
