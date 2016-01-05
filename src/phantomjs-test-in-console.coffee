@@ -1,6 +1,7 @@
 page = require('webpage').create()
 system = require('system')
 
+console.log("phantomjs: Is this working?")
 console.log("phantomjs: Running tests at #{system.env.ROOT_URL} using test-in-console")
 
 page.onConsoleMessage = (message) ->
@@ -11,7 +12,7 @@ page.open(system.env.ROOT_URL)
 page.onError = (msg, trace) ->
 
   mochaIsRunning = page.evaluate ->
-    return mochaIsRunning
+    return window.mochaIsRunning
 
   # Mocha will handle and report the uncaught errors for us
   if mochaIsRunning
