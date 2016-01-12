@@ -2,16 +2,47 @@
 
 ## Overview
 
-An npm package to test your meteor packages from the command line using phantomjs. Use in continuous integration environments, such as Travis CI. Also includes helper scripts, mrun and mtp, to easily run meteor and test meteor packages in parallel, during development.
+An npm package to run your meteor package tinytests and mocha tests from the command line with phantomjs. Can be used used in continuous integration environments, such as Travis CI.
 
 ## Quickstart
 
+### Installation
+
 ```
 npm install -g spacejam
-# Run from a meteor package folder
+```
+
+### Running
+
+spacejam test-packages works the same as meteor-test-packages, i.e.:
+
+### Running package tinytests
+
+Assuming you use [tinytest](https://atmospherejs.com/meteor/tinytest) for your package tests:
+
+```
+# Inside a meteor package folder
 spacejam test-packages ./
-# Run from a meteor app folder
+# Inside a meteor app folder
 spacejam test-packages myaccount:mypkg1 myaccount:mypkg2
+```
+
+### Running package mocha tests
+
+Assuming you use [practicalmeteor:mocha](https://atmospherejs.com/practicalmeteor/mocha) for your package tests:
+
+```
+# Inside a meteor package folder
+spacejam test-packages --driver-package=practicalmeteor:mocha-console-runner ./
+# Inside a meteor app folder
+spacejam test-packages --driver-package=practicalmeteor:mocha-console-runner myaccount:mypkg1 myaccount:mypkg2
+```
+
+Alternatively, just use the spacejam-mocha wrapper script to avoid specifying the driver-package on the command line:
+
+```
+spacejam-mocha ./
+spacejam-mocha myaccount:mypkg1 myaccount:mypkg2
 ```
 
 ## Table of Contents
@@ -93,6 +124,10 @@ Total timeout for all tests. Defaults to no timeout.
 
 The following options are meteor options and are passed through to meteor (all are optional):
 
+`--driver-package=<driver-package>`
+
+For running your practicalmeteor:mocha tests, use practicalmeteor:mocha-console-runner
+
 `--port <port>`
 
 The meteor port. Defaults to 4096, and not PORT, to avoid conflicts with your meteor app PORT.
@@ -126,6 +161,8 @@ to run your package tests without a meteor app, from within your package folder,
 
 ````
 spacejam test-packages ./
+OR
+spacejam-mocha test-packages ./
 ```
 
 ### Exit codes
