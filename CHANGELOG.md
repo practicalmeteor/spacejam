@@ -1,3 +1,11 @@
+## 1.5.0
+
+- Add spacejam-mocha
+
+- Document mocha support in package desc, readme and help
+
+- Let mocha report uncaught client side exceptions, instead of exiting.
+
 ## 1.4.1
 
 - Add set-meteor-env and unset-meteor-env to package.json bin so other scripts can find them.
