@@ -125,7 +125,7 @@ The following options are meteor options and are passed through to meteor (all a
 
 `--driver-package=<driver-package>`
 
-For running your practicalmeteor:mocha tests, use practicalmeteor:mocha-console-runner
+For running your [practicalmeteor:mocha](https://atmospherejs.com/practicalmeteor/mocha) tests, use [practicalmeteor:mocha-console-runner](https://atmospherejs.com/practicalmeteor/mocha-console-runner)
 
 `--port <port>`
 
