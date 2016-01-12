@@ -1,7 +1,6 @@
 page = require('webpage').create()
 system = require('system')
 
-console.log("phantomjs: Is this working?")
 console.log("phantomjs: Running tests at #{system.env.ROOT_URL} using test-in-console")
 
 page.onConsoleMessage = (message) ->
