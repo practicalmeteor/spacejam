@@ -47,6 +47,10 @@ Total timeout for all tests. Defaults to no timeout.
 
 The following options are meteor options and are passed through to meteor (all are optional):
 
+`--driver-package=<driver-package>`
+
+For running your practicalmeteor:mocha tests, use practicalmeteor:mocha-console-runner
+
 --port <port>
 
 The meteor port. Defaults to 4096, and not PORT, to avoid conflicts with your meteor app PORT.
