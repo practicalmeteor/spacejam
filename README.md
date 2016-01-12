@@ -87,8 +87,6 @@ This will automatically add spacejam, mrun and mtp to your path.
 
 `package...` can be a list of packages with [tinytests](https://atmospherejs.com/meteor/tinytest) or [mocha](https://atmospherejs.com/practicalmeteor/mocha) tests.
 
-It enhances meteor test-packages, by supporting glob wildcards on package names that are matched against all package names in the meteor app packages folder. Useful if all your package names start with the same prefix.
-
 If not specified, will call meteor test-packages without arguments which will result in meteor testing all of the following packages:
 
 1. All of your app's packages, if run from within a meteor app folder.
