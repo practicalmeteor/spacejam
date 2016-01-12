@@ -4,7 +4,7 @@
 
 - Document mocha support in package desc, readme and help
 
-- Let mocha report uncaught client side exceptions, instead of exiting.
+- Let mocha report uncaught client side exceptions during tests, instead of exiting.
 
 ## 1.4.1
 
