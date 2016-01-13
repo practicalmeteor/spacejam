@@ -2,16 +2,47 @@
 
 ## Overview
 
-An npm package to test your meteor packages from the command line using phantomjs. Use in continuous integration environments, such as Travis CI. Also includes helper scripts, mrun and mtp, to easily run meteor and test meteor packages in parallel, during development.
+An npm package to run your meteor package tinytests and mocha tests from the command line with phantomjs. Can be used in continuous integration environments, such as Travis CI.
 
 ## Quickstart
 
+### Installation
+
 ```
 npm install -g spacejam
-# Run from a meteor package folder
+```
+
+### Running
+
+spacejam test-packages works the same as meteor-test-packages, i.e.:
+
+### Running package tinytests
+
+Assuming you use [tinytest](https://atmospherejs.com/meteor/tinytest) for your package tests:
+
+```
+# Inside a meteor package folder
 spacejam test-packages ./
-# Run from a meteor app folder
+# Inside a meteor app folder
 spacejam test-packages myaccount:mypkg1 myaccount:mypkg2
+```
+
+### Running package mocha tests
+
+Assuming you use [practicalmeteor:mocha](https://atmospherejs.com/practicalmeteor/mocha) for your package tests:
+
+```
+# Inside a meteor package folder
+spacejam test-packages --driver-package=practicalmeteor:mocha-console-runner ./
+# Inside a meteor app folder
+spacejam test-packages --driver-package=practicalmeteor:mocha-console-runner myaccount:mypkg1 myaccount:mypkg2
+```
+
+Alternatively, just use the spacejam-mocha wrapper script to avoid specifying the driver-package on the command line:
+
+```
+spacejam-mocha ./
+spacejam-mocha myaccount:mypkg1 myaccount:mypkg2
 ```
 
 ## Table of Contents
@@ -54,8 +85,7 @@ This will automatically add spacejam, mrun and mtp to your path.
 
 `spacejam test-packages [options] [package...]`
 
-`package...` can be a list of packages with tinytests or [munit](https://atmospherejs.com/package/munit) tests.
-It enhances meteor test-packages, by supporting glob wildcards on package names that are matched against all package names in the meteor app packages folder. Useful if all your package names start with the same prefix.
+`package...` can be a list of packages with [tinytests](https://atmospherejs.com/meteor/tinytest) or [mocha](https://atmospherejs.com/practicalmeteor/mocha) tests.
 
 If not specified, will call meteor test-packages without arguments which will result in meteor testing all of the following packages:
 
@@ -93,6 +123,10 @@ Total timeout for all tests. Defaults to no timeout.
 
 The following options are meteor options and are passed through to meteor (all are optional):
 
+`--driver-package=<driver-package>`
+
+For running your [practicalmeteor:mocha](https://atmospherejs.com/practicalmeteor/mocha) tests, use [practicalmeteor:mocha-console-runner](https://atmospherejs.com/practicalmeteor/mocha-console-runner)
+
 `--port <port>`
 
 The meteor port. Defaults to 4096, and not PORT, to avoid conflicts with your meteor app PORT.
@@ -126,6 +160,8 @@ to run your package tests without a meteor app, from within your package folder,
 
 ````
 spacejam test-packages ./
+OR
+spacejam-mocha test-packages ./
 ```
 
 ### Exit codes

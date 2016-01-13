@@ -10,9 +10,7 @@ spacejam test-packages [options] [package...]
 ---------------------------------------------
 
 [package...] can be a list of packages with tinytests or munit tests.
-It enhances meteor test-packages, by supporting glob wildcards on package names
-that are matched against all package names in the meteor app packages
-directory.
+
 
 If not specified, acts the same as meteor test-packages without arguments.
 
@@ -46,6 +44,10 @@ If specified, saves results as xunit output to file.
 Total timeout for all tests. Defaults to no timeout.
 
 The following options are meteor options and are passed through to meteor (all are optional):
+
+`--driver-package=<driver-package>`
+
+For running your practicalmeteor:mocha tests, use practicalmeteor:mocha-console-runner
 
 --port <port>
 
