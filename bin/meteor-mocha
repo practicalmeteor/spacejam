@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# A wrapper script to avoid specifying the lengthy --driver-package=... on the command line.
+meteor test-packages --driver-package=practicalmeteor:mocha "$@"
