@@ -52,6 +52,8 @@ spacejam-mocha myaccount:mypkg1 myaccount:mypkg2
     - [Running your package tests standalone](#running-your-package-tests-standalone)
     - [Exit codes](#exit-codes)
 - [spacjam package-version](#spacjam-package-version)
+- [spacejam-mocha wrapper script](#spacejam-mocha-wrapper-script)
+- [meteor-mocha wrapper script](#meteor-mocha-wrapper-script)
 - [mrun (meteor run)](#mrun-meteor-run)
     - [METEOR_SETTINGS_PATH](#meteor_settings_path)
 - [mtp (meteor test-packages)](#mtp-meteor-test-packages)
@@ -178,6 +180,22 @@ spacejam-mocha test-packages ./
 ## spacejam package-version
 
 Prints the package version in the current working directory's package.js
+
+## spacejam-mocha wrapper script
+
+A wrapper script so you don't have to specify --driver-package=practicalmeteor:mocha-console-runner on the command line every time, i.e.:
+
+```
+spacejam-mocha --production ./
+```
+
+## meteor-mocha wrapper script
+
+A wrapper script so you don't have to specify --driver-package=practicalmeteor:mocha on the command line every time, i.e.:
+
+```
+meteor-mocha --port 4000 pkg1 pkg2
+```
 
 ## mrun (meteor run)
 

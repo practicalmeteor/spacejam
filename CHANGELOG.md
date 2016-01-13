@@ -1,3 +1,7 @@
+## 1.5.1
+
+- Add meteor-mocha wrapper script
+
 ## 1.5.0
 
 - Add spacejam-mocha
