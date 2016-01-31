@@ -1,3 +1,7 @@
+## 1.5.2
+
+- Add meteor-mocha wrapper script to npm bin scripts
+
 ## 1.5.1
 
 - Add meteor-mocha wrapper script

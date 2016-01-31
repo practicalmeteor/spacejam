@@ -1,6 +1,6 @@
 {
   "name": "spacejam",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "dependencies": {
     "chai": "1.9.2",
     "glob": "4.0.6",
@@ -29,6 +29,7 @@
     "spacejam": "bin/spacejam",
     "spacejam-mocha": "bin/spacejam-mocha",
     "spacejam-init-bashrc": "bin/spacejam-init-bashrc",
+    "meteor-mocha": "bin/meteor-mocha",
     "mrun": "bin/mrun",
     "mtp": "bin/mtp",
     "set-meteor-env": "bin/set-meteor-env",
