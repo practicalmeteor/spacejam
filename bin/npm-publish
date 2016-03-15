@@ -10,6 +10,6 @@ npm test
 version=$(jq -r .version < package.json)
 tag_name="v${version}"
 echo "Publishing $tag_name"
-npm publish
+npm publish "$@"
 git tag $tag_name
 git push origin $tag_name
