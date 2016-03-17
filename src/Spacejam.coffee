@@ -52,12 +52,14 @@ class Spacejam extends EventEmitter
     log.debug "Spacejam.constructor()"
 
 
-  testPackages: (options = {})->
+  doTests: (command, options = {})->
     log.debug "Spacejam.testPackages()", options
     expect(options).to.be.an "object"
+    expect(command).to.be.a "string"
     expect(options.timeout).to.be.a 'number' if options.timeout?
     expect(options['crash-spacejam-after']).to.be.a 'number' if options['crash-spacejam-after']?
 
+    log.info "command", command
     expect(@meteor, "Meteor is already running").to.be.null
 
     @options = _.extend @defaultOptions(), options
@@ -97,7 +99,7 @@ class Spacejam extends EventEmitter
       @killChildren(Spacejam.DONE.METEOR_ERROR) if not @options.watch
 
     try
-      @meteor.testPackages(@options)
+      @meteor.doTestCommand(command, @options)
     catch err
       console.trace err
       @emit "done", 1
