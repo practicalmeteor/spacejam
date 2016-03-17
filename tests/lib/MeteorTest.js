@@ -127,6 +127,13 @@
         return expect(args).to.be.deep.equal(["test", "--driver-package", "package", "--release", "release", "--port", "3000", "--settings", "settings", "--production", "--test-app-path", "/tmp/app", "--full-app"]);
       });
     });
+    it("testApp - should spawn meteor with correct arguments", function() {
+      meteor.testApp({
+        "full-app": true
+      });
+      expectedSpawnArgs = ["test", "--driver-package", "test-in-console", "--port", defaultTestPort, "--full-app"];
+      return expect(spawnStub.args[0]).to.eql(["meteor", expectedSpawnArgs, getExpectedSpawnOptions(4096)]);
+    });
     it("testPackages() - should spawn meteor with no package arguments", function() {
       meteor.testPackages();
       expectedSpawnArgs.push("--port", defaultTestPort);

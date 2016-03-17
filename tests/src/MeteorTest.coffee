@@ -143,6 +143,16 @@ describe "Meteor", ->
       ])
 
 
+  it  "testApp - should spawn meteor with correct arguments", ->
+    meteor.testApp({"full-app": true})
+    expectedSpawnArgs = [
+      "test",
+      "--driver-package", "test-in-console"
+      "--port", defaultTestPort
+      "--full-app"
+    ]
+    expect(spawnStub.args[0]).to.eql(["meteor", expectedSpawnArgs, getExpectedSpawnOptions(4096)])
+
   it "testPackages() - should spawn meteor with no package arguments",->
     meteor.testPackages()
     expectedSpawnArgs.push("--port", defaultTestPort)
