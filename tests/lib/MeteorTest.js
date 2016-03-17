@@ -88,6 +88,45 @@
       }
       return expectedSpawnOptions;
     };
+    it("getCommonTestArgs() - get common args for test and test-packages command", function() {
+      var args, options;
+      options = {
+        "driver-package": "package",
+        "release": 'release',
+        "port": 'port',
+        "settings": 'settings',
+        "production": true
+      };
+      args = meteor.getCommonTestArgs(options, 'test');
+      return expect(args).to.be.deep.equal(["test", "--driver-package", "package", "--release", "release", "--port", "port", "--settings", "settings", "--production"]);
+    });
+    describe("getTestArgs()", function() {
+      beforeEach(function() {
+        this.options = {
+          "driver-package": "package",
+          "release": 'release',
+          "port": '3000',
+          "settings": 'settings',
+          "production": true,
+          "packages": ['pkg1', 'pkg2']
+        };
+        return meteor.options = this.options;
+      });
+      it("create args for test-packages command", function() {
+        var args;
+        args = meteor.getTestArgs('test-packages');
+        return expect(args).to.be.deep.equal(["test-packages", "--driver-package", "package", "--release", "release", "--port", "3000", "--settings", "settings", "--production", "pkg1", "pkg2"]);
+      });
+      return it("create args for test command", function() {
+        var args;
+        _.extend(this.options, {
+          "test-app-path": "/tmp/app",
+          "full-app": true
+        });
+        args = meteor.getTestArgs('test');
+        return expect(args).to.be.deep.equal(["test", "--driver-package", "package", "--release", "release", "--port", "3000", "--settings", "settings", "--production", "--test-app-path", "/tmp/app", "--full-app"]);
+      });
+    });
     it("testPackages() - should spawn meteor with no package arguments", function() {
       meteor.testPackages();
       expectedSpawnArgs.push("--port", defaultTestPort);

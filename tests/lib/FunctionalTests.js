@@ -232,7 +232,7 @@
         })(this));
       });
     });
-    return describe("package-version", function() {
+    describe("package-version", function() {
       return it("should print the package version", function(done) {
         process.chdir(__dirname + "/../packages/standalone-package");
         spacejamChild = new ChildProcess();
@@ -248,6 +248,61 @@
             }
           };
         })(this));
+      });
+    });
+    return describe("test", function() {
+      describe("--full-app mode", function() {
+        it("should exit with 0 with successful tests", function(done) {
+          var args;
+          process.chdir(__dirname + "/../apps/passing-app-tests");
+          args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner", "--full-app"];
+          spacejamChild.spawn(spacejamBin, args);
+          return spacejamChild.child.on("exit", (function(_this) {
+            return function(code) {
+              expect(code, "spacejam exited with the wrong code").to.equal(Spacejam.DONE.TEST_SUCCESS);
+              return done();
+            };
+          })(this));
+        });
+        return it("should exit with 1 with successful tests", function(done) {
+          var args;
+          process.chdir(__dirname + "/../apps/failling-app-tests");
+          args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner", "--full-app"];
+          args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner", "--full-app"];
+          spacejamChild.spawn(spacejamBin, args);
+          return spacejamChild.child.on("exit", (function(_this) {
+            return function(code) {
+              expect(code, "spacejam exited with the wrong code").to.equal(Spacejam.DONE.TEST_FAILED);
+              return done();
+            };
+          })(this));
+        });
+      });
+      return describe("unit tests mode", function() {
+        it("should exit with 0 with successful tests", function(done) {
+          var args;
+          process.chdir(__dirname + "/../apps/passing-app-tests");
+          args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner"];
+          spacejamChild.spawn(spacejamBin, args);
+          return spacejamChild.child.on("exit", (function(_this) {
+            return function(code) {
+              expect(code, "spacejam exited with the wrong code").to.equal(Spacejam.DONE.TEST_SUCCESS);
+              return done();
+            };
+          })(this));
+        });
+        return it("should exit with 1 with successful tests", function(done) {
+          var args;
+          process.chdir(__dirname + "/../apps/failling-app-tests");
+          args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner"];
+          spacejamChild.spawn(spacejamBin, args);
+          return spacejamChild.child.on("exit", (function(_this) {
+            return function(code) {
+              expect(code, "spacejam exited with the wrong code").to.equal(Spacejam.DONE.TEST_FAILED);
+              return done();
+            };
+          })(this));
+        });
       });
     });
   });
