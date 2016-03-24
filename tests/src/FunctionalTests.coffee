@@ -196,3 +196,46 @@ describe "spacejam", ->
           done()
         catch err
           done(err)
+
+  describe "test", ->
+
+
+    describe "--full-app mode", ->
+
+
+      it "should exit with 0 with successful tests", (done)->
+        process.chdir(__dirname + "/../apps/passing-app-tests")
+        args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner", "--full-app"]
+        spacejamChild.spawn(spacejamBin, args)
+        spacejamChild.child.on "exit", (code) =>
+          expect(code,"spacejam exited with the wrong code").to.equal Spacejam.DONE.TEST_SUCCESS
+          done()
+
+      it "should exit with 1 with successful tests", (done)->
+        process.chdir(__dirname + "/../apps/failling-app-tests")
+        args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner", "--full-app"]
+        args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner", "--full-app"]
+        spacejamChild.spawn(spacejamBin, args)
+        spacejamChild.child.on "exit", (code) =>
+          expect(code,"spacejam exited with the wrong code").to.equal Spacejam.DONE.TEST_FAILED
+          done()
+
+
+    describe "unit tests mode", ->
+
+      it "should exit with 0 with successful tests", (done)->
+        process.chdir(__dirname + "/../apps/passing-app-tests")
+        args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner"]
+        spacejamChild.spawn(spacejamBin, args)
+        spacejamChild.child.on "exit", (code) =>
+          expect(code,"spacejam exited with the wrong code").to.equal Spacejam.DONE.TEST_SUCCESS
+          done()
+
+      it "should exit with 1 with successful tests", (done)->
+        process.chdir(__dirname + "/../apps/failling-app-tests")
+        args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner"]
+        spacejamChild.spawn(spacejamBin, args)
+        spacejamChild.child.on "exit", (code) =>
+          expect(code,"spacejam exited with the wrong code").to.equal Spacejam.DONE.TEST_FAILED
+          done()
+

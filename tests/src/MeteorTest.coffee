@@ -72,10 +72,91 @@ describe "Meteor", ->
     return expectedSpawnOptions
 
 
+  it "getCommonTestArgs() - get common args for test and test-packages command", ->
+    options = {
+      "driver-package": "package"
+      "release": 'release'
+      "port": 'port'
+      "settings": 'settings'
+      "production": true
+    }
+
+    args = meteor.getCommonTestArgs(options, 'test')
+
+    expect(args).to.be.deep.equal([
+      "test",
+      "--driver-package", "package",
+      "--release", "release",
+      "--port", "port",
+      "--settings", "settings"
+      "--production"
+    ])
+
+
+  describe "getTestArgs()", ->
+
+    beforeEach ->
+      @options = {
+        "driver-package": "package"
+        "release": 'release'
+        "port": '3000'
+        "settings": 'settings'
+        "production": true,
+        "packages": ['pkg1', 'pkg2']
+      }
+      meteor.options = @options
+
+
+    it "create args for test-packages command", ->
+
+      args = meteor.getTestArgs('test-packages')
+
+      expect(args).to.be.deep.equal([
+        "test-packages",
+        "--driver-package", "package",
+        "--release", "release",
+        "--port", "3000",
+        "--settings", "settings"
+        "--production",
+        "pkg1", "pkg2"
+      ])
+
+    it "create args for test command", ->
+
+      _.extend(@options,{
+        "test-app-path": "/tmp/app"
+        "full-app": true
+      })
+
+
+      args = meteor.getTestArgs('test')
+
+      expect(args).to.be.deep.equal( [
+        "test",
+        "--driver-package", "package",
+        "--release", "release",
+        "--port", "3000",
+        "--settings", "settings",
+        "--production",
+        "--test-app-path", "/tmp/app",
+        "--full-app"
+      ])
+
+
+  it  "testApp - should spawn meteor with correct arguments", ->
+    meteor.testApp({"full-app": true})
+    expectedSpawnArgs = [
+      "test",
+      "--driver-package", "test-in-console"
+      "--port", defaultTestPort
+      "--full-app"
+    ]
+    expect(spawnStub.args[0]).to.eql(["meteor", expectedSpawnArgs, getExpectedSpawnOptions(4096)])
+
   it "testPackages() - should spawn meteor with no package arguments",->
     meteor.testPackages()
     expectedSpawnArgs.push("--port", defaultTestPort)
-    expect(spawnStub.args[0]).to.eql(["meteor",expectedSpawnArgs,getExpectedSpawnOptions(4096)])
+    expect(spawnStub.args[0]).to.eql(["meteor", expectedSpawnArgs, getExpectedSpawnOptions(4096)])
 
 
   it "testPackages() - should spawn meteor with a package name argument",->

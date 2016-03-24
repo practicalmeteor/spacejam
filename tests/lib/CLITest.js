@@ -61,7 +61,7 @@
       cli = new CLI();
       spacejam = cli.spacejam;
       exitStub = sinon.stub(process, 'exit');
-      testPackagesStub = sinon.stub(spacejam, 'testPackages');
+      testPackagesStub = sinon.stub(spacejam, 'doTests');
       return phantomjsScript = 'phantomjs-test-in-console.' + (isCoffee ? 'coffee' : 'js');
     });
     afterEach(function() {
@@ -85,17 +85,28 @@
       spawnSpy = null;
       return spacejam = null;
     });
-    it("should call Spacejam.testPackages() with an empty options.packages array, if no packages where provided on the command line", function() {
-      process.argv.push("test-packages");
+    it("should call Spacejam.doTests() test command and full-app mode with a empty array of packages", function() {
+      process.argv.push("test", "--full-app");
       cli.exec();
-      return expect(testPackagesStub).to.have.been.calledWith({
+      return expect(testPackagesStub).to.have.been.calledWith("test", {
+        command: "test",
+        "full-app": true,
         packages: []
       });
     });
-    it("should call Spacejam.testPackages() with options.packages set to the packages provided on the command line", function() {
+    it("should call Spacejam.doTests() with an empty options.packages array, if no packages where provided on the command line", function() {
+      process.argv.push("test-packages");
+      cli.exec();
+      return expect(testPackagesStub).to.have.been.calledWith("test-packages", {
+        command: "test-packages",
+        packages: []
+      });
+    });
+    it("should call Spacejam.doTests() with options.packages set to the packages provided on the command line", function() {
       process.argv.push('test-packages', '--settings', 'settings.json', 'package1', 'package2');
       cli.exec();
-      return expect(testPackagesStub).to.have.been.calledWith({
+      return expect(testPackagesStub).to.have.been.calledWith("test-packages", {
+        command: "test-packages",
         settings: 'settings.json',
         packages: ['package1', 'package2']
       });
@@ -152,6 +163,7 @@
       testPackagesStub.restore();
       process.chdir(__dirname + "/../apps/leaderboard/packages/success");
       process.argv.push('test-packages', '--port', '13096', '--mongo-url', 'mongodb://', '--use-system-phantomjs', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './');
+      console.log(process.argv.join(" "));
       cli.exec();
       return spacejam.on('done', (function(_this) {
         return function(code) {

@@ -53,7 +53,7 @@ describe "CLI", ->
     cli = new CLI()
     spacejam = cli.spacejam
     exitStub = sinon.stub(process, 'exit')
-    testPackagesStub = sinon.stub(spacejam, 'testPackages')
+    testPackagesStub = sinon.stub(spacejam, 'doTests')
     phantomjsScript = 'phantomjs-test-in-console.' + if isCoffee then 'coffee' else 'js'
 
   afterEach ->
@@ -65,15 +65,20 @@ describe "CLI", ->
     spawnSpy = null
     spacejam = null
 
-  it "should call Spacejam.testPackages() with an empty options.packages array, if no packages where provided on the command line", ->
+  it "should call Spacejam.doTests() test command and full-app mode with a empty array of packages", ->
+    process.argv.push "test", "--full-app"
+    cli.exec()
+    expect(testPackagesStub).to.have.been.calledWith("test", {command: "test","full-app":true, packages: []})
+
+  it "should call Spacejam.doTests() with an empty options.packages array, if no packages where provided on the command line", ->
     process.argv.push "test-packages"
     cli.exec()
-    expect(testPackagesStub).to.have.been.calledWith({packages: []})
+    expect(testPackagesStub).to.have.been.calledWith("test-packages", {command: "test-packages", packages: []})
 
-  it "should call Spacejam.testPackages() with options.packages set to the packages provided on the command line", ->
+  it "should call Spacejam.doTests() with options.packages set to the packages provided on the command line", ->
     process.argv.push 'test-packages', '--settings', 'settings.json', 'package1', 'package2'
     cli.exec()
-    expect(testPackagesStub).to.have.been.calledWith({settings: 'settings.json', packages: ['package1', 'package2']})
+    expect(testPackagesStub).to.have.been.calledWith("test-packages", {command: "test-packages", settings: 'settings.json', packages: ['package1', 'package2']})
 
   it "should spawn phantomjs with the value of --phantomjs-options", (done)->
     log.setLevel 'debug'
@@ -111,6 +116,7 @@ describe "CLI", ->
     process.chdir(__dirname + "/../apps/leaderboard/packages/success")
     # We set mongo-url to mongodb:// so test will be faster
     process.argv.push 'test-packages', '--port', '13096', '--mongo-url', 'mongodb://', '--use-system-phantomjs', '--phantomjs-options=--ignore-ssl-errors=true --load-images=false', './'
+    console.log(process.argv.join(" "))
     cli.exec()
     spacejam.on 'done', (code)=>
       try

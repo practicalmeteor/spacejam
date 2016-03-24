@@ -18,6 +18,7 @@ class CLI
     instance ?= new CLI()
 
   commands: {
+    "test" : "testApp"
     "test-packages" : "testPackages"
   }
   
@@ -69,6 +70,7 @@ class CLI
       @printHelp()
 
     @options.packages = @options._.slice(1)
+    @options.command = command
     delete @options._
 
     log.debug "CLI.exec() options:", @options
@@ -82,7 +84,7 @@ class CLI
       process.exit code
 
     try
-      @spacejam[@commands[command]](@options)
+      @spacejam.doTests(command, @options)
     catch err
       console.trace err
       log.error "spacejam: Usage or initialization error. Exiting."
