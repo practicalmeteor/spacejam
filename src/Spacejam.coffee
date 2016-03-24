@@ -59,7 +59,6 @@ class Spacejam extends EventEmitter
     expect(options.timeout).to.be.a 'number' if options.timeout?
     expect(options['crash-spacejam-after']).to.be.a 'number' if options['crash-spacejam-after']?
 
-    log.info "command", command
     expect(@meteor, "Meteor is already running").to.be.null
 
     @options = _.extend @defaultOptions(), options
