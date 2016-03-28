@@ -3,6 +3,7 @@
   "version": "1.6.0-rc1",
   "dependencies": {
     "chai": "1.9.2",
+    "cross-spawn": "^2.1.5",
     "glob": "4.0.6",
     "loglevel": "1.1.0",
     "phantomjs": "1.9.16",
