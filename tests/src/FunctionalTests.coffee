@@ -212,7 +212,7 @@ describe "spacejam", ->
           done()
 
       it "should exit with 1 with successful tests", (done)->
-        process.chdir(__dirname + "/../apps/failling-app-tests")
+        process.chdir(__dirname + "/../apps/failing-app-tests")
         args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner", "--full-app"]
         args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner", "--full-app"]
         spacejamChild.spawn(spacejamBin, args)
@@ -231,8 +231,8 @@ describe "spacejam", ->
           expect(code,"spacejam exited with the wrong code").to.equal Spacejam.DONE.TEST_SUCCESS
           done()
 
-      it "should exit with 1 with successful tests", (done)->
-        process.chdir(__dirname + "/../apps/failling-app-tests")
+      it "should exit with 2 with failed tests", (done)->
+        process.chdir(__dirname + "/../apps/failing-app-tests")
         args = ["test", "--driver-package", "practicalmeteor:mocha-console-runner"]
         spacejamChild.spawn(spacejamBin, args)
         spacejamChild.child.on "exit", (code) =>

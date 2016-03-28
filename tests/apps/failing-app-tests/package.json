@@ -1,5 +1,5 @@
 {
-  "name": "failling-app-tests",
+  "name": "failing-app-tests",
   "private": true,
   "scripts": {
     "start": "meteor run"
