@@ -11,3 +11,5 @@ jquery
 preserve-inputs
 insecure
 appfails
+standard-minifier-css
+standard-minifier-js
