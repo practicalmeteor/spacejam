@@ -1,9 +1,5 @@
 expect = require("chai").expect
-isCoffee = require './isCoffee'
-if isCoffee
-  ChildProcess = require '../../src/ChildProcess'
-else
-  ChildProcess = require '../../lib/ChildProcess'
+ChildProcess = require '../../lib/ChildProcess'
 path = require 'path'
 _ = require('underscore')
 

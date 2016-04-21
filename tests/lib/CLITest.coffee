@@ -8,17 +8,10 @@ expect = chai.expect
 sinon = require("sinon")
 sinonChai = require("sinon-chai")
 chai.use(sinonChai)
-isCoffee = require './isCoffee'
-if isCoffee
-  require '../../src/log'
-  CLI = require '../../src/CLI'
-  Spacejam = require '../../src/Spacejam'
-  ChildProcess = require '../../src/ChildProcess'
-else
-  require '../../lib/log'
-  CLI = require '../../lib/CLI'
-  Spacejam = require '../../lib/Spacejam'
-  ChildProcess = require '../../lib/ChildProcess'
+require '../../lib/log'
+CLI = require '../../lib/CLI'
+Spacejam = require '../../lib/Spacejam'
+ChildProcess = require '../../lib/ChildProcess'
 
 
 
@@ -53,8 +46,8 @@ describe "CLI", ->
     cli = new CLI()
     spacejam = cli.spacejam
     exitStub = sinon.stub(process, 'exit')
-    testPackagesStub = sinon.stub(spacejam, 'doTests')
-    phantomjsScript = 'phantomjs-test-in-console.' + if isCoffee then 'coffee' else 'js'
+    testPackagesStub = sinon.stub(spacejam, 'runTests')
+    phantomjsScript = 'phantomjs-test-in-console.js'
 
   afterEach ->
     exitStub?.restore?()
@@ -65,17 +58,17 @@ describe "CLI", ->
     spawnSpy = null
     spacejam = null
 
-  it "should call Spacejam.doTests() test command and full-app mode with a empty array of packages", ->
+  it "should call Spacejam.runTests() test command and full-app mode with a empty array of packages", ->
     process.argv.push "test", "--full-app"
     cli.exec()
     expect(testPackagesStub).to.have.been.calledWith("test", {command: "test","full-app":true, packages: []})
 
-  it "should call Spacejam.doTests() with an empty options.packages array, if no packages where provided on the command line", ->
+  it "should call Spacejam.runTests() with an empty options.packages array, if no packages where provided on the command line", ->
     process.argv.push "test-packages"
     cli.exec()
     expect(testPackagesStub).to.have.been.calledWith("test-packages", {command: "test-packages", packages: []})
 
-  it "should call Spacejam.doTests() with options.packages set to the packages provided on the command line", ->
+  it "should call Spacejam.runTests() with options.packages set to the packages provided on the command line", ->
     process.argv.push 'test-packages', '--settings', 'settings.json', 'package1', 'package2'
     cli.exec()
     expect(testPackagesStub).to.have.been.calledWith("test-packages", {command: "test-packages", settings: 'settings.json', packages: ['package1', 'package2']})

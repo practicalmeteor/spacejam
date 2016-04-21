@@ -1,5 +1,5 @@
 #!/usr/bin/env coffee
 
-require('../src/log')
+require('../lib/log')
 
-require('../src/CLI').get().exec()
+require('../lib/CLI').get().exec()

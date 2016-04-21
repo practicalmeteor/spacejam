@@ -4,11 +4,7 @@ sinon = require("sinon")
 sinonChai = require("sinon-chai")
 chai.use(sinonChai)
 path = require "path"
-isCoffee = require './isCoffee'
-if isCoffee
-  Spacejam = require '../../src/Spacejam'
-else
-  Spacejam = require '../../lib/Spacejam'
+Spacejam = require '../../lib/Spacejam'
 
 
 describe "Spacejam", ->

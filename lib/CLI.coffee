@@ -84,7 +84,7 @@ class CLI
       process.exit code
 
     try
-      @spacejam.doTests(command, @options)
+      @spacejam.runTests(command, @options)
     catch err
       console.trace err
       log.error "spacejam: Usage or initialization error. Exiting."

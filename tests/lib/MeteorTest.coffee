@@ -4,13 +4,8 @@ expect = chai.expect
 sinon = require("sinon")
 sinonChai = require("sinon-chai")
 chai.use(sinonChai)
-isCoffee = require './isCoffee'
-if isCoffee
-  Meteor = require "../../src/Meteor"
-  ChildProcess = require "../../src/ChildProcess"
-else
-  Meteor = require "../../lib/Meteor"
-  ChildProcess = require "../../lib/ChildProcess"
+Meteor = require "../../lib/Meteor"
+ChildProcess = require "../../lib/ChildProcess"
 ps = require('psext')
 path = require "path"
 

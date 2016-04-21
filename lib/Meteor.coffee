@@ -86,11 +86,11 @@ class Meteor extends EventEmitter
 
   testPackages: (options = {})->
     log.debug "Meteor.testPackages()", arguments
-    @doTestCommand("test-packages", options)
+    @runTestCommand("test-packages", options)
 
   testApp: (options = {})->
     log.debug "Meteor.testApp()", arguments
-    @doTestCommand("test", options)
+    @runTestCommand("test", options)
 
 # => Exited with code:
   # => Your application has errors. Waiting for file change.
@@ -102,8 +102,8 @@ class Meteor extends EventEmitter
 
   # @options
   # @parseCommandLine
-  doTestCommand: (command, options = {})=>
-    log.debug "Meteor.doTestCommand()", arguments
+  runTestCommand: (command, options = {})=>
+    log.debug "Meteor.runTestCommand()", arguments
     expect(options, "options should be an object.").to.be.an "object"
     expect(@childProcess, "Meteor's child process is already running").to.be.null
 
