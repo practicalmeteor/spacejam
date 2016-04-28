@@ -5,7 +5,7 @@
     "chai": "1.9.2",
     "glob": "4.0.6",
     "loglevel": "1.1.0",
-    "phantomjs": "1.9.16",
+    "phantomjs-prebuilt": "^2.1.7",
     "psext": "0.0.4",
     "rc": "0.5.1",
     "semver": "4.1.0",

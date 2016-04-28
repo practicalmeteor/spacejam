@@ -1,4 +1,3 @@
-"use strict";
 var TestHelper = function() {};
 TestHelper.prototype.blah = function() {
   describe('test', function() {

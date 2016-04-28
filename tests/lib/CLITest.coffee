@@ -2,7 +2,7 @@ DEFAULT_PATH = process.env.PATH
 
 fs = require('fs')
 path = require 'path'
-phantomjs = require("phantomjs")
+phantomjs = require("phantomjs-prebuilt")
 chai = require("chai")
 expect = chai.expect
 sinon = require("sinon")
