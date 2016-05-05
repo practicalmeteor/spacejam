@@ -67,22 +67,23 @@ describe "Meteor", ->
     return expectedSpawnOptions
 
 
-  it "getCommonTestArgs() - get common args for test and test-packages command", ->
+  it "getTestArgs() - get common args for test and test-packages command", ->
     options = {
       "driver-package": "package"
       "release": 'release'
-      "port": 'port'
+      "port": '3000'
       "settings": 'settings'
       "production": true
+      "packages": ['pkg1', 'pkg2']
     }
 
-    args = meteor.getCommonTestArgs(options, 'test')
+    args = meteor.getTestArgs('test', options)
 
     expect(args).to.be.deep.equal([
       "test",
       "--driver-package", "package",
       "--release", "release",
-      "--port", "port",
+      "--port", "3000",
       "--settings", "settings"
       "--production"
     ])
@@ -104,7 +105,7 @@ describe "Meteor", ->
 
     it "create args for test-packages command", ->
 
-      args = meteor.getTestArgs('test-packages')
+      args = meteor.getTestArgs('test-packages', @options)
 
       expect(args).to.be.deep.equal([
         "test-packages",
@@ -124,7 +125,7 @@ describe "Meteor", ->
       })
 
 
-      args = meteor.getTestArgs('test')
+      args = meteor.getTestArgs('test', @options)
 
       expect(args).to.be.deep.equal( [
         "test",
