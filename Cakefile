@@ -1,6 +1,6 @@
 ChildProcess = require './lib/ChildProcess'
 
-mochaCmdLine = "mocha --colors --compilers coffee:coffee-script/register --reporter spec tests/lib/*Test*.coffee"
+mochaCmdLine = "mocha --colors --compilers coffee:coffee-script/register --reporter spec tests/lib/MeteorTest.coffee"
 
 task "compile", "Compile coffee-script library sources", ->
   child = new ChildProcess()
