@@ -2,6 +2,7 @@
 Usage
 -----
 
+spacejam test [options]
 spacejam test-packages [options] [package...]
 spacejam package-version
 spacejam help

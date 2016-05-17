@@ -67,7 +67,7 @@ class CLI
 
     if not _.has(@commands, command)
       log.error "spacejam: Error: \n'#{command}' is not a recognized command\n" if command
-      @printHelp()
+      return @printHelp()
 
     @options.packages = @options._.slice(1)
     @options.command = command
