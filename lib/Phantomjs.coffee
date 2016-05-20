@@ -3,8 +3,7 @@ expect = require('chai').expect
 ChildProcess = require './ChildProcess'
 EventEmitter = require('events').EventEmitter
 path = require 'path'
-phantomjs = require 'phantomjs'
-isCoffee = __filename.indexOf('.coffee') > 0
+phantomjs = require 'phantomjs-prebuilt'
 
 DEFAULT_PATH = process.env.PATH
 
@@ -13,7 +12,7 @@ class Phantomjs extends EventEmitter
 
   childProcess: null
 
-  run: (url, options = '--load-images=no --ssl-protocol=TLSv1', script = "phantomjs-test-in-console", pipeClass = undefined, pipeClassOptions = undefined, useSystemPhantomjs = false)=>
+  run: (url, options = '--load-images=no --ssl-protocol=TLSv1', script = "phantomjs-test-in-console.js", pipeClass = undefined, pipeClassOptions = undefined, useSystemPhantomjs = false)=>
     log.debug "Phantomjs.run()", arguments
     expect(@childProcess,"ChildProcess is already running").to.be.null
     expect(url, "Invalid url").to.be.a 'string'
@@ -25,7 +24,6 @@ class Phantomjs extends EventEmitter
 
     env = _.extend process.env, {ROOT_URL: url}
 
-    script += if isCoffee then '.coffee' else '.js'
     log.debug("script=#{__dirname}/#{script}")
     spawnArgs = options.split(' ')
     spawnArgs.push(script)

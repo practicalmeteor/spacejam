@@ -16,7 +16,7 @@ class Spacejam extends EventEmitter
 
   defaultOptions: ->
     {
-      'phantomjs-script': 'phantomjs-test-in-console'
+      'phantomjs-script': 'phantomjs-test-in-console.js'
       'phantomjs-options': '--load-images=no --ssl-protocol=TLSv1'
     }
 
@@ -52,7 +52,7 @@ class Spacejam extends EventEmitter
     log.debug "Spacejam.constructor()"
 
 
-  doTests: (command, options = {})->
+  runTests: (command, options = {})->
     log.debug "Spacejam.testPackages()", options
     expect(options).to.be.an "object"
     expect(command).to.be.a "string"
@@ -98,7 +98,7 @@ class Spacejam extends EventEmitter
       @killChildren(Spacejam.DONE.METEOR_ERROR) if not @options.watch
 
     try
-      @meteor.doTestCommand(command, @options)
+      @meteor.runTestCommand(command, @options)
     catch err
       console.trace err
       @emit "done", 1

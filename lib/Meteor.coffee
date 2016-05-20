@@ -42,8 +42,11 @@ class Meteor extends EventEmitter
     return Package.description.version
 
 
-  getCommonTestArgs: (options, command)->
-    log.debug "Meteor.getCommonTestArgs()"
+  getTestArgs:(command, options)->
+    log.debug("Meteor.getTestArgs()", options)
+    expect(+options.port, "options.port is not a number.").to.be.ok
+    expect(options.packages, "options.packages is not an array of package names").to.be.an 'array'
+
     args = [
       command
       '--driver-package'
@@ -54,28 +57,18 @@ class Meteor extends EventEmitter
     args.push(["--settings", options.settings]) if options.settings
     args.push("--production") if options.production
 
-    return _.flatten(args)
+    if options.mocha?
+      options["driver-package"] = "practicalmeteor:mocha-console-runner"
 
-  getTestArgs:(command)->
-    log.debug("Meteor.getTestArgs()", @options)
 
-    if @options.mocha?
-      @options["driver-package"] = "practicalmeteor:mocha-console-runner"
-
-    expect(+@options.port, "@options.port is not a number.").to.be.ok
-
-    @options["root-url"] ?= "http://localhost:#{@options.port}/"
-
-    expect(@options.packages, "@options.packages is not an array of package names").to.be.an 'array'
-
-    args = @getCommonTestArgs(@options, command)
+    options["root-url"] ?= "http://localhost:#{options.port}/"
 
     if command is 'test'
-      args.push(['--test-app-path'], @options["test-app-path"]) if @options["test-app-path"]
-      args.push(['--full-app']) if @options["full-app"]
+      args.push(['--test-app-path'], options["test-app-path"]) if options["test-app-path"]
+      args.push(['--full-app']) if options["full-app"]
     else if command is 'test-packages'
-      if @options.packages.length > 0
-        packagesToTest = @_globPackages(@options.packages)
+      if options.packages.length > 0
+        packagesToTest = @_globPackages(options.packages)
         expect(packagesToTest).to.have.length.above 0
         args.push(packagesToTest)
 
@@ -86,11 +79,11 @@ class Meteor extends EventEmitter
 
   testPackages: (options = {})->
     log.debug "Meteor.testPackages()", arguments
-    @doTestCommand("test-packages", options)
+    @runTestCommand("test-packages", options)
 
   testApp: (options = {})->
     log.debug "Meteor.testApp()", arguments
-    @doTestCommand("test", options)
+    @runTestCommand("test", options)
 
 # => Exited with code:
   # => Your application has errors. Waiting for file change.
@@ -102,8 +95,8 @@ class Meteor extends EventEmitter
 
   # @options
   # @parseCommandLine
-  doTestCommand: (command, options = {})=>
-    log.debug "Meteor.doTestCommand()", arguments
+  runTestCommand: (command, options = {})=>
+    log.debug "Meteor.runTestCommand()", arguments
     expect(options, "options should be an object.").to.be.an "object"
     expect(@childProcess, "Meteor's child process is already running").to.be.null
 
@@ -117,7 +110,7 @@ class Meteor extends EventEmitter
 
     expect(@options['driver-package'], "options.driver-package is missing").to.be.ok
 
-    args = @getTestArgs(command)
+    args = @getTestArgs(command, @options)
 
     log.debug 'meteor args=', args
 

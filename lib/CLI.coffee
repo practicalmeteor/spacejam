@@ -67,7 +67,7 @@ class CLI
 
     if not _.has(@commands, command)
       log.error "spacejam: Error: \n'#{command}' is not a recognized command\n" if command
-      @printHelp()
+      return @printHelp()
 
     @options.packages = @options._.slice(1)
     @options.command = command
@@ -84,7 +84,7 @@ class CLI
       process.exit code
 
     try
-      @spacejam.doTests(command, @options)
+      @spacejam.runTests(command, @options)
     catch err
       console.trace err
       log.error "spacejam: Usage or initialization error. Exiting."

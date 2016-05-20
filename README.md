@@ -14,7 +14,17 @@ npm install -g spacejam
 
 ### Running
 
-spacejam test-packages works the same as meteor-test-packages, i.e.:
+spacejam works the same as meteor tests commands i.e.:
+
+For apps:
+```
+# For apps
+spacejam test --driver-package my:driver-package
+# For packages
+spacejam test-packages <package>
+
+
+```
 
 ### Running package tinytests
 
