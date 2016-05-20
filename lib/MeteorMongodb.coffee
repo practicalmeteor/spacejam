@@ -24,18 +24,49 @@ class MeteorMongodb extends EventEmitter
   findAllChildren: ->
     log.debug "MeteorMongodb.findAllChildren()", arguments
     log.debug "@meteorPid", @meteorPid
-    ps.lookup
-      command: 'mongod'
-      psargs: '-l'
-      ppid: @meteorPid
-    , (err, resultList )=>
-      @mongodChilds = resultList
-      if (err)
-        log.warn "spacjam: Warning: Couldn't find any mongod children:\n", err
-      else if resultList.length > 1
-        log.warn "spacjam: Warning: Found more than one mongod child:\n", resultList
-      else
-        log.debug "Found meteor mongod child with pid: ", resultList[0].pid
+    if process.platform is 'win32'
+      resultList = [];
+
+      bat = require('child_process').spawn('cmd.exe', [
+        '/c'
+        "#{__dirname}\\get_children.bat #{@meteorPid}"
+      ])
+
+      bat.stdout.setEncoding "utf8"
+      bat.stderr.setEncoding "utf8"
+
+      bat.stdout.on 'data', (data) ->
+
+        childPid = data.toString().trim()
+        resultList.push pid: parseInt(childPid)
+
+      bat.stderr.on 'data', (data) ->
+        log.warn 'spacejam: Warning: Error enumerating mongod children:\n', data
+
+      bat.on 'exit', (code) =>
+        if code != 0
+          return log.warn('spacejam: Warning: Enumerating mongod children returned with error code: ', code)
+        log.info 'MongoDB children:\n', resultList
+        @mongodChilds = resultList
+        if resultList.length == 0
+          log.warn 'spacejam: Warning: Couldn\'t find any mongod children:\n', err
+        else if resultList.length > 1
+          log.warn 'spacejam: Warning: Found more than one mongod child:\n', resultList
+        else
+          log.debug 'Found meteor mongod child with pid: ', resultList[0].pid
+    else
+      ps.lookup
+        command: 'mongod'
+        psargs: '-l'
+        ppid: @meteorPid
+      , (err, resultList )=>
+        @mongodChilds = resultList
+        if (err)
+          log.warn "spacjam: Warning: Couldn't find any mongod children:\n", err
+        else if resultList.length > 1
+          log.warn "spacjam: Warning: Found more than one mongod child:\n", resultList
+        else
+          log.debug "Found meteor mongod child with pid: ", resultList[0]?.pid
 
 
   kill: ->
