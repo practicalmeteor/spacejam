@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+require('coffee-script/register');
+
 require('../lib/log');
 
 require('../lib/CLI').get().exec();
