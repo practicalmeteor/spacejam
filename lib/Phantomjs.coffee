@@ -34,14 +34,16 @@ class Phantomjs extends EventEmitter
       env: env
     log.debug 'spawnOptions:', spawnOptions
 
-    # Add phantomjs NPM package bin to PATH unless --use-system-phantomjs is passed
+    # Use the relative path to phantomjs
+    # unless you prefer to use the env PATH (--use-system-phantomjs)
+    program = "phantomjs";
     if useSystemPhantomjs
       process.env.PATH = DEFAULT_PATH
     else
-      process.env.PATH = path.dirname(phantomjs.path) + ':' + DEFAULT_PATH
+      program = path.join(path.dirname(phantomjs.path), program)
 
     @childProcess = new ChildProcess()
-    @childProcess.spawn("phantomjs", spawnArgs, spawnOptions, pipeClass, pipeClassOptions)
+    @childProcess.spawn(program, spawnArgs, spawnOptions, pipeClass, pipeClassOptions)
 
     @childProcess.child.on "exit", (code, signal) =>
       @emit "exit", code, signal

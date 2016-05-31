@@ -27,7 +27,6 @@ class MeteorMongodb extends EventEmitter
     ps.lookup
       command: 'mongod'
       psargs: '-l'
-      ppid: @meteorPid
     , (err, resultList )=>
       @mongodChilds = resultList
       if (err)
