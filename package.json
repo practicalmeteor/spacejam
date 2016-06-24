@@ -1,6 +1,6 @@
 {
   "name": "spacejam",
-  "version": "1.6.1-rc.1",
+  "version": "1.6.1",
   "dependencies": {
     "chai": "1.9.2",
     "cross-spawn": "^2.1.5",
