@@ -1,4 +1,6 @@
-#!/usr/bin/env coffee
+#!/usr/bin/env node
+
+require('coffee-script/register');
 
 require('../lib/log');
 

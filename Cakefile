@@ -14,7 +14,6 @@ task "test", "Run tests", ->
   child.exec mochaCmdLine
 
 
-
 task "test-wait", "Run tests and wait for file changes", ->
   invoke 'compile'
   child = new ChildProcess()
