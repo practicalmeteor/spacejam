@@ -22,7 +22,7 @@
   },
   "main": "lib/main.js",
   "scripts": {
-    "test": "bin/npm-test.sh",
+    "test": "cake test",
     "compile": "cake compile",
     "prepublish": "cake compile"
   },
