@@ -38,7 +38,7 @@ class Phantomjs extends EventEmitter
     if useSystemPhantomjs
       process.env.PATH = DEFAULT_PATH
     else
-      process.env.PATH = path.dirname(phantomjs.path) + ':' + DEFAULT_PATH
+      process.env.PATH = path.dirname(phantomjs.path) + path.delimiter + DEFAULT_PATH
 
     @childProcess = new ChildProcess()
     @childProcess.spawn("phantomjs", spawnArgs, spawnOptions, pipeClass, pipeClassOptions)
