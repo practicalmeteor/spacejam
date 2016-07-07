@@ -1,6 +1,6 @@
 {
   "name": "spacejam",
-  "version": "1.6.2-rc.3",
+  "version": "1.6.2-rc.4",
   "dependencies": {
     "chai": "1.9.2",
     "glob": "4.0.6",
