@@ -47,6 +47,10 @@ class Meteor extends EventEmitter
     expect(+options.port, "options.port is not a number.").to.be.ok
     expect(options.packages, "options.packages is not an array of package names").to.be.an 'array'
 
+    # Always use 'practicalmeteor:mocha' package for xunit or console-runner
+    if options.mocha? or options['driver-package'] is 'practicalmeteor:mocha-console-runner'
+      options["driver-package"] = "practicalmeteor:mocha"
+      
     args = [
       command
       '--driver-package'
@@ -56,11 +60,7 @@ class Meteor extends EventEmitter
     args.push(["--port", options.port])
     args.push(["--settings", options.settings]) if options.settings
     args.push("--production") if options.production
-
-    if options.mocha?
-      options["driver-package"] = "practicalmeteor:mocha-console-runner"
-
-
+      
     options["root-url"] ?= "http://localhost:#{options.port}/"
 
     if command is 'test'
@@ -123,6 +123,14 @@ class Meteor extends EventEmitter
       env.MONGO_URL = @options["mongo-url"]
     else
       delete env.MONGO_URL if env.MONGO_URL?
+
+    if @options.mocha? or @options['driver-package'] is 'practicalmeteor:mocha'
+      if  @options.xunit? or @options['xunit-out']?
+        env.MOCHA_REPORTER = 'xunit'
+      else
+        env.MOCHA_REPORTER = 'console'
+
+
 
     options = {
       cwd: cwd,

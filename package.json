@@ -10,6 +10,7 @@
     "psext": "0.0.4",
     "rc": "0.5.1",
     "semver": "4.1.0",
+    "sinon": "^1.17.4",
     "underscore": "1.7.0"
   },
   "devDependencies": {
@@ -23,8 +24,7 @@
   "main": "lib/main.js",
   "scripts": {
     "test": "cake test",
-    "compile": "cake compile",
-    "prepublish": "cake compile"
+    "compile": "cake compile"
   },
   "bin": {
     "spacejam": "bin/spacejam",

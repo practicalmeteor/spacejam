@@ -66,29 +66,6 @@ describe "Meteor", ->
     expectedSpawnOptions.env.MONGO_URL = mongoUrl if mongoUrl?
     return expectedSpawnOptions
 
-
-  it "getTestArgs() - get common args for test and test-packages command", ->
-    options = {
-      "driver-package": "package"
-      "release": 'release'
-      "port": '3000'
-      "settings": 'settings'
-      "production": true
-      "packages": ['pkg1', 'pkg2']
-    }
-
-    args = meteor.getTestArgs('test', options)
-
-    expect(args).to.be.deep.equal([
-      "test",
-      "--driver-package", "package",
-      "--release", "release",
-      "--port", "3000",
-      "--settings", "settings"
-      "--production"
-    ])
-
-
   describe "getTestArgs()", ->
 
     beforeEach ->
@@ -101,6 +78,29 @@ describe "Meteor", ->
         "packages": ['pkg1', 'pkg2']
       }
       meteor.options = @options
+
+
+    it "get common args for test and test-packages command", ->
+      options = {
+        "driver-package": "package"
+        "release": 'release'
+        "port": '3000'
+        "settings": 'settings'
+        "production": true
+        "packages": ['pkg1', 'pkg2']
+      }
+
+      args = meteor.getTestArgs('test', options)
+
+      expect(args).to.be.deep.equal([
+        "test",
+        "--driver-package", "package",
+        "--release", "release",
+        "--port", "3000",
+        "--settings", "settings"
+        "--production"
+      ])
+
 
 
     it "create args for test-packages command", ->
@@ -138,6 +138,75 @@ describe "Meteor", ->
         "--full-app"
       ])
 
+    it "use package practicalmeteor:mocha if mocha practicalmeteor:mocha-console-runner as driver-package", ->
+
+      expectedArgs = [
+        "test",
+        "--driver-package", "practicalmeteor:mocha",
+        "--release", "release",
+        "--port", "3000",
+        "--settings", "settings",
+        "--production",
+        "--test-app-path", "/tmp/app",
+        "--full-app"
+      ]
+
+      opts = _.extend(_.clone(@options),{
+        "test-app-path": "/tmp/app"
+        "full-app": true,
+        "mocha": true
+      });
+      
+      args = meteor.getTestArgs('test', opts)
+
+      expect(args, "--mocha").to.be.deep.equal(expectedArgs)
+
+      opts = _.extend(_.clone(@options),{
+        "test-app-path": "/tmp/app"
+        "full-app": true,
+        "xunit": true,
+        "mocha": true
+      });
+
+      args = meteor.getTestArgs('test', opts)
+
+      expect(args, "--xunit").to.be.deep.equal(expectedArgs)
+
+      opts = _.extend(_.clone(@options),{
+        "test-app-path": "/tmp/app"
+        "full-app": true,
+        "driver-package": "practicalmeteor:mocha-console-runner"
+      });
+
+      args = meteor.getTestArgs('test', opts)
+
+      expect(args, "--driver-package=practicalmeteor:mocha-console-runner").to.be.deep.equal(expectedArgs)
+
+
+  describe "runTestCommand", ->
+
+    beforeEach ->
+      @expectedSpawnArgs = [
+        "test",
+        "--driver-package", "practicalmeteor:mocha"
+        "--port", defaultTestPort
+      ]
+      @expectedSpawnOptions = getExpectedSpawnOptions(4096)
+      @expectedSpawnOptions.env.MOCHA_REPORTER = 'console'
+
+    it  "should spawn meteor with env var MOCHA_REPORTER to console if mocha option or practicalmeteor:mocha as driver-package", ->
+
+      meteor.runTestCommand("test",{"mocha": true})
+      expect(spawnStub.args[0]).to.eql(["meteor", @expectedSpawnArgs, @expectedSpawnOptions])
+
+      meteor = new Meteor()
+      meteor.runTestCommand("test",{"driver-package": "practicalmeteor:mocha"})
+      expect(spawnStub.args[0]).to.eql(["meteor", @expectedSpawnArgs, @expectedSpawnOptions])
+
+
+    it "should spawn meteor with env var MOCHA_REPORTER to console with practicalmeteor:mocha-console-runner as driver-package", ->
+      meteor.runTestCommand("test", {"driver-package": "practicalmeteor:mocha-console-runner"})
+      expect(spawnStub.args[0]).to.eql(["meteor", @expectedSpawnArgs, @expectedSpawnOptions])
 
   it  "testApp - should spawn meteor with correct arguments", ->
     meteor.testApp({"full-app": true})

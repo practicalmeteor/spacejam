@@ -14,7 +14,7 @@ log.info spacejamBin
 
 
 describe "spacejam", ->
-  @timeout 120000
+  @timeout 150000
 
   spacejamChild = null
 
