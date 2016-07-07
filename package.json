@@ -1,6 +1,6 @@
 {
   "name": "spacejam",
-  "version": "1.6.2-rc.2",
+  "version": "1.6.2-rc.3",
   "dependencies": {
     "chai": "1.9.2",
     "glob": "4.0.6",
@@ -24,7 +24,8 @@
   "main": "lib/main.js",
   "scripts": {
     "test": "cake test",
-    "compile": "cake compile"
+    "compile": "cake compile",
+    "prepublish": "cake compile"
   },
   "bin": {
     "spacejam": "bin/spacejam",
