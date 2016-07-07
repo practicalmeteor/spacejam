@@ -23,38 +23,21 @@ class MeteorMongodb extends EventEmitter
 
   findAllChildren: ->
     log.debug "MeteorMongodb.findAllChildren()", arguments
-    log.debug "@meteorPid", @meteorPid
     if process.platform is 'win32'
-      resultList = [];
+      @getChildProcessOnWindows(@meteorPid, (childsPid, _this) ->
+        _this.getChildProcessOnWindows(childsPid[0].pid, (childsPid, _this) ->
+          _this.getChildProcessOnWindows(childsPid[0].pid, (childsPid, _this) ->
+            _this.meteorPid = childsPid[0].pid
+            log.debug "@meteorPid", _this.meteorPid
+            _this.getChildProcessOnWindows(childsPid[0].pid, (childsPid, _this) ->
+              _this.mongodChilds = childsPid
+            )
+          )
+        )
+      )
 
-      bat = require('child_process').spawn('cmd.exe', [
-        '/c'
-        "#{__dirname}\\get_children.bat #{@meteorPid}"
-      ])
-
-      bat.stdout.setEncoding "utf8"
-      bat.stderr.setEncoding "utf8"
-
-      bat.stdout.on 'data', (data) ->
-
-        childPid = data.toString().trim()
-        resultList.push pid: parseInt(childPid)
-
-      bat.stderr.on 'data', (data) ->
-        log.warn 'spacejam: Warning: Error enumerating mongod children:\n', data
-
-      bat.on 'exit', (code) =>
-        if code != 0
-          return log.warn('spacejam: Warning: Enumerating mongod children returned with error code: ', code)
-        log.debug 'MongoDB children:\n', resultList
-        @mongodChilds = resultList
-        if resultList.length == 0
-          log.warn 'spacejam: Warning: Couldn\'t find any mongod children:\n', err
-        else if resultList.length > 1
-          log.warn 'spacejam: Warning: Found more than one mongod child:\n', resultList
-        else
-          log.debug 'Found meteor mongod child with pid: ', resultList[0].pid
     else
+      log.debug "@meteorPid", @meteorPid
       ps.lookup
         command: 'mongod'
         psargs: '-l'
@@ -67,6 +50,38 @@ class MeteorMongodb extends EventEmitter
           log.warn "spacjam: Warning: Found more than one mongod child:\n", resultList
         else
           log.debug "Found meteor mongod child with pid: ", resultList[0]?.pid
+
+  getChildProcessOnWindows: (processPid, onSuccess) ->
+    resultList = [];
+    bat = require('child_process').spawn('cmd.exe', [
+      '/c'
+      "#{__dirname}\\get_children.bat #{processPid}"
+    ])
+
+    bat.stdout.setEncoding "utf8"
+    bat.stderr.setEncoding "utf8"
+
+    bat.stdout.on 'data', (data) ->
+
+      childPid = data.toString().trim()
+      resultList.push pid: parseInt(childPid)
+
+    bat.stderr.on 'data', (data) ->
+      log.warn 'spacejam: Warning: Error enumerating process children:\n', data
+
+    bat.on 'exit', (code) =>
+      if code != 0
+        return log.warn('spacejam: Warning: Enumerating child process returned with error code: ', code)
+      log.debug 'MongoDB children:\n', resultList
+      if resultList.length == 0
+        log.warn 'spacejam: Warning: Couldn\'t find any child process :\n', err
+      else if resultList.length > 1
+        log.warn 'spacejam: Warning: Found more than one child process :\n', resultList
+        onSuccess(resultList, _this)
+      else
+        log.debug 'Found meteor child process with pid: ', resultList[0].pid
+        onSuccess(resultList, _this)
+
 
 
   kill: ->

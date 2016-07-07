@@ -40,8 +40,11 @@ class Phantomjs extends EventEmitter
     else
       process.env.PATH = path.dirname(phantomjs.path) + path.delimiter + DEFAULT_PATH
 
+    # Get the cross-platform program name
+    program = path.basename(phantomjs.path)
+
     @childProcess = new ChildProcess()
-    @childProcess.spawn("phantomjs", spawnArgs, spawnOptions, pipeClass, pipeClassOptions)
+    @childProcess.spawn(program, spawnArgs, spawnOptions, pipeClass, pipeClassOptions)
 
     @childProcess.child.on "exit", (code, signal) =>
       @emit "exit", code, signal
