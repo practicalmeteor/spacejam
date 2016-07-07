@@ -46,7 +46,7 @@ class MeteorMongodb extends EventEmitter
       bat.on 'exit', (code) =>
         if code != 0
           return log.warn('spacejam: Warning: Enumerating mongod children returned with error code: ', code)
-        log.info 'MongoDB children:\n', resultList
+        log.debug 'MongoDB children:\n', resultList
         @mongodChilds = resultList
         if resultList.length == 0
           log.warn 'spacejam: Warning: Couldn\'t find any mongod children:\n', err
