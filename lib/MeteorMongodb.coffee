@@ -25,15 +25,11 @@ class MeteorMongodb extends EventEmitter
     log.debug "MeteorMongodb.findAllChildren()", arguments
     if process.platform is 'win32'
       @getChildProcessOnWindows(@meteorPid, (childsPid, _this) ->
-        _this.getChildProcessOnWindows(childsPid[0].pid, (childsPid, _this) ->
+          _this.meteorPid = childsPid[0].pid
+          log.debug "@meteorPid", _this.meteorPid
           _this.getChildProcessOnWindows(childsPid[0].pid, (childsPid, _this) ->
-            _this.meteorPid = childsPid[0].pid
-            log.debug "@meteorPid", _this.meteorPid
-            _this.getChildProcessOnWindows(childsPid[0].pid, (childsPid, _this) ->
-              _this.mongodChilds = childsPid
-            )
+            _this.mongodChilds = childsPid
           )
-        )
       )
 
     else
