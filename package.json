@@ -12,6 +12,7 @@
     "underscore": "1.7.0",
     "sinon": "^1.17.4",
     "coffee-script": "1.8.0",
+    "try-thread-sleep": "1.0.0",
     "cross-spawn": "^4.0.0"
   },
   "devDependencies": {
