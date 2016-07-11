@@ -2,7 +2,7 @@ path = require 'path'
 fs = require 'fs'
 DOMParser = require('xmldom').DOMParser
 xpath = require('xpath')
-
+os = require("os")
 expect = require("chai").expect
 
 CLI = require '../../lib/CLI'
@@ -12,8 +12,9 @@ spacejamBin = require.resolve("../../bin/spacejam")
 
 log.info spacejamBin
 
-
+#should exit with 0 with successful tests
 describe "spacejam", ->
+  
   @timeout 150000
 
   spacejamChild = null
@@ -146,16 +147,18 @@ describe "spacejam", ->
         done()
 
 
-    it   "should save xunit output to file, if --xunit-out is specified", (done)->
+    it "should save xunit output to file, if --xunit-out is specified", (done)->
       spacejamChild = new ChildProcess()
       # TODO: Have a global singleton to provide the port
       testPort = "20096"
-      args = ["test-packages", "--port", testPort, '--xunit-out', '/tmp/xunit.xml', "success"]
+
+      xunitFile = path.join(os.tmpdir(), 'xunit.xml')
+      args = ["test-packages", "--port", testPort, '--xunit-out', xunitFile, "success"]
       spacejamChild.spawn(spacejamBin,args)
       spacejamChild.child.on "close", (code, signal) =>
         try
           expect(code,"spacejam exited with errors").to.equal Spacejam.DONE.TEST_SUCCESS
-          xml = fs.readFileSync('/tmp/xunit.xml', encoding: 'utf8')
+          xml = fs.readFileSync(xunitFile, encoding: 'utf8')
           log.debug xml
           expect(xml).to.be.ok
           xmlDom = new DOMParser().parseFromString(xml)
@@ -181,7 +184,8 @@ describe "spacejam", ->
     it "should print the package version", (done)->
       process.chdir(__dirname + "/../packages/standalone-package")
       spacejamChild = new ChildProcess()
-      spacejamChild.exec "#{spacejamBin} package-version", null, (err, stdout, stderr)=>
+      # Using also node to avoid problems with windows
+      spacejamChild.exec "node #{spacejamBin} package-version", null, (err, stdout, stderr)=>
         try
           expect(err).to.be.null
           expect(stdout.toString()).to.contain '0.9.5'
