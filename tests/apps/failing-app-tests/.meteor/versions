@@ -53,7 +53,6 @@ ordered-dict@1.0.8
 practicalmeteor:chai@2.1.0_1
 practicalmeteor:loglevel@1.2.0_2
 practicalmeteor:mocha@2.4.5_3
-practicalmeteor:mocha-console-runner@0.2.1
 practicalmeteor:mocha-core@1.0.1
 practicalmeteor:sinon@1.14.1_2
 promise@0.7.3

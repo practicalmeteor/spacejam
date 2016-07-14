@@ -52,7 +52,7 @@ observe-sequence@1.0.12
 ordered-dict@1.0.8
 practicalmeteor:chai@2.1.0_1
 practicalmeteor:loglevel@1.2.0_2
-practicalmeteor:mocha@2.4.5-rc6.2
+practicalmeteor:mocha@2.4.5_6
 practicalmeteor:mocha-core@1.0.1
 practicalmeteor:sinon@1.14.1_2
 promise@0.7.3
