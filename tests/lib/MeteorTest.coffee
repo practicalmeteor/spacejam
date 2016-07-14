@@ -300,7 +300,7 @@ describe "Meteor", ->
 
 
   it "kill() - should kill internal mongodb child processes", (done)->
-    @timeout 60000
+    @timeout 120000
     spawnStub.restore()
     spawnStub = null
     ChildProcess.prototype.child = null

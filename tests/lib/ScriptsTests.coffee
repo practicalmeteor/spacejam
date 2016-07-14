@@ -65,6 +65,7 @@ describe  "scripts", ->
     delete childEnv.TEST_ROOT_URL
     delete childEnv.TEST_MONGO_URL
     delete childEnv.TEST_METEOR_SETTINGS_PATH
+    delete childEnv.METEOR_ENV
 
     execOptions =
       env: childEnv

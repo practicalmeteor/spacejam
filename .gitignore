@@ -5,3 +5,4 @@ node_modules/
 *.pid
 versions.json
 .meteor/versions
+.meteor/dev_bundle
