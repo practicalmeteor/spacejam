@@ -64,6 +64,13 @@ class Spacejam extends EventEmitter
     @options = _.extend @defaultOptions(), options
     if @options.coverage? && @options.coverage
         @options['phantomjs-script'] = "phantomjs-test-in-console-with-coverage.js";
+        if @options.coverage.length > 0
+            process.env.COVERAGE_IN_COVERAGE = @options.coverage.indexOf('in_coverage') > -1 ? true : false;
+            process.env.COVERAGE_OUT_COVERAGE = @options.coverage.indexOf('out_coverage') > -1 ? true : false;
+            process.env.COVERAGE_OUT_LCOVONLY = @options.coverage.indexOf('out_lcovonly') > -1 ? true : false;
+        else
+            log.warn "No coverage action activated. Try spacejam [...] --coverage='out_lcovonly'"
+
     log.debug @options
 
     try
