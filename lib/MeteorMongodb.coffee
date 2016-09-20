@@ -30,12 +30,13 @@ class MeteorMongodb extends EventEmitter
       ppid: @meteorPid
     , (err, resultList )=>
       @mongodChilds = resultList
-      if (err)
+      if (err || resultList.length==0)
         log.warn "spacjam: Warning: Couldn't find any mongod children:\n", err
       else if resultList.length > 1
         log.warn "spacjam: Warning: Found more than one mongod child:\n", resultList
       else
         log.debug "Found meteor mongod child with pid: ", resultList[0].pid
+      @emit "mongodb ready"
 
 
   kill: ->
