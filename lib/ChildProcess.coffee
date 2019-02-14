@@ -6,7 +6,7 @@ path = require 'path'
 class ChildProcess
 
   # Design for testability - so we can spy on them / stub them in tests
-  @_spawn: require("child_process").spawn
+  @_spawn:  require('cross-spawn')
   @_exec: require("child_process").exec
 
   child: null

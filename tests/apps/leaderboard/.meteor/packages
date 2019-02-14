@@ -11,3 +11,5 @@ success
 settings
 failure
 timeout
+standard-minifier-css
+standard-minifier-js

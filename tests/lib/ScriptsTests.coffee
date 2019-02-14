@@ -3,7 +3,11 @@ ChildProcess = require '../../lib/ChildProcess'
 path = require 'path'
 _ = require('underscore')
 
-describe "scripts", ->
+describe  "scripts", ->
+
+  if process.platform is 'win32'
+    console.log("spacejam scripts are not supported in windows")
+    return
 
   spacejamBinDir = path.resolve(__dirname, "../../bin")
   meteorStubDir = path.resolve(__dirname, "../bin")
@@ -61,6 +65,7 @@ describe "scripts", ->
     delete childEnv.TEST_ROOT_URL
     delete childEnv.TEST_MONGO_URL
     delete childEnv.TEST_METEOR_SETTINGS_PATH
+    delete childEnv.METEOR_ENV
 
     execOptions =
       env: childEnv

@@ -21,4 +21,5 @@ before_install:
 - export PATH="$HOME/.meteor:$PATH"
 - meteor --version
 - npm install -g coffee-script@1.8.0
+- npm install -g phantomjs-prebuilt@2.1.7
 - phantomjs -v

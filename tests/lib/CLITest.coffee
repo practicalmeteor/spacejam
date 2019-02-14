@@ -16,7 +16,7 @@ ChildProcess = require '../../lib/ChildProcess'
 
 
 describe "CLI", ->
-  @timeout 30000
+  @timeout 60000
 
   processArgv = null
 
@@ -99,7 +99,7 @@ describe "CLI", ->
       try
         if code is 0 then done() else done("spacejam.done=#{code}")
 
-        firstPathEntry = process.env.PATH.split(":")[0]
+        firstPathEntry = process.env.PATH.split(path.delimiter)[0]
         expect(firstPathEntry).to.equal(path.dirname(phantomjs.path))
       catch err
         done(err)
