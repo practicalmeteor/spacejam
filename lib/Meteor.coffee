@@ -56,6 +56,7 @@ class Meteor extends EventEmitter
     args.push(["--port", options.port])
     args.push(["--settings", options.settings]) if options.settings
     args.push("--production") if options.production
+    args.push("--unsafe-perm") if options.docker
 
     if options.mocha?
       options["driver-package"] = "practicalmeteor:mocha-console-runner"
