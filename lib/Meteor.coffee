@@ -187,7 +187,6 @@ class Meteor extends EventEmitter
   hasStartedMongoDBText: (buffer)=>
     if buffer.lastIndexOf('Started MongoDB') isnt -1
       @mongodb = new MeteorMongodb(@childProcess.child.pid)
-      @emit "mongodb ready"
 
 
   hasErrorText: (buffer)=>
